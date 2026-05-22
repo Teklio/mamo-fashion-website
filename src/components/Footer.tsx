@@ -5,13 +5,13 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white pt-20 pb-8 px-6 md:px-12 border-t border-zinc-100">
+    <footer className="w-full bg-white pt-10 md:pt-20 pb-8 px-6 md:px-12 border-t border-zinc-100">
       <div className="max-w-7xl mx-auto">
         {/* Top Section */}
-        <div className="flex flex-col lg:flex-row justify-between w-full gap-16 mb-20">
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start w-full gap-10 md:gap-16 mb-10 md:mb-20">
           
           {/* Brand / Logo (Left) */}
-          <div className="lg:w-[30%] flex flex-col justify-start">
+          <div className="lg:w-[30%] flex flex-col justify-start items-center lg:items-start">
             <Link href="/" className="inline-block">
               <Image
                 src="/assets/Home/logo.png"
@@ -24,7 +24,7 @@ export default function Footer() {
           </div>
 
           {/* Navigation Columns (Right) */}
-          <div className="lg:w-[70%] flex flex-col sm:flex-row justify-between gap-12 sm:gap-6">
+          <div className="lg:w-[70%] flex flex-col sm:flex-row justify-between items-center sm:items-start gap-8 sm:gap-6">
             
             {/* The House */}
             <div className="flex flex-col">

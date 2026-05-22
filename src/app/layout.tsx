@@ -4,6 +4,7 @@ import { ppFragmentSerif, ppFragmentText } from "@/lib/font";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Footer from "@/components/Footer";
+import Toaster from "@/components/Toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
         <CartProvider>
           {children}
           <Footer />
+          <Toaster />
         </CartProvider>
       </body>
     </html>

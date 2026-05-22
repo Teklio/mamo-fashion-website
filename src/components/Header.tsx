@@ -42,7 +42,13 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
     { name: "CONTACT US", href: "/contact" },
   ];
 
-  const isDarkText = isScrolled || theme === "light";
+  const mobileNavLinks = [
+    ...navLinks,
+    { name: "WISHLIST", href: "/wishlist" },
+    { name: "ACCOUNT", href: "/account" },
+  ];
+
+  const isDarkText = isScrolled || (theme === "light" && !isMobileMenuOpen);
 
   return (
     <>
@@ -100,19 +106,19 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
             </Link>
             <Link
               href="/account"
-              className={`transition-colors duration-300 p-2 ${isScrolled ? "hover:text-black" : "hover:text-white"}`}
+              className={`transition-colors duration-300 p-2 ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
               aria-label="Account"
             >
               <FiUser size={18} className="stroke-[1.5]" />
             </Link>
             <Link
               href="/cart"
-              className={`transition-colors duration-300 p-2 relative flex items-center ${isScrolled ? "hover:text-black" : "hover:text-white"}`}
+              className={`transition-colors duration-300 p-2 relative flex items-center ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
               <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${
-                isScrolled
+                isDarkText
                   ? "bg-black text-white border-black/10"
                   : "bg-white text-black border-black/10"
               }`}>
@@ -125,12 +131,12 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
           <div className="flex md:hidden items-center space-x-4">
             <Link
               href="/cart"
-              className={`transition-colors p-2 relative ${isScrolled ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"}`}
+              className={`transition-colors p-2 relative ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"}`}
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
               <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${
-                isScrolled
+                isDarkText
                   ? "bg-black text-white"
                   : "bg-white text-black"
               }`}>
@@ -139,7 +145,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
             </Link>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 relative z-50 cursor-pointer focus:outline-none ${isScrolled ? "text-black" : "text-white"}`}
+              className={`p-2 relative z-50 cursor-pointer focus:outline-none ${isDarkText ? "text-black" : "text-white"}`}
               aria-label="Toggle Menu"
             >
               {isMobileMenuOpen ? (
@@ -165,7 +171,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
 
         {/* Menu Links */}
         <nav className="relative z-10 flex flex-col space-y-6">
-          {navLinks.map((link, index) => (
+          {mobileNavLinks.map((link, index) => (
             <div
               key={link.name}
               className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -190,48 +196,17 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
                     ? "Browse Collection"
                     : link.name === "HOUSE OF SORIN"
                     ? "Our Story"
-                    : "Get In Touch"}
+                    : link.name === "CONTACT US"
+                    ? "Get In Touch"
+                    : link.name === "WISHLIST"
+                    ? "Your Favourites"
+                    : "Manage Profile"}
                 </span>
               </Link>
             </div>
           ))}
         </nav>
 
-        {/* Extra Menu Footer */}
-        <div
-          className={`relative z-10 space-y-8 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isMobileMenuOpen
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: isMobileMenuOpen ? "320ms" : "0ms" }}
-        >
-          {/* Profile / Wishlist links */}
-          <div className="flex items-center space-x-8 pt-6 border-t border-white/5 text-white/50 text-xs tracking-wider">
-            <Link
-              href="/wishlist"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors flex items-center space-x-2"
-            >
-              <FiHeart size={16} />
-              <span>WISHLIST</span>
-            </Link>
-            <Link
-              href="/account"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white transition-colors flex items-center space-x-2"
-            >
-              <FiUser size={16} />
-              <span>ACCOUNT</span>
-            </Link>
-          </div>
-
-          {/* Luxury Brand Socials / Details */}
-          <div className="flex flex-col space-y-2 text-[10px] tracking-[0.15em] text-white/60 font-sans">
-            <span>© {new Date().getFullYear()} HOUSE OF SORIN</span>
-            <span>INSTAGRAM / PINTEREST / JOURNAL</span>
-          </div>
-        </div>
       </div>
     </>
   );
