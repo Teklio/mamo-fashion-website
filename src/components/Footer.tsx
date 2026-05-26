@@ -8,10 +8,10 @@ export default function Footer() {
     <footer className="w-full bg-white pt-10 md:pt-20 pb-8 px-6 md:px-12 border-t border-zinc-100">
       <div className="max-w-7xl mx-auto">
         {/* Top Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start w-full gap-10 md:gap-16 mb-10 md:mb-20">
+        <div className="flex flex-col lg:flex-row justify-between items-start w-full gap-10 md:gap-16 mb-10 md:mb-20">
           
           {/* Brand / Logo (Left) */}
-          <div className="lg:w-[30%] flex flex-col justify-start items-center lg:items-start">
+          <div className="w-full lg:w-[30%] flex flex-col justify-start items-center lg:items-start mb-12 lg:mb-0">
             <Link href="/" className="inline-block">
               <Image
                 src="/assets/Home/logo.png"
@@ -24,7 +24,7 @@ export default function Footer() {
           </div>
 
           {/* Navigation Columns (Right) */}
-          <div className="lg:w-[70%] flex flex-col sm:flex-row justify-between items-center sm:items-start gap-8 sm:gap-6">
+          <div className="lg:w-[70%] grid grid-cols-2 md:flex md:flex-row justify-between items-start w-full gap-y-12 gap-x-8">
             
             {/* The House */}
             <div className="flex flex-col">
@@ -52,12 +52,12 @@ export default function Footer() {
             </div>
 
             {/* Customer Care */}
-            <div className="flex flex-col">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center gap-2">
-                <span className="w-3 h-px bg-zinc-300"></span>
+            <div className="flex flex-col items-end md:items-start text-right md:text-left">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-end md:justify-start gap-2">
+                <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 CUSTOMER CARE
               </h4>
-              <ul className="flex flex-col space-y-5">
+              <ul className="flex flex-col space-y-5 items-end md:items-start">
                 <li>
                   <Link href="/contact" className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors">
                     Contact
@@ -77,12 +77,12 @@ export default function Footer() {
             </div>
 
             {/* Social */}
-            <div className="flex flex-col">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center gap-2">
-                <span className="w-3 h-px bg-zinc-300"></span>
+            <div className="flex flex-col col-span-2 md:col-span-1 items-center md:items-start mt-6 md:mt-0">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
+                <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 SOCIAL
               </h4>
-              <ul className="flex flex-col space-y-5">
+              <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
                 <li>
                   <a href="#" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors">
                     Instagram
