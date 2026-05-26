@@ -19,7 +19,7 @@ export default function AccountDetailsPage() {
   };
 
   return (
-    <div className="bg-white border border-black/10 rounded-2xl p-8 lg:p-10 w-full min-h-[600px]">
+    <div className="bg-white border border-black/10 rounded-2xl p-8 lg:p-10 w-full min-h-150">
       <div className="mb-10">
         <h1 className="font-serif text-2xl lg:text-3xl text-black mb-2">Account Details</h1>
         <p className="text-zinc-500 font-sans text-sm">

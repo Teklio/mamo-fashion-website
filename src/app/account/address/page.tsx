@@ -81,7 +81,7 @@ export default function AddressPage() {
   };
 
   return (
-    <div className="bg-white border border-black/10 rounded-2xl p-8 lg:p-10 w-full min-h-[600px]">
+    <div className="bg-white border border-black/10 rounded-2xl p-8 lg:p-10 w-full min-h-150">
       <div className="mb-10">
         <h1 className="font-serif text-2xl lg:text-3xl text-black mb-2">Address information</h1>
         <p className="text-zinc-500 font-sans text-sm">
@@ -106,7 +106,7 @@ export default function AddressPage() {
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               placeholder="Enter your full address..."
-              className="w-full p-4 border border-zinc-200 rounded-md focus:outline-none focus:border-black/30 min-h-[100px] resize-y text-sm font-sans text-black"
+              className="w-full p-4 border border-zinc-200 rounded-md focus:outline-none focus:border-black/30 min-h-25 resize-y text-sm font-sans text-black"
               autoFocus
             />
             <div className="flex gap-3 justify-end">
@@ -138,7 +138,7 @@ export default function AddressPage() {
                   <textarea
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
-                    className="w-full p-4 border border-zinc-200 rounded-md focus:outline-none focus:border-black/30 min-h-[100px] resize-y text-sm font-sans text-black"
+                    className="w-full p-4 border border-zinc-200 rounded-md focus:outline-none focus:border-black/30 min-h-25 resize-y text-sm font-sans text-black"
                     autoFocus
                   />
                   <div className="flex gap-3 justify-end">

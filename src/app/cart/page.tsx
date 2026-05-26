@@ -52,8 +52,8 @@ export default function CartPage() {
                     <div className="flex flex-col">
                       <h3 className="font-serif text-lg md:text-xl text-black mb-1">{item.name}</h3>
                       <p className="text-[10px] text-zinc-400 font-sans mb-3 tracking-wider">Footwear</p>
-                      <p className="text-[10px] text-zinc-500 font-sans tracking-widestuppercase font-semibold">
-                        SIZE - EU 35
+                      <p className="text-[10px] text-zinc-500 font-sans tracking-widest uppercase font-semibold">
+                        {item.size ? `SIZE - EU ${item.size}` : "ONE SIZE"}
                       </p>
                     </div>
                   </div>
