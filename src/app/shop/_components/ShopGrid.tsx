@@ -5,97 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiShoppingBag, FiHeart, FiCheck } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { motion } from "framer-motion";
 
-interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  priceText: string;
-  priceVal: number;
-  image: string;
-}
-
-// Simulated data
-const products: Product[] = [
-  {
-    id: "rae-01",
-    name: "Rae Collections Blue & Yellow Sandals",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/1.png",
-  },
-  {
-    id: "rae-02",
-    name: "Rae Collections Maroon Sandals",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/2.png",
-  },
-  {
-    id: "rae-03",
-    name: "Rae Collections Green & Red Sandals",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/3.png",
-  },
-  {
-    id: "rae-04",
-    name: "Rae Collections Blue & Yellow Sandals Extra",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/1.png",
-  },
-  {
-    id: "rae-05",
-    name: "Rae Collections Maroon Sandals Extra",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/2.png",
-  },
-  {
-    id: "rae-06",
-    name: "Rae Collections Green & Red Sandals Extra",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/3.png",
-  },
-  {
-    id: "rae-07",
-    name: "Rae Collections Blue & Yellow Sandals V3",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/1.png",
-  },
-  {
-    id: "rae-08",
-    name: "Rae Collections Maroon Sandals V3",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/2.png",
-  },
-  {
-    id: "rae-09",
-    name: "Rae Collections Green & Red Sandals V3",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/3.png",
-  },
-];
+import { products, type Product } from "@/data/products";
 
 export default function ShopGrid() {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [addingId, setAddingId] = useState<string | null>(null);
-  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault(); // Prevent navigating to product detail
@@ -112,12 +30,15 @@ export default function ShopGrid() {
     }, 1200);
   };
 
-  const toggleWishlist = (e: React.MouseEvent, id: string) => {
+  const handleWishlistToggle = (e: React.MouseEvent, product: Product) => {
     e.preventDefault(); // Prevent navigating to product detail
-    setWishlist(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+    toggleWishlist({
+      id: product.id,
+      name: product.name,
+      priceText: product.priceText,
+      priceVal: product.priceVal,
+      image: product.image
+    });
   };
 
   const containerVariants = {
@@ -160,14 +81,14 @@ export default function ShopGrid() {
 
               {/* Wishlist Button */}
               <button
-                onClick={(e) => toggleWishlist(e, product.id)}
+                onClick={(e) => handleWishlistToggle(e, product)}
                 className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-xs border border-zinc-100 hover:scale-110 active:scale-95 transition-all duration-300 z-10"
                 aria-label="Add to Wishlist"
               >
                 <FiHeart
                   size={14}
                   className={`transition-all duration-300 stroke-[1.8] ${
-                    wishlist[product.id]
+                    isInWishlist(product.id)
                       ? "fill-red-500 text-red-500 scale-110"
                       : "text-zinc-700 hover:text-red-500"
                   }`}

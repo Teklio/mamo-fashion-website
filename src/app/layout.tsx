@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ppFragmentSerif, ppFragmentText } from "@/lib/font";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import Footer from "@/components/Footer";
 import Toaster from "@/components/Toaster";
 
@@ -33,9 +34,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#0d0d0d]">
         <CartProvider>
-          {children}
-          <Footer />
-          <Toaster />
+          <WishlistProvider>
+            {children}
+            <Footer />
+            <Toaster />
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

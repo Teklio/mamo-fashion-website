@@ -5,56 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiShoppingBag, FiHeart, FiCheck } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { motion } from "framer-motion";
 
-interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  priceText: string;
-  priceVal: number;
-  image: string;
-}
-
-const products: Product[] = [
-  {
-    id: "rae-01",
-    name: "Rae Collections Blue & Yellow Sandals",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/1.png",
-  },
-  {
-    id: "rae-02",
-    name: "Rae Collections Maroon Sandals",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/2.png",
-  },
-  {
-    id: "rae-03",
-    name: "Rae Collections Green & Red Sandals",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/3.png",
-  },
-  {
-    id: "rae-04",
-    name: "Rae Collections Blue & Yellow Sandals Extra",
-    brand: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    image: "/assets/Home/1.png",
-  },
-];
+import { products, type Product } from "@/data/products";
 
 export default function FeaturedProducts() {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [addingId, setAddingId] = useState<string | null>(null);
-  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
 
   const handleAddToCart = (product: Product) => {
     addToCart({
@@ -71,11 +30,15 @@ export default function FeaturedProducts() {
     }, 1200);
   };
 
-  const toggleWishlist = (id: string) => {
-    setWishlist(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+  const handleWishlistToggle = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    toggleWishlist({
+      id: product.id,
+      name: product.name,
+      priceText: product.priceText,
+      priceVal: product.priceVal,
+      image: product.image
+    });
   };
 
   const containerVariants = {
@@ -130,7 +93,7 @@ export default function FeaturedProducts() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {products.map((product) => (
+          {products.slice(0, 4).map((product) => (
             <motion.div 
               key={product.id} 
               className="group flex flex-col justify-between"
@@ -149,14 +112,14 @@ export default function FeaturedProducts() {
 
                 {/* Wishlist Button (Heart) */}
                 <button
-                  onClick={() => toggleWishlist(product.id)}
+                  onClick={(e) => handleWishlistToggle(e, product)}
                   className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-xs border border-zinc-100 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
                   aria-label="Add to Wishlist"
                 >
                   <FiHeart
                     size={14}
                     className={`transition-all duration-300 stroke-[1.8] ${
-                      wishlist[product.id]
+                      isInWishlist(product.id)
                         ? "fill-red-500 text-red-500 scale-110"
                         : "text-zinc-700 hover:text-red-500"
                     }`}

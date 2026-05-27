@@ -5,11 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiHeart, FiUser, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 export default function Header({ theme = "dark" }: { theme?: "dark" | "light" }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cartCount } = useCart();
+  const { wishlistItems } = useWishlist();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -96,13 +98,17 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
           <div className={`hidden md:flex items-center space-x-6 ${isDarkText ? "text-black/80" : "text-white/80"}`}>
             <Link
               href="/wishlist"
-              className={`transition-colors duration-300 p-2 relative group ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
+              className={`transition-colors duration-300 p-2 relative flex items-center ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
               aria-label="Wishlist"
             >
               <FiHeart size={18} className="stroke-[1.5]" />
-              <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 ${
-                isDarkText ? "bg-black" : "bg-white"
-              }`} />
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${
+                isDarkText
+                  ? "bg-black text-white border-black/10"
+                  : "bg-white text-black border-black/10"
+              }`}>
+                {wishlistItems.length}
+              </span>
             </Link>
             <Link
               href="/account"
@@ -117,7 +123,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
-              <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${
                 isDarkText
                   ? "bg-black text-white border-black/10"
                   : "bg-white text-black border-black/10"
@@ -127,15 +133,28 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
             </Link>
           </div>
 
-          {/* Mobile Actions & Hamburger */}
-          <div className="flex md:hidden items-center space-x-4">
+          <div className="flex md:hidden items-center space-x-2">
+            <Link
+              href="/wishlist"
+              className={`transition-colors p-2 relative ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"}`}
+              aria-label="Wishlist"
+            >
+              <FiHeart size={18} className="stroke-[1.5]" />
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${
+                isDarkText
+                  ? "bg-black text-white"
+                  : "bg-white text-black"
+              }`}>
+                {wishlistItems.length}
+              </span>
+            </Link>
             <Link
               href="/cart"
               className={`transition-colors p-2 relative ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"}`}
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
-              <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${
                 isDarkText
                   ? "bg-black text-white"
                   : "bg-white text-black"

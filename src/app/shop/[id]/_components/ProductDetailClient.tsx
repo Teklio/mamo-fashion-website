@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FiChevronDown, FiChevronUp, FiHeart, FiX } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -19,12 +20,14 @@ interface Product {
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("DESCRIPTION");
   const [isAdding, setIsAdding] = useState(false);
-  const [wishlist, setWishlist] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+
+  const isWishlisted = isInWishlist(product.id);
 
   // Prevent background scroll when modal is open
   useEffect(() => {
@@ -46,7 +49,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       toast.error("Please select a size");
       return;
     }
-    
+
     setIsAdding(true);
     addToCart({
       id: `${product.id}-${selectedSize}`,
@@ -55,8 +58,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       image: product.images[0],
       size: selectedSize,
     });
-    
+
     setTimeout(() => setIsAdding(false), 1000);
+  };
+
+  const handleWishlistToggle = () => {
+    toggleWishlist({
+      id: product.id,
+      name: product.name,
+      priceText: product.priceText,
+      priceVal: product.priceVal,
+      image: product.images[0]
+    });
   };
 
   return (
@@ -70,9 +83,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <button
                 key={idx}
                 onClick={() => setActiveImage(idx)}
-                className={`relative w-20 h-20 lg:w-24 lg:h-24 shrink-0 bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all ${
-                  activeImage === idx ? "border-zinc-900" : "border-transparent"
-                }`}
+                className={`relative w-20 h-20 lg:w-24 lg:h-24 shrink-0 bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all ${activeImage === idx ? "border-zinc-900" : "border-transparent"
+                  }`}
               >
                 <Image src={img} alt={`Thumbnail ${idx}`} fill className="object-contain p-2" />
               </button>
@@ -100,17 +112,16 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 />
               </motion.div>
             </AnimatePresence>
-            
+
             <button
-              onClick={() => setWishlist(!wishlist)}
+              onClick={handleWishlistToggle}
               className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-xs border border-zinc-100 hover:scale-110 active:scale-95 transition-all duration-300 z-10"
               aria-label="Add to Wishlist"
             >
               <FiHeart
                 size={16}
-                className={`transition-all duration-300 stroke-[1.8] ${
-                  wishlist ? "fill-red-500 text-red-500" : "text-zinc-700 hover:text-red-500"
-                }`}
+                className={`transition-all duration-300 stroke-[1.8] ${isWishlisted ? "fill-red-500 text-red-500" : "text-zinc-700 hover:text-red-500"
+                  }`}
               />
             </button>
           </div>
@@ -133,7 +144,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <div className="mb-10">
             <div className="flex justify-between items-center mb-4">
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans">SIZE</span>
-              <button 
+              <button
                 onClick={() => setIsSizeGuideOpen(true)}
                 className="text-xs text-zinc-500 underline underline-offset-4 hover:text-zinc-900 transition-colors font-sans cursor-pointer"
               >
@@ -145,11 +156,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`py-3 text-xs font-sans border-r border-zinc-200 last:border-r-0 transition-colors ${
-                    selectedSize === size
+                  className={`py-3 text-xs font-sans border-r border-zinc-200 last:border-r-0 transition-colors ${selectedSize === size
                       ? "bg-zinc-900 text-white"
                       : "bg-white text-zinc-700 hover:bg-zinc-50"
-                  }`}
+                    }`}
                 >
                   {size}
                 </button>
@@ -161,11 +171,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <button
             onClick={handleAddToCart}
             disabled={isAdding}
-            className={`w-full py-4 text-xs font-bold tracking-[0.2em] uppercase rounded-sm border transition-all duration-300 mb-12 ${
-              isAdding
+            className={`w-full py-4 text-xs font-bold tracking-[0.2em] uppercase rounded-sm border transition-all duration-300 mb-12 ${isAdding
                 ? "bg-zinc-900 text-white border-zinc-900"
                 : "bg-white text-zinc-900 border-zinc-900 hover:bg-zinc-950 hover:text-white"
-            }`}
+              }`}
           >
             {isAdding ? "ADDED TO CART" : "ADD TO CART"}
           </button>
@@ -177,17 +186,16 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`text-[10px] font-bold tracking-widest uppercase pb-2 border-b-2 transition-colors ${
-                    activeTab === tab
+                  className={`text-[10px] font-bold tracking-widest uppercase pb-2 border-b-2 transition-colors ${activeTab === tab
                       ? "border-zinc-900 text-zinc-900"
                       : "border-transparent text-zinc-400 hover:text-zinc-600"
-                  }`}
+                    }`}
                 >
                   {tab}
                 </button>
               ))}
             </div>
-            
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -225,10 +233,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             VIEW ALL
           </Link>
         </div>
-        
+
         {/* We'll just show 4 items here manually for simplicity without full ShopGrid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1,2,3,1].map((img, idx) => (
+          {[1, 2, 3, 1].map((img, idx) => (
             <Link href={`/shop/related-${idx}`} key={idx} className="group block">
               <div className="relative aspect-square w-full bg-[#f3f3f3] rounded-sm overflow-hidden flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-[#ebebeb]">
                 <Image
