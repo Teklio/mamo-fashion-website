@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { FiChevronDown, FiChevronUp, FiHeart, FiX } from "react-icons/fi";
+import { FiHeart, FiX } from "react-icons/fi";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";

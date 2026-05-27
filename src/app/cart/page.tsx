@@ -126,9 +126,9 @@ export default function CartPage() {
                   <span className="text-black font-serif text-xl">AED {subtotal.toFixed(2)}</span>
                 </div>
                 
-                <button className="w-full bg-[#111] hover:bg-black text-white text-[11px] tracking-[0.2em] font-sans font-semibold uppercase py-5 rounded-lg transition-colors shadow-sm">
+                <Link href="/checkout" className="block text-center w-full bg-[#111] hover:bg-black text-white text-[11px] tracking-[0.2em] font-sans font-semibold uppercase py-5 rounded-lg transition-colors shadow-sm">
                   CHECKOUT
-                </button>
+                </Link>
               </div>
             </div>
 

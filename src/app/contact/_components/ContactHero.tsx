@@ -7,7 +7,7 @@ export default function ContactHero() {
         Get In Touch
       </h1>
       <p className="text-center text-zinc-500 font-serif mb-16">
-        We're here to help and answer any questions you might have
+        We&apos;re here to help and answer any questions you might have
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">

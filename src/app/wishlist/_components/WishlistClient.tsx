@@ -12,7 +12,7 @@ export default function WishlistClient() {
   const { wishlistItems, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: { id: string; name: string; priceVal: number; image: string }) => {
     addToCart({
       id: product.id,
       name: product.name,

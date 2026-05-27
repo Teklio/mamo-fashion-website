@@ -14,6 +14,7 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalP
 
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsRendered(true);
       document.body.style.overflow = "hidden";
     } else {

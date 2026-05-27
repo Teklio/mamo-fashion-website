@@ -28,6 +28,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     const savedWishlist = localStorage.getItem("sorin-wishlist");
     if (savedWishlist) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setWishlistItems(JSON.parse(savedWishlist));
       } catch (e) {
         console.error("Error parsing wishlist data", e);
