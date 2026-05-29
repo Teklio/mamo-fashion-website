@@ -41,7 +41,7 @@ export default function AboutBanner() {
           </p>
           <Link
             href="/shop"
-            className="group relative inline-flex items-center justify-center px-10 py-3.5 border border-[#3A332C] rounded-md text-[9px] md:text-[10px] tracking-[0.2em] text-[#3A332C] font-sans font-semibold bg-transparent hover:bg-[#3A332C] hover:text-white transition-all duration-400 uppercase"
+            className="group relative inline-flex items-center justify-center px-10 py-3.5 border border-[#3A332C] rounded-lg text-[9px] md:text-[10px] tracking-[0.2em] text-[#3A332C] font-sans font-semibold bg-transparent hover:bg-[#3A332C] hover:text-white transition-all duration-400 uppercase"
           >
             VIEW COLLECTIONS
           </Link>

@@ -6,6 +6,7 @@ import Input from "@/components/Input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -25,10 +26,19 @@ export default function RegisterPage() {
   return (
     <main className="grow bg-white min-h-screen flex flex-col items-center pt-32 pb-20">
       <Header theme="light" />
-      
+
       <div className="w-full max-w-md px-6 mx-auto flex flex-col mt-10">
-        <h1 className="text-4xl text-center mb-2 font-serif text-black">
-          My <span className="font-serif italic tracking-widest text-[1.1em]">SORIN</span> Account
+        <h1 className="text-4xl text-center mb-2 font-serif text-black flex items-center justify-center gap-x-3">
+          My
+          <Image
+            src="/assets/Home/logo.png"
+            alt="SORIN Logo"
+            width={150}
+            height={45}
+            priority
+            className="h-7 md:h-9 w-auto object-contain brightness-0"
+          />
+          Account
         </h1>
         <p className="text-center text-sm text-zinc-500 mb-10 font-serif">
           Create an account to save favourites & track orders.
@@ -39,16 +49,16 @@ export default function RegisterPage() {
           <Input label="FULL NAME" type="text" />
 
           {/* Email */}
-          <Input 
-            label="EMAIL" 
-            type="email" 
-            placeholder="you@example.com" 
+          <Input
+            label="EMAIL"
+            type="email"
+            placeholder="you@example.com"
           />
 
           {/* Password */}
-          <Input 
-            label="PASSWORD" 
-            type="password" 
+          <Input
+            label="PASSWORD"
+            type="password"
             rightLabel={
               <Link href="#" className="text-[10px] text-zinc-400 hover:text-black transition-colors">
                 Forgot password?
@@ -58,9 +68,9 @@ export default function RegisterPage() {
 
           {/* Remember me */}
           <div className="flex items-center mt-2">
-            <input 
-              type="checkbox" 
-              id="remember" 
+            <input
+              type="checkbox"
+              id="remember"
               className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
             />
             <label htmlFor="remember" className="ml-2 text-xs text-zinc-500 font-sans">
@@ -69,10 +79,11 @@ export default function RegisterPage() {
           </div>
 
           {/* Submit */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isLoading}
             className="w-full bg-[#111] hover:bg-black text-white text-xs tracking-[0.2em] font-sans font-semibold uppercase py-4 rounded-md mt-6 transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12.5"
+            suppressHydrationWarning
           >
             {isLoading ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>

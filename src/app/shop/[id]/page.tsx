@@ -32,9 +32,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <Header theme="light" />
       <main className="min-h-screen mt-0 md:mt-10 pt-32 pb-24 bg-white text-zinc-950">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <ProductDetailClient product={product} />
-      </div>
-    </main>
+          <ProductDetailClient product={product} />
+        </div>
+      </main>
     </>
   );
 }

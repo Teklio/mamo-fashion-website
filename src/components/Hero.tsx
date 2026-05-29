@@ -28,7 +28,7 @@ export default function Hero() {
                 <div className="animate-fade-in-up-delayed">
                     <Link
                         href="/shop"
-                        className="group relative inline-flex rounded-md items-center justify-center px-14 py-4 border border-white/40 hover:border-white text-[10px] md:text-xs tracking-[0.25em] text-white font-medium bg-black/10 backdrop-blur-sm transition-all duration-500 overflow-hidden"
+                        className="group relative inline-flex rounded-lg items-center justify-center px-14 py-4 border border-white/40 hover:border-white text-[10px] md:text-xs tracking-[0.25em] text-white font-medium bg-black/10 backdrop-blur-sm transition-all duration-500 overflow-hidden"
                     >
                         {/* Slide up background effect */}
                         <span className="absolute inset-0 w-full h-full bg-white scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />

@@ -7,6 +7,7 @@ import { useCart } from "@/context/CartContext";
 import { FiLock, FiChevronDown, FiCheck } from "react-icons/fi";
 import Input from "@/components/Input";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 
 export default function CheckoutClient() {
   const { cartItems } = useCart();
@@ -30,21 +31,12 @@ export default function CheckoutClient() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Mobile Logo */}
-      <div className="lg:hidden p-6 border-b border-zinc-200/50 flex justify-center">
-        <Link href="/" className="block">
-          <h1 className="text-2xl font-serif tracking-widest text-black uppercase">Sorin</h1>
-        </Link>
-      </div>
+    <div className="min-h-screen bg-white pt-24 lg:pt-32">
+      <Header theme="light" />
 
       <div className="flex flex-col-reverse lg:flex-row max-w-7xl mx-auto">
         {/* Left Column - Form */}
         <div className="w-full lg:w-3/5 p-6 lg:p-12 lg:pr-24 lg:border-r border-zinc-200/50">
-        <Link href="/" className="hidden lg:block mb-12">
-          {/* Logo Placeholder - assuming a text logo for now, or actual SORIN logo */}
-          <h1 className="text-3xl font-serif tracking-widest text-black uppercase">Sorin</h1>
-        </Link>
 
         <form className="space-y-12" onSubmit={handleCheckout}>
           {/* Contact Details */}
@@ -76,13 +68,18 @@ export default function CheckoutClient() {
           <section>
             <h2 className="text-lg font-medium text-black mb-4">Shipping address</h2>
             <div className="space-y-4">
-              <div className="relative">
-                <select required className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-sm px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
-                  <option value="">COUNTRY / REGION</option>
-                  <option value="ae">United Arab Emirates</option>
-                  <option value="sa">Saudi Arabia</option>
-                </select>
-                <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+              <div className="flex flex-col">
+                <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
+                  Country / Region
+                </label>
+                <div className="relative">
+                  <select required className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-md px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
+                    <option value="">COUNTRY / REGION</option>
+                    <option value="ae">United Arab Emirates</option>
+                    <option value="sa">Saudi Arabia</option>
+                  </select>
+                  <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -118,13 +115,18 @@ export default function CheckoutClient() {
                   placeholder="CITY"
                   className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
                 />
-                <div className="relative">
-                  <select required className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-sm px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
-                    <option value="">EMIRATE</option>
-                    <option value="Dubai">Dubai</option>
-                    <option value="Abu Dhabi">Abu Dhabi</option>
-                  </select>
-                  <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                <div className="flex flex-col">
+                  <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
+                    Emirate
+                  </label>
+                  <div className="relative">
+                    <select required className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-md px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
+                      <option value="">EMIRATE</option>
+                      <option value="Dubai">Dubai</option>
+                      <option value="Abu Dhabi">Abu Dhabi</option>
+                    </select>
+                    <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                  </div>
                 </div>
               </div>
 
@@ -251,13 +253,18 @@ export default function CheckoutClient() {
                     placeholder="CITY"
                     className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
                   />
-                  <div className="relative">
-                    <select className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-sm px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
-                      <option>EMIRATE</option>
-                      <option>Dubai</option>
-                      <option>Abu Dhabi</option>
-                    </select>
-                    <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                  <div className="flex flex-col">
+                    <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
+                      Emirate
+                    </label>
+                    <div className="relative">
+                      <select className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-md px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
+                        <option>EMIRATE</option>
+                        <option>Dubai</option>
+                        <option>Abu Dhabi</option>
+                      </select>
+                      <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                    </div>
                   </div>
                 </div>
               </div>

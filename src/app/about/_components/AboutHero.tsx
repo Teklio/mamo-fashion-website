@@ -8,7 +8,7 @@ export default function AboutHero() {
     <div className="w-full bg-white text-zinc-950 mt-0 md:mt-10 pt-32 md:pt-40 pb-20 px-6 md:px-12">
       <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
         {/* Story Section */}
-        <motion.span 
+        <motion.span
           className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-6"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -17,8 +17,8 @@ export default function AboutHero() {
         >
           OUR STORY
         </motion.span>
-        
-        <motion.h1 
+
+        <motion.h1
           className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-wide font-normal mb-10"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -28,7 +28,7 @@ export default function AboutHero() {
           The House Of SORIN
         </motion.h1>
 
-        <motion.p 
+        <motion.p
           className="text-zinc-600 text-sm md:text-base leading-relaxed max-w-2xl mx-auto mb-24 md:mb-32"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export default function AboutHero() {
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
         {/* Craftsmanship Image */}
-        <motion.div 
+        <motion.div
           className="relative w-full aspect-square md:aspect-4/5 rounded-3xl overflow-hidden shadow-xs"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -65,7 +65,7 @@ export default function AboutHero() {
         </motion.div>
 
         {/* Craftsmanship Text */}
-        <motion.div 
+        <motion.div
           className="flex flex-col justify-center"
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}

@@ -38,8 +38,8 @@ export default function WishlistClient() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12">
-      <div className="mb-10">
-        <h1 className="text-4xl font-serif text-zinc-900">
+      <div className="mb-8 md:mb-10">
+        <h1 className="text-2xl md:text-4xl font-serif text-zinc-900">
           Wishlist
         </h1>
       </div>
@@ -50,7 +50,7 @@ export default function WishlistClient() {
             <FiShoppingCart className="text-zinc-300" size={32} />
           </div>
           <h2 className="text-2xl font-serif text-zinc-900 mb-4">Your wishlist is empty</h2>
-          <p className="text-zinc-500 font-sans mb-8 max-w-md">
+          <p className="text-zinc-500 font-sans mb-8 max-w-md text-xs sm:text-sm">
             Save your favorite styles and come back to them later.
           </p>
           <Link
@@ -76,8 +76,11 @@ export default function WishlistClient() {
                   className="flex flex-col md:flex-row border border-[#ebebeb] rounded-xl overflow-hidden bg-[#fafafa]"
                 >
                   {/* Image */}
-                  <div className="w-full md:w-70 bg-white shrink-0 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#ebebeb]">
-                    <div className="relative w-full aspect-4/3 md:aspect-square">
+                  <Link 
+                    href={`/shop/${item.id}`}
+                    className="w-full md:w-48 bg-white shrink-0 flex items-center justify-center p-4 md:p-6 border-b md:border-b-0 md:border-r border-[#ebebeb] hover:bg-zinc-50 transition-colors"
+                  >
+                    <div className="relative w-full aspect-video md:aspect-square">
                       <Image
                         src={item.image}
                         alt={item.name}
@@ -85,42 +88,42 @@ export default function WishlistClient() {
                         className="object-contain"
                       />
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Details */}
-                  <div className="flex-1 p-6 md:p-8 flex flex-col relative">
+                  <div className="flex-1 p-4 md:p-5 flex flex-col relative">
                     <button
                       onClick={() => {
                         removeFromWishlist(item.id);
                         toast.info(`${item.name} removed from wishlist`);
                       }}
-                      className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-900 transition-colors"
+                      className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 transition-colors"
                       aria-label="Remove from wishlist"
                     >
                       <FiX size={18} />
                     </button>
 
-                    <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-3">
+                    <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1.5">
                       FOOTWEAR
                     </span>
                     
-                    <h3 className="text-2xl font-serif text-zinc-900 mb-6 pr-8">
-                      {item.name}
+                    <h3 className="text-xl md:text-2xl font-serif text-zinc-900 mb-2.5 pr-8 hover:text-zinc-600 transition-colors">
+                      <Link href={`/shop/${item.id}`}>{item.name}</Link>
                     </h3>
 
-                    <div className="flex items-center space-x-2 mb-8 border-b border-[#ebebeb] pb-6">
+                    <div className="flex items-center space-x-2 mb-3 border-b border-[#ebebeb] pb-3">
                       <div className="w-3 h-3 rounded-full bg-yellow-400 border border-zinc-200"></div>
                       <div className="w-3 h-3 rounded-full bg-blue-500 border border-zinc-200 -ml-1"></div>
                       <span className="text-xs text-zinc-600 font-sans ml-2">Ocean blue &amp; Yellow</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
-                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-2">SIZE</span>
+                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">SIZE</span>
                         <span className="text-sm font-sans text-zinc-900">EU 38</span>
                       </div>
                       <div>
-                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-2">PRICE</span>
+                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">PRICE</span>
                         <span className="text-sm font-sans text-zinc-900">{item.priceText}</span>
                       </div>
                     </div>
@@ -128,7 +131,7 @@ export default function WishlistClient() {
                     <div className="flex items-center gap-4 mt-auto">
                       <button
                         onClick={() => handleAddToCart(item)}
-                        className="px-8 py-3.5 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
+                        className="px-6 py-3 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
                       >
                         MOVE TO BAG
                       </button>
@@ -137,7 +140,7 @@ export default function WishlistClient() {
                           removeFromWishlist(item.id);
                           toast.info(`${item.name} removed from wishlist`);
                         }}
-                        className="px-4 py-3.5 text-[10px] md:text-xs font-bold tracking-widest text-zinc-400 hover:text-zinc-900 uppercase transition-colors font-sans"
+                        className="px-4 py-3 text-[10px] md:text-xs font-bold tracking-widest text-zinc-400 hover:text-zinc-900 uppercase transition-colors font-sans"
                       >
                         REMOVE
                       </button>
@@ -150,11 +153,11 @@ export default function WishlistClient() {
 
           {/* Right: Summary */}
           <div className="w-full lg:w-100 shrink-0">
-            <div className="border border-[#ebebeb] rounded-xl p-8 bg-[#fafafa]">
+            <div className="border border-[#ebebeb] rounded-xl p-5 md:p-8 bg-[#fafafa]">
               <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans block mb-3">
                 SUMMARY
               </span>
-              <h2 className="text-3xl font-serif text-zinc-900 mb-8">
+              <h2 className="text-2xl md:text-3xl font-serif text-zinc-900 mb-6 md:mb-8">
                 Wishlist Summary
               </h2>
               
@@ -169,16 +172,16 @@ export default function WishlistClient() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 mt-10">
+              <div className="flex flex-col gap-3 mt-8 md:mt-10">
                 <button
                   onClick={handleMoveAllToBag}
-                  className="w-full py-4 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
+                  className="w-full py-3.5 md:py-4 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
                 >
                   MOVE ALL TO BAG
                 </button>
                 <Link
                   href="/shop"
-                  className="w-full py-4 bg-white border border-[#ebebeb] text-zinc-800 text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-zinc-50 hover:border-zinc-200 transition-colors font-sans text-center block"
+                  className="w-full py-3.5 md:py-4 bg-white border border-[#ebebeb] text-zinc-800 text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-zinc-50 hover:border-zinc-200 transition-colors font-sans text-center block"
                 >
                   CONTINUE SHOPPING
                 </Link>

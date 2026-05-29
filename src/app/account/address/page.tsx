@@ -81,10 +81,10 @@ export default function AddressPage() {
   };
 
   return (
-    <div className="bg-white border border-black/10 rounded-2xl p-8 lg:p-10 w-full min-h-150">
+    <div className="bg-white border border-black/10 rounded-2xl p-5 md:p-8 lg:p-10 w-full min-h-150">
       <div className="mb-10">
-        <h1 className="font-serif text-2xl lg:text-3xl text-black mb-2">Address information</h1>
-        <p className="text-zinc-500 font-sans text-sm">
+        <h1 className="font-serif text-xl md:text-2xl lg:text-3xl text-black mb-2">Address information</h1>
+        <p className="text-zinc-500 font-sans text-xs md:text-sm">
           Manage your Address information
         </p>
       </div>

@@ -46,7 +46,6 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
 
   const mobileNavLinks = [
     ...navLinks,
-    { name: "WISHLIST", href: "/wishlist" },
     { name: "ACCOUNT", href: "/account" },
   ];
 
@@ -205,21 +204,8 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="group flex flex-col py-2"
               >
-                <span className="text-3xl tracking-widest text-white font-serif font-light transition-all duration-300 group-hover:pl-2">
+                <span className="text-xl tracking-widest text-white font-serif font-light transition-all duration-300 group-hover:pl-2">
                   {link.name}
-                </span>
-                <span className="text-[9px] tracking-[0.2em] text-white/40 mt-1 uppercase font-sans font-medium">
-                  {link.name === "HOME"
-                    ? "The Beginning"
-                    : link.name === "SHOP"
-                    ? "Browse Collection"
-                    : link.name === "HOUSE OF SORIN"
-                    ? "Our Story"
-                    : link.name === "CONTACT US"
-                    ? "Get In Touch"
-                    : link.name === "WISHLIST"
-                    ? "Your Favourites"
-                    : "Manage Profile"}
                 </span>
               </Link>
             </div>

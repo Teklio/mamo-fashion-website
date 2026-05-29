@@ -10,7 +10,7 @@ export default function SorinWorld() {
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <motion.h2 
-          className="text-zinc-900 text-3xl md:text-5xl font-serif tracking-wide font-normal mb-10 md:mb-14"
+          className="text-zinc-900 text-3xl md:text-5xl font-serif tracking-wide font-normal mb-10 md:mb-14 text-center md:text-left"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -115,7 +115,7 @@ export default function SorinWorld() {
         >
           <Link
             href="/shop"
-            className="group relative inline-flex items-center justify-center px-11 py-3.5 border border-zinc-800 rounded-sm text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 uppercase"
+            className="group relative inline-flex items-center justify-center px-11 py-3.5 border border-zinc-800 rounded-lg text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 uppercase"
           >
             ENTER THE WORLD
           </Link>

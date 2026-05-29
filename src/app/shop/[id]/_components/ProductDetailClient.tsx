@@ -120,7 +120,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             >
               <FiHeart
                 size={16}
-                className={`transition-all duration-300 stroke-[1.8] ${isWishlisted ? "fill-red-500 text-red-500" : "text-zinc-700 hover:text-red-500"
+                className={`transition-all duration-300 stroke-[1.8] ${isWishlisted ? "fill-black text-black" : "text-zinc-700 hover:text-black"
                   }`}
               />
             </button>

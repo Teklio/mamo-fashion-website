@@ -64,7 +64,7 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalP
           </button>
           <button 
             onClick={onConfirm}
-            className="flex-1 py-3.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-sans font-semibold rounded-lg transition-colors shadow-[0_4px_14px_0_rgba(220,38,38,0.39)] hover:shadow-[0_6px_20px_rgba(220,38,38,0.23)]"
+            className="flex-1 py-3.5 px-4 bg-black hover:bg-black/90 text-white text-xs font-sans font-semibold rounded-lg transition-colors"
           >
             Yes, Log out
           </button>

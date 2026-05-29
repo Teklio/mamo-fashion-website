@@ -32,7 +32,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${ppFragmentSerif.variable} ${ppFragmentText.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0d0d0d]">
+      <body className="min-h-full flex flex-col bg-white">
         <CartProvider>
           <WishlistProvider>
             {children}

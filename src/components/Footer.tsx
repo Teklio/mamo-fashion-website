@@ -16,23 +16,23 @@ export default function Footer() {
               <Image
                 src="/assets/Home/logo.png"
                 alt="SORIN Logo"
-                width={200}
-                height={60}
-                className="h-12 md:h-14 w-auto object-contain brightness-0"
+                width={300}
+                height={90}
+                className="h-16 md:h-22 w-auto object-contain brightness-0"
               />
             </Link>
           </div>
 
           {/* Navigation Columns (Right) */}
-          <div className="lg:w-[70%] grid grid-cols-2 md:flex md:flex-row justify-between items-start w-full gap-y-12 gap-x-8">
+          <div className="lg:w-[70%] flex flex-col items-center md:flex-row justify-between md:items-start w-full gap-y-12 gap-x-8">
             
             {/* The House */}
-            <div className="flex flex-col">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center gap-2">
-                <span className="w-3 h-px bg-zinc-300"></span>
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
+                <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 THE HOUSE
               </h4>
-              <ul className="flex flex-col space-y-5">
+              <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
                 <li>
                   <Link href="/about" className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors">
                     The House Of Sorin
@@ -52,12 +52,12 @@ export default function Footer() {
             </div>
 
             {/* Customer Care */}
-            <div className="flex flex-col items-end md:items-start text-right md:text-left">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-end md:justify-start gap-2">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
                 <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 CUSTOMER CARE
               </h4>
-              <ul className="flex flex-col space-y-5 items-end md:items-start">
+              <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
                 <li>
                   <Link href="/contact" className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors">
                     Contact
@@ -77,7 +77,7 @@ export default function Footer() {
             </div>
 
             {/* Social */}
-            <div className="flex flex-col col-span-2 md:col-span-1 items-center md:items-start mt-6 md:mt-0">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
               <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
                 <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 SOCIAL
