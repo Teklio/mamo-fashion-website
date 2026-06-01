@@ -97,7 +97,7 @@ export default function ShopGrid() {
               : "border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300"
           }`}
         >
-          <FiSliders size={12} className="sm:size-[14px]" />
+          <FiSliders size={12} className="sm:size-3.5" />
           <span>FILTER{(minPrice !== "" || maxPrice !== "") && " • ACTIVE"}</span>
         </button>
 
@@ -116,7 +116,7 @@ export default function ShopGrid() {
                   ? "Price: Low to High" 
                   : "Price: High to Low"}
               </span>
-              <FiChevronDown size={12} className={`sm:size-[14px] transition-transform duration-300 ${isSortOpen ? "rotate-180" : ""}`} />
+              <FiChevronDown size={12} className={`sm:size-3.5 transition-transform duration-300 ${isSortOpen ? "rotate-180" : ""}`} />
             </button>
 
             {/* Sort Dropdown Options */}

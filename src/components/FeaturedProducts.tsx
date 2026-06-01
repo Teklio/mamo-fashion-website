@@ -65,8 +65,8 @@ export default function FeaturedProducts() {
   };
 
   return (
-    <section className="w-full py-16 md:py-24 px-6 md:px-12 bg-white text-zinc-950">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full py-16 md:py-24 px-8 md:px-16 bg-white text-zinc-950">
+      <div className="max-w-400 mx-auto">
         {/* Section Header */}
         <motion.div
           className="flex justify-between items-center sm:items-end gap-4 mb-10 md:mb-14"
@@ -108,9 +108,8 @@ export default function FeaturedProducts() {
                     width={340}
                     height={340}
                     priority
-                    className={`object-contain p-4 transition-all duration-700 ease-in-out ${
-                      product.hoverImage ? "group-hover:opacity-0 group-hover:scale-95" : "group-hover:scale-105"
-                    }`}
+                    className={`object-contain p-4 transition-all duration-700 ease-in-out ${product.hoverImage ? "group-hover:opacity-0 group-hover:scale-95" : "group-hover:scale-105"
+                      }`}
                   />
                   {product.hoverImage && (
                     <Image
@@ -131,8 +130,8 @@ export default function FeaturedProducts() {
                     <FiHeart
                       size={14}
                       className={`transition-all duration-300 stroke-[1.8] ${isInWishlist(product.id)
-                          ? "fill-black text-black scale-110"
-                          : "text-zinc-700 hover:text-black"
+                        ? "fill-black text-black scale-110"
+                        : "text-zinc-700 hover:text-black"
                         }`}
                     />
                   </button>
@@ -155,8 +154,8 @@ export default function FeaturedProducts() {
                     onClick={(e) => handleAddToCart(e, product)}
                     disabled={addingId !== null}
                     className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300 active:scale-90 cursor-pointer z-10 relative ${addingId === product.id
-                        ? "bg-zinc-900 border-zinc-900 text-white"
-                        : "bg-white border-zinc-300 hover:border-zinc-900 text-zinc-800 hover:bg-zinc-950 hover:text-white"
+                      ? "bg-zinc-900 border-zinc-900 text-white"
+                      : "bg-white border-zinc-300 hover:border-zinc-900 text-zinc-800 hover:bg-zinc-950 hover:text-white"
                       }`}
                     aria-label="Add to Cart"
                   >

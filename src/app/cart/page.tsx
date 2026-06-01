@@ -18,7 +18,7 @@ export default function CartPage() {
     <main className="relative min-h-screen bg-white overflow-x-hidden text-zinc-950 pt-32 pb-24">
       <Header theme="light" />
       
-      <div className="max-w-7xl mx-auto mt-0 md:mt-10 px-6 md:px-12 relative z-10">
+      <div className="max-w-400 mx-auto px-8 md:px-16  mt-0 md:mt-10 relative z-10">
         
         {/* Header Section */}
         <div className="flex justify-between items-center mb-8 border-b border-zinc-100 pb-6">
@@ -104,7 +104,7 @@ export default function CartPage() {
                         className="text-zinc-300 hover:text-red-500 transition-colors ml-1 focus:outline-none"
                         aria-label="Remove item"
                       >
-                        <FiX size={16} className="sm:size-[18px]" />
+                        <FiX size={16} className="sm:size-4.5" />
                       </button>
                     </div>
                   </div>

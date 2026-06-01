@@ -37,7 +37,7 @@ export default function WishlistClient() {
   const subtotal = wishlistItems.reduce((acc, item) => acc + item.priceVal, 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <div className="max-w-400 mx-auto px-8 md:px-16">
       <div className="mb-8 md:mb-10">
         <h1 className="text-2xl md:text-4xl font-serif text-zinc-900">
           Wishlist

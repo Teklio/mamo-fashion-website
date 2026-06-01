@@ -5,11 +5,11 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white pt-10 md:pt-20 pb-8 px-6 md:px-12 border-t border-zinc-100">
-      <div className="max-w-7xl mx-auto">
+    <footer className="w-full bg-white pt-10 md:pt-20 pb-8 px-8 md:px-16 border-t border-zinc-100">
+      <div className="max-w-400 mx-auto">
         {/* Top Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start w-full gap-10 md:gap-16 mb-10 md:mb-20">
-          
+
           {/* Brand / Logo (Left) */}
           <div className="w-full lg:w-[30%] flex flex-col justify-start items-center lg:items-start mb-12 lg:mb-0">
             <Link href="/" className="inline-block">
@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* Navigation Columns (Right) */}
           <div className="lg:w-[70%] flex flex-col items-center md:flex-row justify-between md:items-start w-full gap-y-12 gap-x-8">
-            
+
             {/* The House */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
               <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">

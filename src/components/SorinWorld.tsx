@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 
 export default function SorinWorld() {
   return (
-    <section className="w-full py-16 md:py-24 px-6 md:px-12 bg-white text-zinc-950 border-t border-zinc-100">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full py-16 md:py-24 px-8 md:px-16 bg-white text-zinc-950 border-t border-zinc-100">
+      <div className="max-w-400 mx-auto">
         {/* Title */}
-        <motion.h2 
+        <motion.h2
           className="text-zinc-900 text-3xl md:text-5xl font-serif tracking-wide font-normal mb-10 md:mb-14 text-center md:text-left"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -21,9 +21,9 @@ export default function SorinWorld() {
 
         {/* Collage Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12 md:mb-16 items-stretch">
-          
+
           {/* Left Column: Loop Video (Col span 2) */}
-          <motion.div 
+          <motion.div
             className="lg:col-span-2 relative w-full min-h-112.5 lg:min-h-150 xl:min-h-162.5 rounded-[20px] overflow-hidden bg-zinc-50 shadow-xs group"
             initial={{ opacity: 0, x: -40, scale: 0.98 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -37,7 +37,7 @@ export default function SorinWorld() {
               playsInline
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
             >
-              <source src="/assets/Home/Gallery.mp4" type="video/mp4" />
+              <source src="/assets/Home/video.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             {/* Subtle premium gradient overlay */}
@@ -46,9 +46,9 @@ export default function SorinWorld() {
 
           {/* Right Column: Collection of Images (Col span 3) */}
           <div className="lg:col-span-3 flex flex-col gap-6 justify-between">
-            
+
             {/* Top Widescreen Image */}
-            <motion.div 
+            <motion.div
               className="relative w-full aspect-16/10 overflow-hidden rounded-[20px] shadow-xs bg-zinc-50 group"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -67,7 +67,7 @@ export default function SorinWorld() {
             {/* Bottom Two Equal Columns Grid */}
             <div className="grid grid-cols-2 gap-6">
               {/* Left Portrait Image */}
-              <motion.div 
+              <motion.div
                 className="relative aspect-3/4 overflow-hidden rounded-[20px] shadow-xs bg-zinc-50 group"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export default function SorinWorld() {
               </motion.div>
 
               {/* Right Portrait Image */}
-              <motion.div 
+              <motion.div
                 className="relative aspect-3/4 overflow-hidden rounded-[20px] shadow-xs bg-zinc-50 group"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -106,7 +106,7 @@ export default function SorinWorld() {
         </div>
 
         {/* Action Button */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -34,7 +34,7 @@ export default function CheckoutClient() {
     <div className="min-h-screen bg-white pt-24 lg:pt-32">
       <Header theme="light" />
 
-      <div className="flex flex-col-reverse lg:flex-row max-w-7xl mx-auto">
+      <div className="flex flex-col-reverse lg:flex-row max-w-400 mx-auto px-8 md:px-16">
         {/* Left Column - Form */}
         <div className="w-full lg:w-3/5 p-6 lg:p-12 lg:pr-24 lg:border-r border-zinc-200/50">
 

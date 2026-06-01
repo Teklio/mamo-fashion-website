@@ -54,13 +54,12 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
-          isScrolled
-            ? "bg-white/85 backdrop-blur-md border-b border-black/5 py-4 text-black shadow-xs"
-            : `bg-transparent pt-10 pb-5 ${theme === "light" ? "text-black" : "text-white"}`
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled
+          ? "bg-white/85 backdrop-blur-md border-b border-black/5 py-4 text-black shadow-xs"
+          : `bg-transparent pt-10 pb-5 ${theme === "light" ? "text-black" : "text-white"}`
+          }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        <div className="max-w-400 mx-auto px-8 md:px-16 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative z-50 flex items-center">
             <Image
@@ -69,9 +68,8 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               width={180}
               height={52}
               priority
-              className={`h-9 md:h-18 w-auto object-contain transition-all duration-500 ${
-                isDarkText ? "brightness-0" : "brightness-100"
-              }`}
+              className={`h-9 md:h-18 w-auto object-contain transition-all duration-500 ${isDarkText ? "brightness-0" : "brightness-100"
+                }`}
             />
           </Link>
 
@@ -81,14 +79,12 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-xs tracking-[0.2em] transition-colors duration-300 font-sans font-medium relative py-1 group ${
-                  isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"
-                }`}
+                className={`text-xs tracking-[0.2em] transition-colors duration-300 font-sans font-medium relative py-1 group ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"
+                  }`}
               >
                 {link.name}
-                <span className={`absolute bottom-0 left-0 w-0 h-px transition-all duration-300 group-hover:w-full ${
-                  isDarkText ? "bg-black" : "bg-white"
-                }`} />
+                <span className={`absolute bottom-0 left-0 w-0 h-px transition-all duration-300 group-hover:w-full ${isDarkText ? "bg-black" : "bg-white"
+                  }`} />
               </Link>
             ))}
           </nav>
@@ -101,11 +97,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               aria-label="Wishlist"
             >
               <FiHeart size={18} className="stroke-[1.5]" />
-              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${
-                isDarkText
-                  ? "bg-black text-white border-black/10"
-                  : "bg-white text-black border-black/10"
-              }`}>
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${isDarkText
+                ? "bg-black text-white border-black/10"
+                : "bg-white text-black border-black/10"
+                }`}>
                 {wishlistItems.length}
               </span>
             </Link>
@@ -122,11 +117,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
-              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${
-                isDarkText
-                  ? "bg-black text-white border-black/10"
-                  : "bg-white text-black border-black/10"
-              }`}>
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 border transition-all duration-300 ${isDarkText
+                ? "bg-black text-white border-black/10"
+                : "bg-white text-black border-black/10"
+                }`}>
                 {cartCount}
               </span>
             </Link>
@@ -139,11 +133,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               aria-label="Wishlist"
             >
               <FiHeart size={18} className="stroke-[1.5]" />
-              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${
-                isDarkText
-                  ? "bg-black text-white"
-                  : "bg-white text-black"
-              }`}>
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${isDarkText
+                ? "bg-black text-white"
+                : "bg-white text-black"
+                }`}>
                 {wishlistItems.length}
               </span>
             </Link>
@@ -153,11 +146,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
-              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${
-                isDarkText
-                  ? "bg-black text-white"
-                  : "bg-white text-black"
-              }`}>
+              <span className={`absolute top-0 right-0 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-95 transition-all duration-300 ${isDarkText
+                ? "bg-black text-white"
+                : "bg-white text-black"
+                }`}>
                 {cartCount}
               </span>
             </Link>
@@ -178,11 +170,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
 
       {/* Mobile Full-Screen Navigation Overlay (Pure CSS/React Transitions) */}
       <div
-        className={`fixed inset-0 bg-[#0d0d0d] z-40 flex flex-col justify-between px-8 pt-36 pb-12 md:hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isMobileMenuOpen
-            ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 translate-x-full pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-[#0d0d0d] z-40 flex flex-col justify-between px-8 pt-36 pb-12 md:hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMobileMenuOpen
+          ? "opacity-100 translate-x-0 pointer-events-auto"
+          : "opacity-0 translate-x-full pointer-events-none"
+          }`}
       >
         {/* Ambient Background Gradient for luxury feel */}
         <div className="absolute inset-0 bg-linear-to-b from-white/2 to-transparent pointer-events-none" />
@@ -192,11 +183,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
           {mobileNavLinks.map((link, index) => (
             <div
               key={link.name}
-              className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                isMobileMenuOpen
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 translate-x-8"
-              }`}
+              className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMobileMenuOpen
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-8"
+                }`}
               style={{ transitionDelay: isMobileMenuOpen ? `${index * 80}ms` : "0ms" }}
             >
               <Link

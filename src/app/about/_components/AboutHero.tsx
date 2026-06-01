@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function AboutHero() {
   return (
-    <div className="w-full bg-white text-zinc-950 mt-0 md:mt-10 pt-32 md:pt-40 pb-20 px-6 md:px-12">
+    <div className="w-full bg-white text-zinc-950 mt-0 md:mt-10 pt-32 md:pt-40 pb-20 px-8 md:px-16">
       <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
         {/* Story Section */}
         <motion.span
@@ -46,7 +46,7 @@ export default function AboutHero() {
         </motion.p>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      <div className="max-w-400 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
         {/* Craftsmanship Image */}
         <motion.div
           className="relative w-full aspect-square md:aspect-4/5 rounded-3xl overflow-hidden shadow-xs"

@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 
 export default function HouseOfSorin() {
   return (
-    <section className="w-full py-16 px-6 md:px-12 bg-white text-zinc-950">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <section className="w-full py-16 px-8 md:px-16 bg-white text-zinc-950">
+      <div className="max-w-400 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         {/* Left Side: Sandal Beach Image */}
-        <motion.div 
+        <motion.div
           className="relative w-full aspect-square md:aspect-4/5 lg:aspect-3/4 overflow-hidden rounded-3xl shadow-xs"
           initial={{ opacity: 0, x: -40, scale: 0.98 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -28,7 +28,7 @@ export default function HouseOfSorin() {
 
         {/* Right Side: Editorial Content */}
         <div className="flex flex-col items-center justify-center text-center px-2 lg:px-8">
-          <motion.h2 
+          <motion.h2
             className="text-zinc-900 text-3xl md:text-5xl font-serif tracking-wide font-normal mb-8 leading-tight"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -37,18 +37,18 @@ export default function HouseOfSorin() {
           >
             The House Of SORIN
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             className="text-zinc-500 text-sm md:text-base font-sans font-light leading-loose tracking-wide mb-10 max-w-lg"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ delay: 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            Born on the sun kissed shores of Dubai, SORIN redefines coastal luxury 
-            through timeless craftsmanship and effortless elegance. Inspired by the sea 
-            breeze and golden light, each piece is designed for those who follow the sun. 
-            More than a brand, SORIN is a lifestyle your endless escape. Take the 
+            Born on the sun kissed shores of Dubai, SORIN redefines coastal luxury
+            through timeless craftsmanship and effortless elegance. Inspired by the sea
+            breeze and golden light, each piece is designed for those who follow the sun.
+            More than a brand, SORIN is a lifestyle your endless escape. Take the
             sunshine with you.
           </motion.p>
 

@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 
 export default function AboutBanner() {
   return (
-    <div className="w-full bg-white px-6 md:px-12 pb-20 md:pb-32">
+    <div className="w-full bg-white px-8 md:px-16 pb-20 md:pb-32">
       <motion.div 
-        className="relative w-full max-w-7xl mx-auto aspect-4/3 sm:aspect-video md:aspect-2.5/1 lg:aspect-3/1 flex flex-col items-center justify-center overflow-hidden"
+        className="relative w-full max-w-400 mx-auto aspect-4/3 sm:aspect-video md:aspect-2.5/1 lg:aspect-3/1 flex flex-col items-center justify-center overflow-hidden"
         style={{ border: "1px solid #DED6CD" }}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

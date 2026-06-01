@@ -12,7 +12,7 @@ import { products } from "@/data/products";
 // In a real app, this would fetch from a database or API
 const getProductData = (id: string) => {
   const product = products.find(p => p.id === id) || products[0];
-  
+
   // Set up detail gallery images: [Primary Image, Hover Image]
   const productImages = [product.image];
   if (product.hoverImage) {
@@ -37,7 +37,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     <>
       <Header theme="light" />
       <main className="min-h-screen mt-0 md:mt-10 pt-32 pb-24 bg-white text-zinc-950">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="max-w-400 mx-auto px-8 md:px-16">
           <ProductDetailClient product={product} />
         </div>
       </main>
