@@ -56,7 +56,7 @@ export default function SorinWorld() {
               transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <Image
-                src="/assets/Home/Foot-with-leg.jpg"
+                src="/assets/Home/w.1.jpg"
                 alt="SORIN Footwear Detail"
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
@@ -75,7 +75,7 @@ export default function SorinWorld() {
                 transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
               >
                 <Image
-                  src="/assets/Home/black-girl.jpg"
+                  src="/assets/Home/w.2.jpg"
                   alt="SORIN Beach Lifestyle"
                   fill
                   sizes="(max-width: 1024px) 50vw, 30vw"
@@ -92,7 +92,7 @@ export default function SorinWorld() {
                 transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
               >
                 <Image
-                  src="/assets/Home/green.jpg"
+                  src="/assets/Home/w.3.jpg"
                   alt="SORIN Fashion Green Coordinates"
                   fill
                   sizes="(max-width: 1024px) 50vw, 30vw"
@@ -115,7 +115,7 @@ export default function SorinWorld() {
         >
           <Link
             href="/shop"
-            className="group relative inline-flex items-center justify-center px-11 py-3.5 border border-zinc-800 rounded-lg text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 uppercase"
+            className="group relative inline-flex items-center justify-center px-11 py-3.5 border border-zinc-800 rounded-xl text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 uppercase"
           >
             ENTER THE WORLD
           </Link>

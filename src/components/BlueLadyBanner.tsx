@@ -19,7 +19,7 @@ export default function BlueLadyBanner() {
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const }}
       >
         <Image
-          src="/assets/Home/blue-lady.jpg"
+          src="/assets/Home/banner.jpg"
           alt="SORIN Editorial Fashion"
           fill
           sizes="100vw"
@@ -49,7 +49,7 @@ export default function BlueLadyBanner() {
         </p>
         <Link
           href="/shop"
-          className="group relative inline-flex items-center justify-center px-10 py-3 md:py-3.5 border border-zinc-900 rounded-lg text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-transparent hover:bg-zinc-900 hover:text-white transition-all duration-400 uppercase backdrop-blur-sm"
+          className="group relative inline-flex items-center justify-center px-10 py-3 md:py-3.5 border border-zinc-900 rounded-xl text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-transparent hover:bg-zinc-900 hover:text-white transition-all duration-400 uppercase backdrop-blur-sm"
         >
           SHOP NOW
         </Link>

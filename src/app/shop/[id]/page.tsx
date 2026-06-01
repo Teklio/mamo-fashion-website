@@ -7,19 +7,25 @@ export const metadata: Metadata = {
   description: "View product details.",
 };
 
+import { products } from "@/data/products";
+
 // In a real app, this would fetch from a database or API
 const getProductData = (id: string) => {
+  const product = products.find(p => p.id === id) || products[0];
+  
+  // Set up detail gallery images: [Primary Image, Hover Image]
+  const productImages = [product.image];
+  if (product.hoverImage) {
+    productImages.push(product.hoverImage);
+  }
+
   return {
-    id,
-    name: "Rae Collections",
-    priceText: "AED 289.00",
-    priceVal: 289,
-    description: "Handcrafted with coastal elegance, these rope sandals feature a soft woven footbed and signature twisted straps in yellow, ocean blue, and sand tones. Blending all-day comfort with effortless summer style.",
-    images: [
-      "/assets/Home/1.png",
-      "/assets/Home/2.png",
-      "/assets/Home/3.png",
-    ],
+    id: product.id,
+    name: product.name,
+    priceText: product.priceText,
+    priceVal: product.priceVal,
+    description: "Handcrafted with coastal elegance, these rope sandals feature a soft woven footbed and signature twisted straps. Blending all-day comfort with effortless summer style.",
+    images: productImages,
   };
 };
 

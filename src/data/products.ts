@@ -16,6 +16,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/1.png",
+    hoverImage: "/assets/Home/1.h.jpg",
   },
   {
     id: "rae-02",
@@ -24,6 +25,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/2.png",
+    hoverImage: "/assets/Home/2.h.jpg",
   },
   {
     id: "rae-03",
@@ -32,6 +34,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/3.png",
+    hoverImage: "/assets/Home/3.h.jpg",
   },
   {
     id: "rae-04",
@@ -40,6 +43,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/1.png",
+    hoverImage: "/assets/Home/1.h.jpg",
   },
   {
     id: "rae-05",
@@ -48,6 +52,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/2.png",
+    hoverImage: "/assets/Home/2.h.jpg",
   },
   {
     id: "rae-06",
@@ -56,6 +61,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/3.png",
+    hoverImage: "/assets/Home/3.h.jpg",
   },
   {
     id: "rae-07",
@@ -64,6 +70,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/1.png",
+    hoverImage: "/assets/Home/1.h.jpg",
   },
   {
     id: "rae-08",
@@ -72,6 +79,7 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/2.png",
+    hoverImage: "/assets/Home/2.h.jpg",
   },
   {
     id: "rae-09",
@@ -80,5 +88,6 @@ export const products: Product[] = [
     priceText: "AED 289.00",
     priceVal: 289,
     image: "/assets/Home/3.png",
+    hoverImage: "/assets/Home/3.h.jpg",
   },
 ];

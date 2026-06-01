@@ -80,7 +80,7 @@ export default function FeaturedProducts() {
           </h2>
           <Link
             href="/shop"
-            className="group relative inline-flex items-center justify-center px-4 py-2 sm:px-7 sm:py-3 border border-zinc-800 rounded-lg text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 whitespace-nowrap shrink-0"
+            className="group relative inline-flex items-center justify-center px-4 py-2 sm:px-7 sm:py-3 border border-zinc-800 rounded-xl text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 whitespace-nowrap shrink-0"
           >
             VIEW ALL
           </Link>
@@ -108,8 +108,19 @@ export default function FeaturedProducts() {
                     width={340}
                     height={340}
                     priority
-                    className="object-contain p-4 transition-transform duration-500 group-hover:scale-103"
+                    className={`object-contain p-4 transition-all duration-700 ease-in-out ${
+                      product.hoverImage ? "group-hover:opacity-0 group-hover:scale-95" : "group-hover:scale-105"
+                    }`}
                   />
+                  {product.hoverImage && (
+                    <Image
+                      src={product.hoverImage}
+                      alt={`${product.name} Styled`}
+                      fill
+                      sizes="340px"
+                      className="absolute inset-0 object-cover opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out group-hover:scale-105"
+                    />
+                  )}
 
                   {/* Wishlist Button (Heart) */}
                   <button

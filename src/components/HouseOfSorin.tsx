@@ -60,7 +60,7 @@ export default function HouseOfSorin() {
           >
             <Link
               href="/shop"
-              className="group relative inline-flex items-center justify-center px-10 py-4 border border-zinc-800 rounded-lg text-[10px] md:text-xs tracking-[0.25em] text-zinc-900 font-sans font-semibold bg-white hover:bg-zinc-950 hover:text-white transition-all duration-400"
+              className="group relative inline-flex items-center justify-center px-10 py-4 border border-zinc-800 rounded-xl text-[10px] md:text-xs tracking-[0.25em] text-zinc-900 font-sans font-semibold bg-white hover:bg-zinc-950 hover:text-white transition-all duration-400"
             >
               VIEW COLLECTIONS
             </Link>
