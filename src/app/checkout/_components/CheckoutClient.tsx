@@ -331,7 +331,7 @@ export default function CheckoutClient() {
               )}
             </div>
 
-            <div className="border-t border-zinc-200 pt-6 pb-6">
+            {/* <div className="border-t border-zinc-200 pt-6 pb-6">
               <div className="flex gap-3">
                 <input
                   type="text"
@@ -342,7 +342,26 @@ export default function CheckoutClient() {
                   Apply
                 </button>
               </div>
-            </div>
+            </div> */}
+
+            <div className="border-t border-zinc-200 pt-6 pb-6">
+  <div className="flex flex-col sm:flex-row gap-3">
+    
+    <input
+      type="text"
+      placeholder="Discount code"
+      className="flex-1 w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black rounded-sm px-4 py-3 text-sm transition-colors text-black placeholder:text-zinc-500"
+    />
+
+    <button
+      type="button"
+      className="w-full sm:w-auto px-6 py-3 border border-zinc-300 rounded-sm text-xs font-semibold tracking-wider uppercase text-black hover:bg-zinc-50 transition-colors"
+    >
+      Apply
+    </button>
+
+  </div>
+</div>
 
             <div className="border-t border-zinc-200 pt-6 space-y-3">
               <div className="flex justify-between text-sm">
