@@ -3,23 +3,26 @@
 import Header from "@/components/Header";
 import Link from "next/link";
 import Input from "@/components/Input";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, Suspense } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    const redirectUrl = searchParams.get("redirect") || "/";
+
     toast("Login Successful", {
-      description: "Welcome back! Redirecting to home...",
+      description: `Welcome back! Redirecting...`,
     });
     setTimeout(() => {
-      router.push("/");
+      router.push(redirectUrl);
     }, 1500);
   };
 
@@ -29,16 +32,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md px-6 mx-auto flex flex-col mt-10">
         <h1 className="text-4xl text-center mb-2 font-serif text-black flex items-center justify-center gap-x-3">
-          My
-          <Image
-            src="/assets/Home/logo.png"
-            alt="SORIN Logo"
-            width={150}
-            height={65}
-            priority
-            className="h-7 md:h-9 w-auto object-contain brightness-0"
-          />
-          Account
+          My Account
         </h1>
         <p className="text-center text-sm text-zinc-500 mb-10 font-serif">
           Sign in to access your favourites & track orders.
@@ -95,5 +89,13 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <LoginContent />
+    </Suspense>
   );
 }

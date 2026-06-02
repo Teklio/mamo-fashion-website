@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import AboutHero from "@/app/about/_components/AboutHero";
 import AboutFounder from "@/app/about/_components/AboutFounder";
-import AboutBanner from "@/app/about/_components/AboutBanner";
+// import AboutBanner from "@/app/about/_components/AboutBanner";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export default function AboutPage() {
       <div className="relative z-10 bg-white text-zinc-950">
         <AboutHero />
         <AboutFounder />
-        <AboutBanner />
+        {/* <AboutBanner /> */}
       </div>
     </main>
   );

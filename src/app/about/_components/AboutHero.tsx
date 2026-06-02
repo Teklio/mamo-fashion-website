@@ -56,7 +56,7 @@ export default function AboutHero() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
         >
           <Image
-            src="/assets/about/ab-sorin.jpg"
+            src="/assets/about/1.jpg"
             alt="SORIN Craftsmanship"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"

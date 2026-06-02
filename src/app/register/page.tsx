@@ -6,7 +6,6 @@ import Input from "@/components/Input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,16 +28,7 @@ export default function RegisterPage() {
 
       <div className="w-full max-w-md px-6 mx-auto flex flex-col mt-10">
         <h1 className="text-4xl text-center mb-2 font-serif text-black flex items-center justify-center gap-x-3">
-          My
-          <Image
-            src="/assets/Home/logo.png"
-            alt="SORIN Logo"
-            width={150}
-            height={45}
-            priority
-            className="h-7 md:h-9 w-auto object-contain brightness-0"
-          />
-          Account
+          My Account
         </h1>
         <p className="text-center text-sm text-zinc-500 mb-10 font-serif">
           Create an account to save favourites & track orders.
@@ -54,6 +44,24 @@ export default function RegisterPage() {
             type="email"
             placeholder="you@example.com"
           />
+          <div className="flex gap-4 w-full">
+            <div className="w-24">
+              <Input
+                label="CODE"
+                type="text"
+                placeholder="+971"
+                defaultValue="+971"
+              />
+            </div>
+            <div className="flex-1">
+              <Input
+                label="PHONE (optional)"
+                type="tel"
+                placeholder="123-456-7890"
+              />
+            </div>
+          </div>
+
 
           {/* Password */}
           <Input

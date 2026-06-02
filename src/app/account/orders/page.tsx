@@ -10,7 +10,7 @@ const dummyOrders = [
     items: 1,
     total: 289.00,
     status: "Processing",
-    image: "/assets/about/2.jpg", // Using an existing placeholder image
+    image: "/assets/Home/1.png", // Using an existing placeholder image
   }
 ];
 

@@ -7,7 +7,7 @@ export default function AboutFounder() {
   return (
     <div className="w-full bg-white text-zinc-950 pb-20 md:pb-32 pt-16 md:pt-24">
       {/* Two Image Gallery (Full Width) */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2">
+      {/* <div className="w-full grid grid-cols-1 md:grid-cols-2">
         <motion.div
           className="relative w-full aspect-square md:aspect-auto md:h-[70vh] lg:h-[90vh]"
           initial={{ opacity: 0, x: -60 }}
@@ -38,10 +38,10 @@ export default function AboutFounder() {
             className="object-cover object-center"
           />
         </motion.div>
-      </div>
+      </div> */}
 
       {/* Founder Quote */}
-      <div className="max-w-4xl mx-auto flex flex-col items-center text-center mt-10 px-6">
+      <div className="max-w-4xl mx-auto flex flex-col items-center text-center px-6">
         <motion.span
           className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 md:mb-12"
           initial={{ opacity: 0, y: 20 }}

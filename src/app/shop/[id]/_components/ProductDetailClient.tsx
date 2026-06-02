@@ -23,6 +23,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string>("Ocean Blue & Yellow");
+
+  const colors = [
+    { name: "Ocean Blue & Yellow", gradient: "bg-[linear-gradient(to_right,#31639d_50%,#f0bd41_50%)]" },
+    { name: "Magenta & Pink", gradient: "bg-[linear-gradient(to_right,#913b63_50%,#de679e_50%)]" },
+    { name: "Forest Green & Coral", gradient: "bg-[linear-gradient(to_right,#3e5c46_50%,#e47253_50%)]" }
+  ];
   const [activeTab, setActiveTab] = useState<string>("DESCRIPTION");
   const [isAdding, setIsAdding] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
@@ -41,7 +48,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     };
   }, [isSizeGuideOpen]);
 
-  const sizes = ["35", "36", "37", "38", "39"];
+  const sizes = ["35", "36", "37", "38", "39", "40", "41"];
   const tabs = ["DESCRIPTION", "CARE", "SHIPPING & RETURNS"];
 
   const handleAddToCart = () => {
@@ -134,10 +141,26 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <p className="text-xs text-zinc-500 font-sans mb-8">Inclusive of duties. Complimentary shipping.</p>
 
           {/* Color */}
-          <div className="flex items-center space-x-2 mb-8">
-            <div className="w-4 h-4 rounded-full bg-yellow-400 border border-zinc-200"></div>
-            <div className="w-4 h-4 rounded-full bg-blue-500 border border-zinc-200 -ml-2"></div>
-            <span className="text-xs text-zinc-600 font-sans ml-2">Ocean blue & Yellow</span>
+          <div className="mb-10">
+            <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">Color</span>
+            <div className="flex items-center space-x-3 mb-3">
+              {colors.map((color) => (
+                <button
+                  key={color.name}
+                  onClick={() => setSelectedColor(color.name)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                    selectedColor === color.name
+                      ? "border-[1.5px] border-zinc-900"
+                      : "border border-transparent hover:border-zinc-300"
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-full ${color.gradient} ${
+                    selectedColor === color.name ? "" : "border border-zinc-200"
+                  }`}></div>
+                </button>
+              ))}
+            </div>
+            <span className="text-sm text-zinc-500 font-sans">{selectedColor}</span>
           </div>
 
           {/* Size */}
@@ -151,7 +174,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 Find your size
               </button>
             </div>
-            <div className="grid grid-cols-5 gap-0 border border-zinc-200 rounded-sm overflow-hidden">
+            <div className="grid grid-cols-7 gap-0 border border-zinc-200 rounded-sm overflow-hidden">
               {sizes.map((size) => (
                 <button
                   key={size}
