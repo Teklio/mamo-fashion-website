@@ -188,7 +188,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase md:text-right">Quantity</span>
               <div className="flex items-center border border-zinc-200 rounded-sm w-fit md:ml-auto">
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-4 py-3 text-zinc-500 hover:text-black transition-colors">-</button>
-                <span className="px-4 py-3 text-sm font-sans min-w-[3rem] text-center">{quantity}</span>
+                <span className="px-4 py-3 text-sm font-sans min-w-12 text-center">{quantity}</span>
                 <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-3 text-zinc-500 hover:text-black transition-colors">+</button>
               </div>
             </div>

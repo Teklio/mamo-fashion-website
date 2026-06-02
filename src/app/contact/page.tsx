@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Header from "@/components/Header";
 import ContactHero from "@/app/contact/_components/ContactHero";
 import ContactForm from "@/app/contact/_components/ContactForm";
@@ -16,7 +17,9 @@ export default function ContactPage() {
       <div className="relative z-10 bg-white text-zinc-950">
         <ContactHero />
         <ContactForm />
-        <Faq />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Faq />
+        </Suspense>
       </div>
     </main>
   );

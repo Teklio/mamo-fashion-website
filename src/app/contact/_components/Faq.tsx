@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiChevronDown } from "react-icons/fi";
+import { useSearchParams } from "next/navigation";
 
 const faqs = [
   { question: "How long does delivery take?", answer: "Delivery typically takes 3-5 business days for domestic orders, and 7-14 days for international shipments." },
@@ -16,6 +17,28 @@ const faqs = [
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams?.get("scrollTo") === "faq") {
+      // Small delay to ensure the page has painted and is at the top initially
+      const timer = setTimeout(() => {
+        const element = document.getElementById("faq");
+        if (element) {
+          const headerOffset = 100; // Account for fixed header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      }, 500); // Wait half a second before initiating the smooth scroll
+      
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   const toggleFaq = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
