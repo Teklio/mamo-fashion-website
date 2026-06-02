@@ -43,11 +43,6 @@ export default function Footer() {
                     Journal
                   </Link>
                 </li>
-                <li>
-                  <Link href="/craftsmanship" className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors">
-                    Craftsmanship
-                  </Link>
-                </li>
               </ul>
             </div>
 

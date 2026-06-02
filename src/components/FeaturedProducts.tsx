@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 
 import { products, type Product } from "@/data/products";
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ title = "Signature Styles", hideViewAll = false }: { title?: string, hideViewAll?: boolean } = {}) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [addingId, setAddingId] = useState<string | null>(null);
@@ -18,10 +18,12 @@ export default function FeaturedProducts() {
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     addToCart({
-      id: product.id,
+      id: `${product.id}-${product.color || "Ocean Blue"}`, // Make the cart ID unique for default color
       name: product.name,
       price: product.priceVal,
       image: product.image,
+      color: product.color || "Ocean Blue",
+      quantity: 1,
     });
 
     // Quick micro-animation feedback
@@ -38,7 +40,8 @@ export default function FeaturedProducts() {
       name: product.name,
       priceText: product.priceText,
       priceVal: product.priceVal,
-      image: product.image
+      image: product.image,
+      color: product.color || "Ocean Blue",
     });
   };
 
@@ -76,14 +79,16 @@ export default function FeaturedProducts() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
         >
           <h2 className="text-zinc-900 text-2xl sm:text-3xl md:text-5xl font-serif tracking-wide font-normal whitespace-nowrap">
-            Signature Styles
+            {title}
           </h2>
-          <Link
-            href="/shop"
-            className="group relative inline-flex items-center justify-center px-4 py-2 sm:px-7 sm:py-3 border border-zinc-800 rounded-xl text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 whitespace-nowrap shrink-0"
-          >
-            VIEW ALL
-          </Link>
+          {!hideViewAll && (
+            <Link
+              href="/shop"
+              className="group relative inline-flex items-center justify-center px-4 py-2 sm:px-7 sm:py-3 border border-zinc-800 rounded-xl text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium bg-white hover:bg-zinc-950 hover:text-white transition-colors duration-400 whitespace-nowrap shrink-0"
+            >
+              VIEW ALL
+            </Link>
+          )}
         </motion.div>
 
         {/* Product Cards Grid */}

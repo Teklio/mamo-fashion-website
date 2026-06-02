@@ -9,11 +9,12 @@ export interface CartItem {
   image: string;
   quantity: number;
   size?: string;
+  color?: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: { id: string; name: string; price: number; image: string; size?: string }) => void;
+  addToCart: (product: { id: string; name: string; price: number; image: string; size?: string; color?: string; quantity?: number }) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -44,14 +45,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("sorin-cart", JSON.stringify(items));
   };
 
-  const addToCart = (product: { id: string; name: string; price: number; image: string; size?: string }) => {
+  const addToCart = (product: { id: string; name: string; price: number; image: string; size?: string; color?: string; quantity?: number }) => {
     const existingIndex = cartItems.findIndex((item) => item.id === product.id);
+    const quantityToAdd = product.quantity || 1;
     if (existingIndex > -1) {
       const newItems = [...cartItems];
-      newItems[existingIndex].quantity += 1;
+      newItems[existingIndex].quantity += quantityToAdd;
       saveCart(newItems);
     } else {
-      saveCart([...cartItems, { ...product, quantity: 1 }]);
+      saveCart([...cartItems, { ...product, quantity: quantityToAdd }]);
     }
   };
 

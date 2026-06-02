@@ -25,10 +25,12 @@ export default function ShopGrid() {
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault(); // Prevent navigating to product detail
     addToCart({
-      id: product.id,
+      id: `${product.id}-${product.color || "Ocean Blue"}`,
       name: product.name,
       price: product.priceVal,
       image: product.image,
+      color: product.color || "Ocean Blue",
+      quantity: 1,
     });
     
     setAddingId(product.id);
@@ -44,7 +46,8 @@ export default function ShopGrid() {
       name: product.name,
       priceText: product.priceText,
       priceVal: product.priceVal,
-      image: product.image
+      image: product.image,
+      color: product.color || "Ocean Blue",
     });
   };
 

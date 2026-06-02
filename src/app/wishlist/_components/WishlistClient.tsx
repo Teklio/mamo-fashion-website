@@ -2,24 +2,27 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FiX, FiShoppingCart } from "react-icons/fi";
+import { FiX, FiShoppingCart, FiMinus, FiPlus } from "react-icons/fi";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function WishlistClient() {
-  const { wishlistItems, removeFromWishlist } = useWishlist();
+  const { wishlistItems, removeFromWishlist, updateWishlistQuantity, clearWishlist } = useWishlist();
   const { addToCart } = useCart();
 
-  const handleAddToCart = (product: { id: string; name: string; priceVal: number; image: string }) => {
+  const handleAddToCart = (product: any) => {
     addToCart({
       id: product.id,
       name: product.name,
       price: product.priceVal,
       image: product.image,
+      color: product.color || "Ocean Blue",
+      quantity: product.quantity || 1,
     });
-    toast.success(`${product.name} added to cart`);
+    removeFromWishlist(product.id);
+    toast.success(`${product.name} moved to cart`);
   };
 
   const handleMoveAllToBag = () => {
@@ -29,12 +32,15 @@ export default function WishlistClient() {
         name: item.name,
         price: item.priceVal,
         image: item.image,
+        color: item.color || "Ocean Blue",
+        quantity: item.quantity || 1,
       });
     });
-    toast.success("All items added to cart");
+    clearWishlist();
+    toast.success("All items moved to cart");
   };
 
-  const subtotal = wishlistItems.reduce((acc, item) => acc + item.priceVal, 0);
+  const subtotal = wishlistItems.reduce((acc, item) => acc + (item.priceVal * (item.quantity || 1)), 0);
 
   return (
     <div className="max-w-400 mx-auto px-8 md:px-16">
@@ -112,15 +118,37 @@ export default function WishlistClient() {
                     </h3>
 
                     <div className="flex items-center space-x-2 mb-3 border-b border-[#ebebeb] pb-3">
-                      <div className="w-3 h-3 rounded-full bg-yellow-400 border border-zinc-200"></div>
-                      <div className="w-3 h-3 rounded-full bg-blue-500 border border-zinc-200 -ml-1"></div>
-                      <span className="text-xs text-zinc-600 font-sans ml-2">Ocean blue &amp; Yellow</span>
+                      <div className={`w-3 h-3 rounded-full border border-zinc-200 ${
+                        (item.color || "Ocean Blue") === "Maroon" ? "bg-[#913b63]" :
+                        (item.color || "Ocean Blue") === "Green" ? "bg-[#3e5c46]" :
+                        "bg-[#31639d]"
+                      }`}></div>
+                      <span className="text-xs text-zinc-600 font-sans ml-2">{item.color || "Ocean Blue"}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-3 gap-4 mb-4">
                       <div>
                         <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">SIZE</span>
                         <span className="text-sm font-sans text-zinc-900">EU 38</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">QTY</span>
+                        <div className="flex items-center space-x-3">
+                          <button 
+                            onClick={() => updateWishlistQuantity(item.id, (item.quantity || 1) - 1)}
+                            className="text-zinc-400 hover:text-black transition-colors focus:outline-none"
+                            disabled={(item.quantity || 1) <= 1}
+                          >
+                            <FiMinus size={10} className={(item.quantity || 1) <= 1 ? "opacity-50 cursor-not-allowed" : ""} />
+                          </button>
+                          <span className="text-sm font-sans text-zinc-900">{item.quantity || 1}</span>
+                          <button 
+                            onClick={() => updateWishlistQuantity(item.id, (item.quantity || 1) + 1)}
+                            className="text-zinc-400 hover:text-black transition-colors focus:outline-none"
+                          >
+                            <FiPlus size={10} />
+                          </button>
+                        </div>
                       </div>
                       <div>
                         <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">PRICE</span>

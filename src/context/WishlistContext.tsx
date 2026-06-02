@@ -9,6 +9,8 @@ export interface WishlistItem {
   priceText: string;
   priceVal: number;
   image: string;
+  color?: string;
+  quantity?: number;
 }
 
 interface WishlistContextType {
@@ -17,6 +19,8 @@ interface WishlistContextType {
   removeFromWishlist: (id: string) => void;
   isInWishlist: (id: string) => boolean;
   toggleWishlist: (product: WishlistItem) => void;
+  updateWishlistQuantity: (id: string, quantity: number) => void;
+  clearWishlist: () => void;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -62,8 +66,20 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       removeFromWishlist(product.id);
       toast.info(`${product.name} removed from wishlist`);
     } else {
-      addToWishlist(product);
+      addToWishlist({ ...product, quantity: product.quantity || 1 });
     }
+  };
+
+  const updateWishlistQuantity = (id: string, quantity: number) => {
+    if (quantity < 1) return;
+    const newItems = wishlistItems.map((item) => 
+      item.id === id ? { ...item, quantity } : item
+    );
+    saveWishlist(newItems);
+  };
+
+  const clearWishlist = () => {
+    saveWishlist([]);
   };
 
   return (
@@ -74,6 +90,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         removeFromWishlist,
         isInWishlist,
         toggleWishlist,
+        updateWishlistQuantity,
+        clearWishlist,
       }}
     >
       {children}

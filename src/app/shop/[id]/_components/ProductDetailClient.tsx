@@ -8,6 +8,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -16,19 +17,22 @@ interface Product {
   priceVal: number;
   description: string;
   images: string[];
+  color?: string;
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
+  const router = useRouter();
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string>("Ocean Blue & Yellow");
+  const [selectedColor, setSelectedColor] = useState<string>(product.color || "Ocean Blue");
+  const [quantity, setQuantity] = useState(1);
 
   const colors = [
-    { name: "Ocean Blue & Yellow", gradient: "bg-[linear-gradient(to_right,#31639d_50%,#f0bd41_50%)]" },
-    { name: "Magenta & Pink", gradient: "bg-[linear-gradient(to_right,#913b63_50%,#de679e_50%)]" },
-    { name: "Forest Green & Coral", gradient: "bg-[linear-gradient(to_right,#3e5c46_50%,#e47253_50%)]" }
+    { name: "Ocean Blue", colorClass: "bg-[#31639d]" },
+    { name: "Maroon", colorClass: "bg-[#913b63]" },
+    { name: "Green", colorClass: "bg-[#3e5c46]" }
   ];
   const [activeTab, setActiveTab] = useState<string>("DESCRIPTION");
   const [isAdding, setIsAdding] = useState(false);
@@ -59,23 +63,45 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
     setIsAdding(true);
     addToCart({
-      id: `${product.id}-${selectedSize}`,
+      id: `${product.id}-${selectedSize}-${selectedColor}`,
       name: product.name,
       price: product.priceVal,
       image: product.images[0],
       size: selectedSize,
+      color: selectedColor,
+      quantity,
     });
 
     setTimeout(() => setIsAdding(false), 1000);
   };
 
+  const handleBuyNow = () => {
+    if (!selectedSize) {
+      toast.error("Please select a size");
+      return;
+    }
+    
+    addToCart({
+      id: `${product.id}-${selectedSize}-${selectedColor}`,
+      name: product.name,
+      price: product.priceVal,
+      image: product.images[0],
+      size: selectedSize,
+      color: selectedColor,
+      quantity,
+    });
+    
+    router.push("/checkout");
+  };
+
   const handleWishlistToggle = () => {
     toggleWishlist({
-      id: product.id,
+      id: `${product.id}-${selectedColor}`,
       name: product.name,
       priceText: product.priceText,
       priceVal: product.priceVal,
-      image: product.images[0]
+      image: product.images[0],
+      color: selectedColor,
     });
   };
 
@@ -100,25 +126,17 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
           {/* Main Image */}
           <div className="relative flex-1 bg-[#f3f3f3] rounded-sm overflow-hidden min-h-100 lg:min-h-full">
-            <AnimatePresence mode="wait">
-              <motion.div
+            <div className="absolute inset-0 flex items-center justify-center p-8">
+              <Image
                 key={activeImage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center p-8"
-              >
-                <Image
-                  src={product.images[activeImage]}
-                  alt={product.name}
-                  width={600}
-                  height={600}
-                  className="object-contain w-full h-full"
-                  priority
-                />
-              </motion.div>
-            </AnimatePresence>
+                src={product.images[activeImage]}
+                alt={product.name}
+                width={600}
+                height={600}
+                className="object-contain w-full h-full animate-in fade-in duration-300"
+                priority
+              />
+            </div>
 
             <button
               onClick={handleWishlistToggle}
@@ -140,27 +158,40 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <p className="text-xl font-semibold text-zinc-900 mb-1">{product.priceText}</p>
           <p className="text-xs text-zinc-500 font-sans mb-8">Inclusive of duties. Complimentary shipping.</p>
 
-          {/* Color */}
-          <div className="mb-10">
-            <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">Color</span>
-            <div className="flex items-center space-x-3 mb-3">
-              {colors.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => setSelectedColor(color.name)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                    selectedColor === color.name
-                      ? "border-[1.5px] border-zinc-900"
-                      : "border border-transparent hover:border-zinc-300"
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-full ${color.gradient} ${
-                    selectedColor === color.name ? "" : "border border-zinc-200"
-                  }`}></div>
-                </button>
-              ))}
+          {/* Color & Quantity */}
+          <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 gap-8 md:gap-4 w-full">
+            {/* Color */}
+            <div>
+              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">Color</span>
+              <div className="flex items-center space-x-3 mb-3">
+                {colors.map((color) => (
+                  <button
+                    key={color.name}
+                    onClick={() => setSelectedColor(color.name)}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                      selectedColor === color.name
+                        ? "border-[1.5px] border-zinc-900"
+                        : "border border-transparent hover:border-zinc-300"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-full ${color.colorClass} ${
+                      selectedColor === color.name ? "" : "border border-zinc-200"
+                    }`}></div>
+                  </button>
+                ))}
+              </div>
+              <span className="text-sm text-zinc-500 font-sans">{selectedColor}</span>
             </div>
-            <span className="text-sm text-zinc-500 font-sans">{selectedColor}</span>
+
+            {/* Quantity */}
+            <div>
+              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase md:text-right">Quantity</span>
+              <div className="flex items-center border border-zinc-200 rounded-sm w-fit md:ml-auto">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-4 py-3 text-zinc-500 hover:text-black transition-colors">-</button>
+                <span className="px-4 py-3 text-sm font-sans min-w-[3rem] text-center">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-3 text-zinc-500 hover:text-black transition-colors">+</button>
+              </div>
+            </div>
           </div>
 
           {/* Size */}
@@ -190,17 +221,29 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </div>
           </div>
 
-          {/* Add to Cart */}
-          <button
-            onClick={handleAddToCart}
-            disabled={isAdding}
-            className={`w-full py-4 text-xs font-bold tracking-[0.2em] uppercase rounded-sm border transition-all duration-300 mb-12 ${isAdding
-                ? "bg-zinc-900 text-white border-zinc-900"
-                : "bg-white text-zinc-900 border-zinc-900 hover:bg-zinc-950 hover:text-white"
-              }`}
-          >
-            {isAdding ? "ADDED TO CART" : "ADD TO CART"}
-          </button>
+          {/* Action Buttons */}
+          <div className="flex gap-4 mb-12">
+            <button
+              onClick={handleAddToCart}
+              disabled={isAdding}
+              className={`flex-1 py-4 text-xs font-bold tracking-[0.2em] uppercase rounded-sm border transition-all duration-300 ${isAdding
+                  ? "bg-zinc-900 text-white border-zinc-900"
+                  : "bg-white text-zinc-900 border-zinc-900 hover:bg-zinc-950 hover:text-white"
+                }`}
+            >
+              {isAdding ? "ADDED TO CART" : "ADD TO CART"}
+            </button>
+            <button
+              onClick={handleBuyNow}
+              disabled={!selectedSize}
+              className={`flex-1 py-4 text-xs font-bold tracking-[0.2em] uppercase rounded-sm border transition-all duration-300 ${!selectedSize
+                  ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
+                  : "bg-zinc-900 text-white border-zinc-900 hover:bg-black hover:border-black"
+                }`}
+            >
+              BUY NOW
+            </button>
+          </div>
 
           {/* Accordion / Tabs */}
           <div className="border-t border-zinc-200 pt-6">
@@ -243,41 +286,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Cross-sell / Related Products */}
-      <div className="pt-16 border-t border-zinc-100">
-        <div className="flex justify-between items-end mb-10">
-          <h2 className="text-3xl md:text-4xl font-serif text-zinc-900">
-            Signature Styles
-          </h2>
-          <Link
-            href="/shop"
-            className="hidden md:inline-flex px-6 py-2.5 border border-zinc-800 rounded-sm text-[10px] md:text-xs tracking-[0.2em] text-zinc-900 font-sans font-medium hover:bg-zinc-950 hover:text-white transition-colors"
-          >
-            VIEW ALL
-          </Link>
-        </div>
-
-        {/* We'll just show 4 items here manually for simplicity without full ShopGrid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 1].map((img, idx) => (
-            <Link href={`/shop/related-${idx}`} key={idx} className="group block">
-              <div className="relative aspect-square w-full bg-[#f3f3f3] rounded-sm overflow-hidden flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-[#ebebeb]">
-                <Image
-                  src={`/assets/Home/${img}.png`}
-                  alt="Related Product"
-                  width={300}
-                  height={300}
-                  className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex flex-col px-1">
-                <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">Rae Collections</span>
-                <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide">AED 289.00</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
 
       {/* Size Guide Modal */}
       <AnimatePresence>

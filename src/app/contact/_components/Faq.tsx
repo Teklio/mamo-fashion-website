@@ -22,7 +22,7 @@ export default function Faq() {
   };
 
   return (
-    <section className="py-20 px-6 max-w-3xl mx-auto flex flex-col items-center">
+    <section id="faq" className="py-20 px-6 max-w-3xl mx-auto flex flex-col items-center">
       <h2 className="text-3xl md:text-4xl font-serif text-center text-black mb-2">
         Frequently Asked Questions
       </h2>

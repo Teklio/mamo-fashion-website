@@ -63,7 +63,14 @@ export default function CartPage() {
                         <h3 className="font-serif text-sm sm:text-base md:text-lg text-black mb-1 group-hover:text-zinc-600 transition-colors">
                           {item.name}
                         </h3>
-                        <p className="text-[10px] text-zinc-400 font-sans mb-1.5 tracking-wider">Footwear</p>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <div className={`w-2.5 h-2.5 rounded-full border border-zinc-200 ${
+                            (item.color || "Ocean Blue") === "Maroon" ? "bg-[#913b63]" :
+                            (item.color || "Ocean Blue") === "Green" ? "bg-[#3e5c46]" :
+                            "bg-[#31639d]"
+                          }`}></div>
+                          <p className="text-[10px] text-zinc-400 font-sans tracking-wider uppercase">{item.color || "Ocean Blue"}</p>
+                        </div>
                         <p className="text-[10px] text-zinc-500 font-sans tracking-widest uppercase font-semibold">
                           {item.size ? `SIZE - EU ${item.size}` : "ONE SIZE"}
                         </p>

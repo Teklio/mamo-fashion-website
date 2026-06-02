@@ -51,7 +51,7 @@ function LoginContent() {
             label="PASSWORD"
             type="password"
             rightLabel={
-              <Link href="#" className="text-[10px] text-black hover:text-black/40 transition-colors">
+              <Link href="/forgot-password" className="text-[10px] text-black hover:text-black/40 transition-colors">
                 Forgot password?
               </Link>
             }

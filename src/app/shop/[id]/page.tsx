@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import ProductDetailClient from "./_components/ProductDetailClient";
 import Header from "@/components/Header";
+import FeaturedProducts from "@/components/FeaturedProducts";
 
 export const metadata: Metadata = {
   title: "Product Detail | SORIN",
@@ -36,10 +37,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   return (
     <>
       <Header theme="light" />
-      <main className="min-h-screen mt-0 md:mt-10 pt-32 pb-24 bg-white text-zinc-950">
-        <div className="max-w-400 mx-auto px-8 md:px-16">
+      <main className="min-h-screen mt-0 md:mt-10 pt-32 bg-white text-zinc-950">
+        <div className="max-w-400 mx-auto px-8 md:px-16 pb-16 lg:pb-24 border-b border-zinc-100">
           <ProductDetailClient product={product} />
         </div>
+        
+        <FeaturedProducts title="Related Products" hideViewAll={true} />
       </main>
     </>
   );

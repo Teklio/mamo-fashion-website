@@ -6,6 +6,7 @@ export interface Product {
   priceVal: number;
   image: string;
   hoverImage?: string;
+  color?: string;
 }
 
 export const products: Product[] = [
@@ -17,6 +18,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/1.png",
     hoverImage: "/assets/Home/1.h.jpg",
+    color: "Ocean Blue",
   },
   {
     id: "rae-02",
@@ -26,6 +28,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/2.png",
     hoverImage: "/assets/Home/2.h.jpg",
+    color: "Maroon",
   },
   {
     id: "rae-03",
@@ -35,6 +38,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/3.png",
     hoverImage: "/assets/Home/3.h.jpg",
+    color: "Green",
   },
   {
     id: "rae-04",
@@ -44,6 +48,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/1.png",
     hoverImage: "/assets/Home/1.h.jpg",
+    color: "Ocean Blue",
   },
   {
     id: "rae-05",
@@ -53,6 +58,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/2.png",
     hoverImage: "/assets/Home/2.h.jpg",
+    color: "Maroon",
   },
   {
     id: "rae-06",
@@ -62,6 +68,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/3.png",
     hoverImage: "/assets/Home/3.h.jpg",
+    color: "Green",
   },
   {
     id: "rae-07",
@@ -71,6 +78,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/1.png",
     hoverImage: "/assets/Home/1.h.jpg",
+    color: "Ocean Blue",
   },
   {
     id: "rae-08",
@@ -80,6 +88,7 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/2.png",
     hoverImage: "/assets/Home/2.h.jpg",
+    color: "Maroon",
   },
   {
     id: "rae-09",
@@ -89,5 +98,6 @@ export const products: Product[] = [
     priceVal: 289,
     image: "/assets/Home/3.png",
     hoverImage: "/assets/Home/3.h.jpg",
+    color: "Green",
   },
 ];
