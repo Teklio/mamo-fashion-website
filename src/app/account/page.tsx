@@ -47,33 +47,35 @@ export default function AccountDetailsPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-8 max-w-4xl">
-        <div className="flex flex-col gap-6 w-full max-w-xl">
-          <Input label="Full Name" type="text" defaultValue="Angela R" required />
-          <Input label="Email Address" type="email" defaultValue="angelaruby1@gmail.com" required />
-          <Input label="Phone Number" type="tel" defaultValue="9187690560" required />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full md:w-fit bg-black hover:bg-black/90 text-white text-xs font-sans font-semibold uppercase tracking-widest px-8 py-3.5 rounded-md transition-colors disabled:opacity-70 flex justify-center items-center text-center h-12"
-        >
-          {isLoading ? (
-            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-          ) : (
-            "Save Changes"
-          )}
-        </button>
-      </form>
-
-      <div className="mt-5 max-w-4xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
-          <div>
-            <h3 className="font-semibold text-black text-lg mb-1 font-sans">Password</h3>
-            <p className="text-zinc-500 text-sm font-sans">It's a good idea to use a strong password.</p>
+      <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 max-w-4xl">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8 w-full lg:w-1/2">
+          <div className="flex flex-col gap-6 w-full">
+            <Input label="Full Name" type="text" defaultValue="Angela R" required />
+            <Input label="Email Address" type="email" defaultValue="angelaruby1@gmail.com" required />
+            <Input label="Phone Number" type="tel" defaultValue="9187690560" required />
           </div>
-          <button type="button" onClick={() => setIsPasswordModalOpen(true)} className="flex items-center justify-center gap-2 w-full md:w-auto px-5 py-3 md:py-2.5 border border-black rounded-md text-sm font-sans font-medium text-black hover:bg-zinc-50 transition-colors whitespace-nowrap text-center">
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full md:w-fit bg-black hover:bg-black/90 text-white text-xs font-sans font-semibold uppercase tracking-widest px-8 py-3.5 rounded-md transition-colors disabled:opacity-70 flex justify-center items-center text-center h-12"
+          >
+            {isLoading ? (
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            ) : (
+              "Save Changes"
+            )}
+          </button>
+        </form>
+
+        <div className="w-full lg:w-1/2 border-t lg:border-t-0 lg:border-l border-black/10 pt-8 lg:pt-0 lg:pl-12 flex flex-col justify-start">
+          <h3 className="font-semibold text-black text-lg mb-1 font-sans">Password</h3>
+          <p className="text-zinc-500 text-sm font-sans mb-6">It's a good idea to use a strong password.</p>
+          <button 
+            type="button" 
+            onClick={() => setIsPasswordModalOpen(true)} 
+            className="flex items-center justify-center gap-2 w-full md:w-fit px-5 py-3 md:py-2.5 border border-black rounded-md text-sm font-sans font-medium text-black hover:bg-zinc-50 transition-colors whitespace-nowrap text-center"
+          >
             <FiLock size={16} /> Update Password
           </button>
         </div>
