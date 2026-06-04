@@ -353,10 +353,9 @@ export default function CheckoutClient() {
           {/* Footer links */}
           <div className="mt-20 pt-8 border-t border-zinc-200/50 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-500">
             <div className="flex gap-4">
-              <Link href="/policy" className="hover:text-black transition-colors">Refund policy</Link>
-              <Link href="/shipping" className="hover:text-black transition-colors">Shipping</Link>
-              <Link href="/privacy" className="hover:text-black transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-black transition-colors">Terms</Link>
+              <Link href="/refund-policy" className="hover:text-black transition-colors">Refund policy</Link>
+              <Link href="/privacy-policy" className="hover:text-black transition-colors">Privacy policy</Link>
+              <Link href="/terms-and-conditions" className="hover:text-black transition-colors">Terms & conditions</Link>
             </div>
             <div>© SORIN — DUBAI, UAE</div>
           </div>

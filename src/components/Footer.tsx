@@ -105,12 +105,12 @@ export default function Footer() {
             &copy; 2026 SORIN. ALL RIGHTS RESERVED
           </p>
           <div className="flex items-center space-x-4 text-[10px] text-zinc-400 font-sans tracking-widest uppercase">
-            <Link href="/privacy" className="hover:text-zinc-950 transition-colors">
+            <Link href="/privacy-policy" className="hover:text-zinc-950 transition-colors">
               PRIVACY
             </Link>
             <span>&middot;</span>
-            <Link href="/terms" className="hover:text-zinc-950 transition-colors">
-              TERMS
+            <Link href="/terms-and-conditions" className="hover:text-zinc-950 transition-colors">
+              TERMS 
             </Link>
           </div>
         </div>
