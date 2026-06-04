@@ -1,16 +1,20 @@
 import { Metadata } from "next";
+import Header from "@/components/Header";
 import CheckoutClient from "./_components/CheckoutClient";
 
 export const metadata: Metadata = {
-  title: "Checkout - SORIN",
+  title: "Checkout – SORIN",
   description: "Complete your purchase at SORIN",
 };
 
 export default function CheckoutPage() {
   return (
-    <main className="min-h-screen bg-[#faf9f6]">
-      <CheckoutClient />
-    </main>
+    <>
+      <Header theme="light" />
+      <main className="min-h-screen bg-white pt-28 pb-24 text-zinc-950">
+        <CheckoutClient />
+      </main>
+    </>
   );
 }
 

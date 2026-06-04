@@ -6,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { FiUser, FiBox, FiMapPin, FiLogOut } from "react-icons/fi";
 import { toast } from "sonner";
 import LogoutModal from "./LogoutModal";
+import { useLogout } from "@/services/auth.service";
+import type { AxiosError } from "axios";
 
 const navItems = [
   { name: "Account Details", href: "/account", icon: FiUser },
@@ -18,12 +20,21 @@ export default function AccountSidebar() {
   const router = useRouter();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
   const handleLogout = () => {
-    setIsLogoutModalOpen(false);
-    toast("Logged Out", {
-      description: "You have been successfully logged out of your account.",
+    logout(undefined, {
+      onSuccess: () => {
+        setIsLogoutModalOpen(false);
+        toast.success("Logged out successfully");
+        router.replace("/login");
+      },
+      onError: (err) => {
+        const axiosErr = err as AxiosError<{ message: string }>;
+        toast.error(axiosErr.response?.data?.message || "Logout failed");
+        setIsLogoutModalOpen(false);
+      },
     });
-    router.push("/login");
   };
 
   return (
@@ -75,10 +86,11 @@ export default function AccountSidebar() {
         </div>
       </div>
 
-      <LogoutModal 
+      <LogoutModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={handleLogout}
+        isLoading={isLoggingOut}
       />
     </>
   );

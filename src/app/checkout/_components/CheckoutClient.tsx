@@ -1,451 +1,640 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from "@/context/CartContext";
-import { FiLock, FiChevronDown, FiCheck } from "react-icons/fi";
-import Input from "@/components/Input";
 import { toast } from "sonner";
-import Header from "@/components/Header";
+import { FiCheck, FiLoader, FiLock, FiTag, FiX } from "react-icons/fi";
+import type { AxiosError } from "axios";
+
+import Input from "@/components/Input";
+import PhoneInput from "@/components/shared/PhoneInput";
+import { SearchableDropdown } from "@/components/shared/SearchableDropdown";
+import { useGetCart } from "@/services/cart.service";
+import { useGetCustomerAddresses } from "@/services/address.service";
+import { useGetCities, useGetCountrycodes } from "@/services/settings.service";
+import {
+  useApplyCoupon,
+  useCheckoutAuth,
+  useCreateOrder,
+} from "@/services/checkout.service";
+import {
+  checkoutAuthSchema,
+  inlineAddressSchema,
+  type CheckoutAuthFormType,
+  type InlineAddressFormType,
+} from "@/zodschemas/checkout.schema";
+import type { RootState } from "@/store";
+import type { CartItem } from "@/types/cart.type";
+import type { ApplyCouponResponse, InlineAddress } from "@/types/checkout.type";
+import type { CustomerAddress } from "@/services/address.service";
+
+const Spinner = () => (
+  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+);
+
+const fmt = (v: string | number) => `AED ${Number(v).toFixed(2)}`;
 
 export default function CheckoutClient() {
-  const { cartItems } = useCart();
+  const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
+  const authEmail = useSelector((s: RootState) => s.auth.email);
 
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  const [billingAddress, setBillingAddress] = useState("same");
+  const { data: cartData, isLoading: cartLoading } = useGetCart();
+  const { data: addrData } = useGetCustomerAddresses();
+  const { mutate: checkoutAuth, isPending: isAuthing } = useCheckoutAuth();
+  const { mutate: applyCouponMutation, isPending: isApplyingCoupon } =
+    useApplyCoupon();
+  const { mutate: createOrder, isPending: isCreatingOrder } = useCreateOrder();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const cartItems = cartData?.cart?.items ?? [];
+  const savedAddresses = addrData?.addresses ?? [];
+  const defaultAddress =
+    savedAddresses.find((address) => address.isDefault) ??
+    savedAddresses[0] ??
+    null;
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping: number = 0; // Free shipping
-  const total = subtotal + shipping;
+  const authForm = useForm<CheckoutAuthFormType>({
+    resolver: zodResolver(checkoutAuthSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
-  const handleAuth = async () => {
-    if (!authEmail || !authPassword) {
-      toast.error("Please provide both email and password.");
-      return;
+  const [addressMode, setAddressMode] = useState<"saved" | "new">("saved");
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null,
+  );
+  const [addrPhone, setAddrPhone] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
+
+  const addrForm = useForm<InlineAddressFormType>({
+    resolver: zodResolver(inlineAddressSchema),
+    defaultValues: { name: "", line1: "", city: "", countryCode: "" },
+  });
+
+  const watchedCountry = addrForm.watch("countryCode");
+  const watchedCity = addrForm.watch("city");
+
+  const { data: countryCodes, isLoading: loadingCountries } =
+    useGetCountrycodes(countrySearch);
+  const { data: citiesData, isLoading: loadingCities } = useGetCities(
+    watchedCountry ?? "",
+  );
+
+  const countryOpts = useMemo(
+    () =>
+      (countryCodes?.countrycodes ?? []).map((country) => ({
+        value: country.countrycode,
+        label: `${country.countrycode} - ${country.name}`,
+      })),
+    [countryCodes],
+  );
+
+  const cityOpts = useMemo(
+    () =>
+      (citiesData ?? []).map((city) => ({
+        value: city.cityName,
+        label: city.cityName,
+      })),
+    [citiesData],
+  );
+
+  useEffect(() => {
+    if (defaultAddress && !selectedAddressId) {
+      setSelectedAddressId(defaultAddress.id);
     }
-    setIsAuthenticating(true);
-    // Mock checkout authentication API
-    setTimeout(() => {
-      setIsAuthenticating(false);
-      setIsAuthenticated(true);
-      toast.success("Authenticated successfully!");
-    }, 1500);
+  }, [defaultAddress, selectedAddressId]);
+
+  const [couponInput, setCouponInput] = useState("");
+  const [couponResult, setCouponResult] = useState<ApplyCouponResponse | null>(
+    null,
+  );
+  const [couponError, setCouponError] = useState("");
+
+  const rawSubtotal = cartItems.reduce((sum: number, item: CartItem) => {
+    const price =
+      Number(item.price) > 0
+        ? Number(item.price)
+        : Number(item.size?.variant?.product?.price ?? 0);
+    return sum + price * item.quantity;
+  }, 0);
+
+  const subtotal = couponResult ? Number(couponResult.subTotal) : rawSubtotal;
+  const discount = couponResult ? Number(couponResult.discount) : 0;
+  const total = couponResult ? Number(couponResult.total) : rawSubtotal;
+
+  const handleAuth = authForm.handleSubmit((data) => {
+    checkoutAuth(data, {
+      onError: (err) => {
+        const ae = err as AxiosError<{ message: string }>;
+        authForm.setError("password", {
+          message: ae.response?.data?.message || "Invalid credentials",
+        });
+      },
+    });
+  });
+
+  const handleApplyCoupon = () => {
+    setCouponError("");
+    if (!couponInput.trim()) return;
+
+    applyCouponMutation(
+      { couponCode: couponInput.trim(), mode: "cart" },
+      {
+        onSuccess: (data) => {
+          setCouponResult(data);
+          toast.success(`Coupon "${data.couponCode}" applied!`);
+        },
+        onError: (err) => {
+          const ae = err as AxiosError<{ message: string }>;
+          setCouponError(ae.response?.data?.message || "Invalid coupon");
+          setCouponResult(null);
+        },
+      },
+    );
   };
 
-  const handleCheckout = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAuthenticated) return;
-    const form = e.target as HTMLFormElement;
-    if (!form.checkValidity()) {
-      toast.error("Please fill in all required fields.");
-      form.reportValidity();
+  const resolveShipping = async (): Promise<string | InlineAddress | null> => {
+    if (addressMode === "saved" && selectedAddressId) {
+      return selectedAddressId;
+    }
+
+    const valid = await addrForm.trigger();
+    if (!valid || !addrPhone.trim()) {
+      if (!addrPhone.trim()) toast.error("Phone number is required");
+      return null;
+    }
+
+    const values = addrForm.getValues();
+    return {
+      name: values.name,
+      phone: addrPhone.trim(),
+      line1: values.line1,
+      city: values.city,
+      countryCode: values.countryCode,
+      district: values.district || undefined,
+      postalCode: values.postalCode || undefined,
+      landMark: values.landMark || undefined,
+    };
+  };
+
+  const handlePayNow = async () => {
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty");
       return;
     }
-    toast.success("Order placed successfully!");
+
+    const shipping = await resolveShipping();
+    if (!shipping) return;
+
+    createOrder(
+      {
+        mode: "cart",
+        shippingAddress: shipping,
+        couponCode: couponResult?.couponCode,
+      },
+      {
+        onSuccess: (data) => {
+          window.location.href = data.paymentUrl;
+        },
+        onError: (err) => {
+          const ae = err as AxiosError<{ message: string }>;
+          toast.error(ae.response?.data?.message || "Failed to create order");
+        },
+      },
+    );
   };
+
+  if (!cartLoading && cartItems.length === 0) {
+    return (
+      <div className="mx-auto max-w-400 px-8 py-24 text-center md:px-16">
+        <p className="mb-4 font-serif text-2xl text-zinc-900">
+          Your cart is empty
+        </p>
+        <Link
+          href="/shop"
+          className="font-sans text-sm text-zinc-600 underline underline-offset-4"
+        >
+          Continue Shopping
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-white pt-24 lg:pt-32">
-      <Header theme="light" />
-
-      <div className="flex flex-col-reverse lg:flex-row max-w-400 mx-auto px-8 md:px-16">
-        {/* Left Column - Form */}
-        <div className="w-full lg:w-3/5 p-6 lg:p-12 lg:pr-24 lg:border-r border-zinc-200/50">
-
-          <form className="space-y-12" onSubmit={handleCheckout}>
-            {/* Contact Details */}
-            <section>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium text-black">Your details</h2>
-                {!isAuthenticated && (
-                <Link href="/login?redirect=/checkout" className="text-sm text-zinc-500 hover:text-black transition-colors underline">
-                  Log in
-                </Link>
-                )}
-              </div>
-              
-              {!isAuthenticated ? (
-                <div className="space-y-4">
+    <div className="mx-auto max-w-400 px-8 md:px-16">
+      <div className="flex flex-col-reverse items-start gap-12 lg:flex-row lg:gap-16">
+        <div className="flex w-full flex-col gap-8 lg:flex-1">
+          {!isAuthenticated ? (
+            <section className="rounded-2xl border border-zinc-200 p-6 md:p-8">
+              <h2 className="mb-1 font-serif text-xl text-zinc-900">
+                Sign In to Checkout
+              </h2>
+              <p className="mb-6 font-sans text-xs text-zinc-500">
+                New to SORIN? We&apos;ll create your account automatically.
+              </p>
+              <form onSubmit={handleAuth} className="flex flex-col gap-4">
+                <div>
                   <Input
-                    required
+                    label="EMAIL"
                     type="email"
-                    label="Email Address"
-                    placeholder="EMAIL ADDRESS"
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
+                    placeholder="you@example.com"
+                    {...authForm.register("email")}
                   />
+                  {authForm.formState.errors.email && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {authForm.formState.errors.email.message}
+                    </p>
+                  )}
+                </div>
+                <div>
                   <Input
-                    required
+                    label="PASSWORD"
                     type="password"
-                    label="Password"
-                    placeholder="PASSWORD"
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
+                    {...authForm.register("password")}
                   />
+                  {authForm.formState.errors.password && (
+                    <p className="mt-1 text-xs text-red-500">
+                      {authForm.formState.errors.password.message}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAuthing}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-3.5 font-sans text-xs font-semibold tracking-[0.2em] text-white transition-colors hover:bg-black disabled:opacity-70"
+                >
+                  {isAuthing ? <Spinner /> : null}
+                  {isAuthing ? "CONTINUING..." : "CONTINUE"}
+                </button>
+              </form>
+            </section>
+          ) : (
+            <div className="flex items-center gap-2 font-sans text-xs text-zinc-500">
+              <FiCheck size={14} className="text-green-600" />
+              Signed in as{" "}
+              <span className="font-medium text-zinc-900">{authEmail}</span>
+            </div>
+          )}
+
+          <div
+            className={
+              !isAuthenticated
+                ? "pointer-events-none select-none opacity-40"
+                : ""
+            }
+          >
+            <section className="mb-8 rounded-2xl border border-zinc-200 p-6 md:p-8">
+              <h2 className="mb-6 font-serif text-xl text-zinc-900">
+                Shipping Address
+              </h2>
+
+              {savedAddresses.length > 0 && (
+                <div className="mb-6 flex flex-col gap-3">
+                  {savedAddresses.map((addr: CustomerAddress) => (
+                    <button
+                      key={addr.id}
+                      type="button"
+                      onClick={() => {
+                        setAddressMode("saved");
+                        setSelectedAddressId(addr.id);
+                      }}
+                      className={`w-full rounded-xl border p-4 text-left transition-all ${addressMode === "saved" && selectedAddressId === addr.id ? "border-zinc-900 bg-zinc-50" : "border-zinc-200 hover:border-zinc-400"}`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="font-sans text-sm font-semibold text-zinc-900">
+                            {addr.name}
+                          </p>
+                          <p className="mt-0.5 font-sans text-xs text-zinc-400">
+                            {addr.phone}
+                          </p>
+                          <p className="mt-1 font-sans text-xs text-zinc-600">
+                            {addr.line1}, {addr.city}, {addr.countryCode}
+                          </p>
+                        </div>
+                        <Radio
+                          selected={
+                            addressMode === "saved" &&
+                            selectedAddressId === addr.id
+                          }
+                        />
+                      </div>
+                    </button>
+                  ))}
                   <button
                     type="button"
-                    onClick={handleAuth}
-                    disabled={isAuthenticating}
-                    className="w-full md:w-auto bg-black hover:bg-black/90 text-white px-8 py-3 rounded-sm text-xs font-semibold tracking-wider uppercase transition-colors disabled:opacity-70 flex justify-center items-center h-12 mt-4"
+                    onClick={() => setAddressMode("new")}
+                    className={`w-full rounded-xl border p-4 text-left font-sans text-sm transition-all ${addressMode === "new" ? "border-zinc-900 bg-zinc-50 text-zinc-900" : "border-zinc-200 text-zinc-500 hover:border-zinc-400"}`}
                   >
-                    {isAuthenticating ? (
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                    ) : (
-                      "Continue"
+                    + Use a different address
+                  </button>
+                </div>
+              )}
+
+              {(addressMode === "new" || savedAddresses.length === 0) && (
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="flex flex-col">
+                      <label className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+                        Country *
+                      </label>
+                      <SearchableDropdown
+                        value={watchedCountry ?? ""}
+                        onChange={(value) => {
+                          addrForm.setValue("countryCode", value, {
+                            shouldValidate: true,
+                          });
+                          addrForm.setValue("city", "", {
+                            shouldValidate: true,
+                          });
+                        }}
+                        options={countryOpts}
+                        placeholder="Select country"
+                        searchPlaceholder="Search country..."
+                        loading={loadingCountries}
+                        onSearchChange={setCountrySearch}
+                      />
+                      {addrForm.formState.errors.countryCode && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {addrForm.formState.errors.countryCode.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+                        City *
+                      </label>
+                      <SearchableDropdown
+                        value={watchedCity ?? ""}
+                        onChange={(value) =>
+                          addrForm.setValue("city", value, {
+                            shouldValidate: true,
+                          })
+                        }
+                        options={cityOpts}
+                        placeholder={
+                          watchedCountry ? "Select city" : "Select country first"
+                        }
+                        searchPlaceholder="Search city..."
+                        loading={loadingCities}
+                        disabled={!watchedCountry}
+                      />
+                      {addrForm.formState.errors.city && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {addrForm.formState.errors.city.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                      <Input
+                        label="Full Name *"
+                        placeholder="e.g. Angela R"
+                        {...addrForm.register("name")}
+                      />
+                      {addrForm.formState.errors.name && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {addrForm.formState.errors.name.message}
+                        </p>
+                      )}
+                    </div>
+                    <PhoneInput
+                      label="PHONE *"
+                      value={addrPhone}
+                      onChange={setAddrPhone}
+                      placeholder="50 123 4567"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      label="Address Line 1 *"
+                      placeholder="e.g. 123 Sheikh Zayed Rd"
+                      {...addrForm.register("line1")}
+                    />
+                    {addrForm.formState.errors.line1 && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {addrForm.formState.errors.line1.message}
+                      </p>
                     )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      label="District (optional)"
+                      placeholder="e.g. Downtown"
+                      {...addrForm.register("district")}
+                    />
+                    <Input
+                      label="Postal Code (optional)"
+                      placeholder="e.g. 00000"
+                      {...addrForm.register("postalCode")}
+                    />
+                  </div>
+                </div>
+              )}
+            </section>
+
+            <section className="mb-8 rounded-2xl border border-zinc-200 p-6 md:p-8">
+              <h2 className="mb-4 font-serif text-xl text-zinc-900">
+                Coupon Code
+              </h2>
+              {couponResult ? (
+                <div className="flex items-center justify-between rounded-xl border border-green-200 bg-green-50 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <FiTag size={14} className="text-green-600" />
+                    <span className="font-sans text-sm font-semibold text-green-700">
+                      {couponResult.couponCode}
+                    </span>
+                    <span className="font-sans text-xs text-green-600">
+                      ({Number(couponResult.discountPercentage).toFixed(0)}% off)
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setCouponResult(null);
+                      setCouponInput("");
+                      setCouponError("");
+                    }}
+                    className="text-zinc-400 hover:text-zinc-700"
+                  >
+                    <FiX size={16} />
                   </button>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="bg-zinc-50 border border-zinc-200 rounded-sm p-4 flex justify-between items-center">
-                    <div>
-                      <p className="text-sm font-medium text-black">Account</p>
-                      <p className="text-xs text-zinc-500">{authEmail}</p>
-                    </div>
-                    <button type="button" onClick={() => setIsAuthenticated(false)} className="text-xs underline text-zinc-500 hover:text-black transition-colors">
-                      Log out
-                    </button>
-                  </div>
-                  <label className="flex items-center space-x-3 cursor-pointer group">
-                    <div className="w-5 h-5 border border-zinc-300 rounded-sm flex items-center justify-center group-hover:border-black transition-colors bg-black">
-                      <FiCheck className="text-white w-3 h-3" />
-                    </div>
-                    <span className="text-sm text-zinc-600">Email me with news and exclusive offers</span>
-                  </label>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => {
+                      setCouponInput(e.target.value.toUpperCase());
+                      setCouponError("");
+                    }}
+                    placeholder="ENTER CODE"
+                    className="flex-1 rounded-md border border-transparent bg-zinc-100 px-4 py-3 font-mono text-sm tracking-widest transition-colors placeholder:font-sans placeholder:tracking-normal placeholder:text-zinc-400 focus:border-zinc-300 focus:bg-white focus:outline-none"
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    disabled={isApplyingCoupon || !couponInput.trim()}
+                    className="flex items-center gap-2 rounded-md bg-zinc-900 px-5 py-3 font-sans text-xs font-semibold text-white transition-colors hover:bg-black disabled:opacity-50"
+                  >
+                    {isApplyingCoupon ? (
+                      <FiLoader size={12} className="animate-spin" />
+                    ) : null}
+                    APPLY
+                  </button>
                 </div>
+              )}
+              {couponError && (
+                <p className="mt-2 font-sans text-xs text-red-500">
+                  {couponError}
+                </p>
               )}
             </section>
 
-            <div className={`space-y-12 transition-opacity duration-300 ${!isAuthenticated ? 'opacity-30 pointer-events-none select-none' : ''}`}>
-
-            {/* Shipping Address */}
-            <section>
-              <h2 className="text-lg font-medium text-black mb-4">Shipping address</h2>
-              <div className="space-y-4">
-                <div className="flex flex-col">
-                  <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
-                    Country / Region
-                  </label>
-                  <div className="relative">
-                    <select required className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-md px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
-                      <option value="">COUNTRY / REGION</option>
-                      <option value="ae">United Arab Emirates</option>
-                      <option value="sa">Saudi Arabia</option>
-                    </select>
-                    <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    required
-                    type="text"
-                    label="First Name"
-                    placeholder="FIRST NAME"
-                    className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                  />
-                  <Input
-                    required
-                    type="text"
-                    label="Last Name"
-                    placeholder="LAST NAME"
-                    className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                  />
-                </div>
-
-                <Input
-                  required
-                  type="text"
-                  label="Address"
-                  placeholder="ADDRESS"
-                  className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    required
-                    type="text"
-                    label="City"
-                    placeholder="CITY"
-                    className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                  />
-                  <div className="flex flex-col">
-                    <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
-                      Emirate
-                    </label>
-                    <div className="relative">
-                      <select required className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-md px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
-                        <option value="">EMIRATE</option>
-                        <option value="Dubai">Dubai</option>
-                        <option value="Abu Dhabi">Abu Dhabi</option>
-                      </select>
-                      <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
-                    </div>
-                  </div>
-                </div>
-
-                <Input
-                  required
-                  type="tel"
-                  label="Phone"
-                  placeholder="PHONE"
-                  className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                />
+            <section className="rounded-2xl border border-zinc-200 p-6 md:p-8">
+              <h2 className="mb-6 font-serif text-xl text-zinc-900">Payment</h2>
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-4">
+                <p className="font-sans text-sm text-zinc-700">
+                  After you click <span className="font-semibold">Pay Now</span>,
+                  you&apos;ll be redirected to Checkout.com&apos;s hosted payment
+                  page.
+                </p>
+                <p className="mt-2 font-sans text-xs text-zinc-500">
+                  Checkout.com will securely handle Card, Apple Pay, Google
+                  Pay, and Tamara.
+                </p>
               </div>
             </section>
-
-            {/* Shipping Method */}
-            <section>
-              <h2 className="text-lg font-medium text-black mb-4">Shipping method</h2>
-              <div className="w-full bg-zinc-50 border border-zinc-200 rounded-sm p-5 flex items-start space-x-4">
-                <div className="mt-1 opacity-50">
-                  {/* Truck icon placeholder */}
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-black mb-1">Enter your shipping address</h3>
-                  <p className="text-xs text-zinc-500">Available methods will appear here once we know where to deliver.</p>
-                </div>
-              </div>
-            </section>
-
-            {/* Payment Method */}
-            <section>
-              <div className="flex justify-between items-end mb-4">
-                <h2 className="text-lg font-medium text-black">Payment method</h2>
-                <span className="text-[10px] text-zinc-500 flex items-center gap-1 uppercase tracking-wider">
-                  <FiLock className="w-3 h-3" /> All transactions are secure & encrypted
-                </span>
-              </div>
-              <div className="border border-zinc-300 rounded-sm overflow-hidden bg-transparent divide-y divide-zinc-300">
-                {/* Credit Card */}
-                <label onClick={() => setPaymentMethod('card')} className={`flex items-center justify-between p-4 cursor-pointer transition-colors ${paymentMethod === 'card' ? 'bg-zinc-50/50' : 'hover:bg-zinc-50/50'}`}>
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'card' ? 'border-black' : 'border-zinc-300'}`}>
-                      {paymentMethod === 'card' && <div className="w-2 h-2 bg-black rounded-full" />}
-                    </div>
-                    <div>
-                      <span className="block text-sm font-medium text-black">Credit or debit card</span>
-                      <span className="block text-xs text-zinc-500 mt-0.5">Visa, Mastercard & American Express via Checkout.com</span>
-                    </div>
-                  </div>
-                  <div className="flex space-x-1">
-                    {/* Fake card icons */}
-                    <div className="w-8 h-5 bg-[#1a1f71] rounded text-[8px] text-white flex items-center justify-center font-bold">VISA</div>
-                    <div className="w-8 h-5 bg-[#eb001b] rounded flex items-center justify-center">
-                      <div className="w-3 h-3 bg-[#ff5f00] rounded-full -mr-1 mix-blend-screen"></div>
-                      <div className="w-3 h-3 bg-[#f79e1b] rounded-full mix-blend-screen"></div>
-                    </div>
-                    <div className="w-8 h-5 bg-[#2e77bc] rounded text-[6px] text-white flex items-center justify-center font-bold">AMEX</div>
-                  </div>
-                </label>
-
-                {/* Tabby */}
-                <label onClick={() => setPaymentMethod('tabby')} className={`flex items-center justify-between p-4 cursor-pointer transition-colors ${paymentMethod === 'tabby' ? 'bg-[#ebfef5]/50' : 'hover:bg-zinc-50/50'}`}>
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'tabby' ? 'border-black' : 'border-zinc-300'}`}>
-                      {paymentMethod === 'tabby' && <div className="w-2 h-2 bg-black rounded-full" />}
-                    </div>
-                    <div>
-                      <span className="block text-sm font-medium text-black">Pay in 4 with Tabby</span>
-                      <span className="block text-xs text-zinc-500 mt-0.5">4 interest-free payments of AED {(total / 4).toFixed(2)}</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-5 bg-[#3df5a7] rounded flex items-center justify-center text-[10px] font-bold text-black tracking-tighter">
-                    tabby
-                  </div>
-                </label>
-
-                {/* Tamara */}
-                <label onClick={() => setPaymentMethod('tamara')} className={`flex items-center justify-between p-4 cursor-pointer transition-colors ${paymentMethod === 'tamara' ? 'bg-[#fbe9e7]/50' : 'hover:bg-zinc-50/50'}`}>
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${paymentMethod === 'tamara' ? 'border-black' : 'border-zinc-300'}`}>
-                      {paymentMethod === 'tamara' && <div className="w-2 h-2 bg-black rounded-full" />}
-                    </div>
-                    <div>
-                      <span className="block text-sm font-medium text-black">Split in 3 with Tamara</span>
-                      <span className="block text-xs text-zinc-500 mt-0.5">Interest-free & Shariah-compliant</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-5 flex items-center justify-center text-[12px] font-bold text-black tracking-tighter">
-                    tamara
-                  </div>
-                </label>
-              </div>
-            </section>
-
-            {/* Billing Address */}
-            <section>
-              <h2 className="text-lg font-medium text-black mb-4">Billing address</h2>
-              <div className="border border-zinc-300 rounded-sm overflow-hidden bg-transparent divide-y divide-zinc-300">
-                <label onClick={() => setBillingAddress('same')} className={`flex items-center p-4 cursor-pointer transition-colors ${billingAddress === 'same' ? 'bg-zinc-50/50' : 'hover:bg-zinc-50/50'}`}>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center mr-4 ${billingAddress === 'same' ? 'border-black' : 'border-zinc-300'}`}>
-                    {billingAddress === 'same' && <div className="w-2 h-2 bg-black rounded-full" />}
-                  </div>
-                  <span className="text-sm text-black">Same as shipping address</span>
-                </label>
-                <label onClick={() => setBillingAddress('different')} className={`flex items-center p-4 cursor-pointer transition-colors ${billingAddress === 'different' ? 'bg-zinc-50/50' : 'hover:bg-zinc-50/50'}`}>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center mr-4 ${billingAddress === 'different' ? 'border-black' : 'border-zinc-300'}`}>
-                    {billingAddress === 'different' && <div className="w-2 h-2 bg-black rounded-full" />}
-                  </div>
-                  <span className="text-sm text-black">Use a different billing address</span>
-                </label>
-              </div>
-
-              {billingAddress === 'different' && (
-                <div className="mt-4 space-y-4 p-4 border border-zinc-300 rounded-sm bg-zinc-50/30">
-                  <Input
-                    type="text"
-                    label="Address"
-                    placeholder="ADDRESS"
-                    className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <Input
-                      type="text"
-                      label="City"
-                      placeholder="CITY"
-                      className="bg-transparent border-zinc-300 focus:border-black focus:ring-1 focus:ring-black text-xs tracking-wider uppercase"
-                    />
-                    <div className="flex flex-col">
-                      <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
-                        Emirate
-                      </label>
-                      <div className="relative">
-                        <select className="w-full bg-transparent border border-zinc-300 focus:border-black focus:ring-1 focus:ring-black rounded-md px-4 py-3 text-xs tracking-wider uppercase transition-colors text-black appearance-none">
-                          <option>EMIRATE</option>
-                          <option>Dubai</option>
-                          <option>Abu Dhabi</option>
-                        </select>
-                        <FiChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </section>
-
-            {/* Submit */}
-            <section className="pt-4">
-              <button
-                type="submit"
-                disabled={!isAuthenticated}
-                className="w-full bg-[#111] hover:bg-black text-white px-8 py-4 rounded-sm text-xs font-semibold tracking-[0.2em] uppercase flex items-center justify-center gap-3 transition-colors disabled:opacity-50"
-              >
-                <FiLock className="w-4 h-4" />
-                <span>Pay Now - AED {total.toFixed(2)}</span>
-              </button>
-              <p className="text-center text-[10px] text-zinc-500 mt-4 flex items-center justify-center gap-1">
-                <FiLock className="w-3 h-3" /> Your payment information is processed securely
-              </p>
-            </section>
-            </div>
-          </form>
-
-          {/* Footer links */}
-          <div className="mt-20 pt-8 border-t border-zinc-200/50 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-500">
-            <div className="flex gap-4">
-              <Link href="/policy" className="hover:text-black transition-colors">Refund policy</Link>
-              <Link href="/shipping" className="hover:text-black transition-colors">Shipping</Link>
-              <Link href="/privacy" className="hover:text-black transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-black transition-colors">Terms</Link>
-            </div>
-            <div>© SORIN — DUBAI, UAE</div>
           </div>
         </div>
 
-        {/* Right Column - Order Summary */}
-        <div className="w-full lg:w-2/5 bg-zinc-50/30 lg:bg-white p-6 lg:p-12 lg:pl-12 lg:min-h-screen border-b lg:border-b-0 border-zinc-200/50">
-          <div className="max-w-md mx-auto sticky top-12">
+        <div className="w-full shrink-0 lg:sticky lg:top-32 lg:w-96">
+          <div className="rounded-2xl border border-zinc-200 p-6 md:p-8">
+            <h2 className="mb-6 font-serif text-xl text-zinc-900">
+              Order Summary
+            </h2>
 
-            <div className="border border-zinc-200 rounded-sm p-6 bg-white">
-              {/* Products List */}
-              <div className="space-y-6 max-h-[40vh] overflow-y-auto pr-2 mb-6">
-                {cartItems.length > 0 ? (
-                  cartItems.map((item) => (
-                    <div key={`${item.id}-${item.size}`} className="flex items-center gap-4">
-                      <div className="relative w-16 h-16 bg-zinc-100 rounded-sm border border-zinc-200 shrink-0 flex items-center justify-center overflow-hidden">
-                        {item.image ? (
-                          <Image src={item.image} alt={item.name} fill className="object-cover" />
-                        ) : (
-                          <div className="w-full h-full bg-zinc-200" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-black truncate">{item.name}</h4>
-                        {item.size && <p className="text-xs text-zinc-500 mt-1">Size: {item.size}</p>}
-                      </div>
-                      <div className="text-sm font-medium text-black whitespace-nowrap">
-                        AED {(item.price * item.quantity).toFixed(2)}
-                      </div>
-                    </div>
+            <div className="mb-6 flex max-h-72 flex-col gap-4 overflow-y-auto">
+              {cartLoading
+                ? Array.from({ length: 2 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-14 animate-pulse rounded-lg bg-zinc-100"
+                    />
                   ))
-                ) : (
-                  <div className="text-center py-8 text-zinc-500 text-sm">
-                    Your cart is empty
-                  </div>
-                )}
-              </div>
+                : cartItems.map((item: CartItem) => {
+                    const variant = item.size?.variant;
+                    const product = variant?.product;
+                    const imgUrl = variant?.primaryImage?.publicUrl ?? "";
+                    const unitPrice =
+                      Number(item.price) > 0
+                        ? Number(item.price)
+                        : Number(product?.price ?? 0);
 
-              {/* <div className="border-t border-zinc-200 pt-6 pb-6">
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  placeholder="Discount code"
-                  className="flex-1 bg-zinc-50 border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black rounded-sm px-4 py-3 text-sm transition-colors text-black placeholder:text-zinc-500"
+                    return (
+                      <div key={item.id} className="flex gap-3">
+                        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
+                          {imgUrl && (
+                            <Image
+                              src={imgUrl}
+                              alt={product?.title ?? ""}
+                              fill
+                              sizes="56px"
+                              className="object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-sans text-sm font-semibold text-zinc-900">
+                            {product?.title ?? "-"}
+                          </p>
+                          <p className="mt-0.5 font-sans text-xs text-zinc-400">
+                            {variant?.colorName}{" "}
+                            {item.size?.size ? `· EU ${item.size.size}` : ""} · x
+                            {item.quantity}
+                          </p>
+                        </div>
+                        <p className="whitespace-nowrap font-sans text-sm font-semibold text-zinc-900">
+                          {fmt(unitPrice * item.quantity)}
+                        </p>
+                      </div>
+                    );
+                  })}
+            </div>
+
+            <div className="space-y-2.5 border-t border-zinc-100 pt-4">
+              <Row label="Subtotal" value={fmt(subtotal)} />
+              {discount > 0 && (
+                <Row
+                  label={`Discount (${Number(couponResult?.discountPercentage ?? 0).toFixed(0)}%)`}
+                  value={`-${fmt(discount)}`}
+                  valueClass="text-green-600"
                 />
-                <button type="button" className="px-6 py-3 border border-zinc-300 rounded-sm text-xs font-semibold tracking-wider uppercase text-black hover:bg-zinc-50 transition-colors">
-                  Apply
-                </button>
-              </div>
-            </div> */}
-
-              <div className="border-t border-zinc-200 pt-6 pb-6">
-                <div className="flex flex-col sm:flex-row gap-3">
-
-                  <input
-                    type="text"
-                    placeholder="Discount code"
-                    className="flex-1 w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black rounded-sm px-4 py-3 text-sm transition-colors text-black placeholder:text-zinc-500"
-                  />
-
-                  <button
-                    type="button"
-                    className="w-full sm:w-auto px-6 py-3 border border-zinc-300 rounded-sm text-xs font-semibold tracking-wider uppercase text-black hover:bg-zinc-50 transition-colors"
-                  >
-                    Apply
-                  </button>
-
-                </div>
-              </div>
-
-              <div className="border-t border-zinc-200 pt-6 space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600">Subtotal</span>
-                  <span className="text-black font-medium">AED {subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600">Shipping</span>
-                  <span className="text-black font-medium">{shipping === 0 ? 'Free' : `AED ${shipping.toFixed(2)}`}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-zinc-200 mt-6 pt-6 flex justify-between items-end">
-                <span className="text-xs text-zinc-500 tracking-wider uppercase">Total</span>
-                <span className="text-2xl font-medium text-black">AED {total.toFixed(2)}</span>
+              )}
+              <Row label="Shipping" value="Free" />
+              <div className="flex items-baseline justify-between border-t border-zinc-100 pt-3">
+                <span className="font-sans text-sm font-semibold text-zinc-900">
+                  Total
+                </span>
+                <span className="font-serif text-xl text-zinc-900">
+                  {fmt(total)}
+                </span>
               </div>
             </div>
+
+            <button
+              onClick={handlePayNow}
+              disabled={!isAuthenticated || isCreatingOrder || cartLoading}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-4 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {isCreatingOrder ? (
+                <>
+                  <Spinner />
+                  CREATING ORDER...
+                </>
+              ) : (
+                <>
+                  <FiLock size={12} />
+                  PAY NOW · {fmt(total)}
+                </>
+              )}
+            </button>
+
+            <p className="mt-4 flex items-center justify-center gap-1 text-center font-sans text-[10px] text-zinc-400">
+              <FiLock size={10} /> 256-bit SSL · AED · VAT Inclusive
+            </p>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Radio({ selected }: { selected: boolean }) {
+  return (
+    <div
+      className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${selected ? "border-zinc-900" : "border-zinc-300"}`}
+    >
+      {selected && <div className="h-2 w-2 rounded-full bg-zinc-900" />}
+    </div>
+  );
+}
+
+function Row({
+  label,
+  value,
+  valueClass = "",
+}: {
+  label: string;
+  value: string;
+  valueClass?: string;
+}) {
+  return (
+    <div className="flex justify-between font-sans text-xs text-zinc-500">
+      <span>{label}</span>
+      <span className={valueClass}>{value}</span>
     </div>
   );
 }

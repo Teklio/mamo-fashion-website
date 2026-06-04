@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ppFragmentSerif, ppFragmentText } from "@/lib/font";
 import "./globals.css";
-import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider } from "@/context/WishlistContext";
 import Footer from "@/components/Footer";
 import Toaster from "@/components/Toaster";
 
@@ -18,9 +16,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/fevicon.jpg",
+  },
   title: "SORIN | Endless Escape",
   description: "Discover the luxury collection of HOUSE OF SORIN.",
 };
+
+import StoreProvider from "@/store/provider";
+import QueryProvider from "@/providers/QueryProvider";
 
 export default function RootLayout({
   children,
@@ -33,15 +37,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${ppFragmentSerif.variable} ${ppFragmentText.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white">
-        <CartProvider>
-          <WishlistProvider>
+        <StoreProvider>
+          <QueryProvider>
             {children}
             <Footer />
             <Toaster />
-          </WishlistProvider>
-        </CartProvider>
+          </QueryProvider>
+        </StoreProvider>
       </body>
     </html>
   );
 }
-

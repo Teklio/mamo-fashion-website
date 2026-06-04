@@ -2,55 +2,45 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FiX, FiShoppingCart, FiMinus, FiPlus } from "react-icons/fi";
-import { useWishlist } from "@/context/WishlistContext";
-import { useCart } from "@/context/CartContext";
+import { FiX, FiShoppingCart } from "react-icons/fi";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGetWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
+import { formatPrice } from "@/services/product.service";
+import type { WishlistItem } from "@/types/wishlist.type";
 
 export default function WishlistClient() {
-  const { wishlistItems, removeFromWishlist, updateWishlistQuantity, clearWishlist } = useWishlist();
-  const { addToCart } = useCart();
+  const { data, isLoading } = useGetWishlist();
+  const { mutate: removeFromWishlist } = useRemoveFromWishlist();
 
-  const handleAddToCart = (product: any) => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.priceVal,
-      image: product.image,
-      color: product.color || "Ocean Blue",
-      quantity: product.quantity || 1,
-    });
-    removeFromWishlist(product.id);
-    toast.success(`${product.name} moved to cart`);
-  };
+  const wishlist = data?.wishlist ?? [];
+  const subtotal = wishlist.reduce(
+    (acc: number, w: WishlistItem) => acc + Number(w.product?.price ?? 0),
+    0,
+  );
 
-  const handleMoveAllToBag = () => {
-    wishlistItems.forEach(item => {
-      addToCart({
-        id: item.id,
-        name: item.name,
-        price: item.priceVal,
-        image: item.image,
-        color: item.color || "Ocean Blue",
-        quantity: item.quantity || 1,
-      });
-    });
-    clearWishlist();
-    toast.success("All items moved to cart");
-  };
-
-  const subtotal = wishlistItems.reduce((acc, item) => acc + (item.priceVal * (item.quantity || 1)), 0);
+  if (isLoading) {
+    return (
+      <div className="max-w-400 mx-auto px-8 md:px-16">
+        <div className="mb-8 md:mb-10">
+          <h1 className="text-2xl md:text-4xl font-serif text-zinc-900">Wishlist</h1>
+        </div>
+        <div className="flex flex-col gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-40 rounded-xl bg-zinc-100 animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-400 mx-auto px-8 md:px-16">
       <div className="mb-8 md:mb-10">
-        <h1 className="text-2xl md:text-4xl font-serif text-zinc-900">
-          Wishlist
-        </h1>
+        <h1 className="text-2xl md:text-4xl font-serif text-zinc-900">Wishlist</h1>
       </div>
 
-      {wishlistItems.length === 0 ? (
+      {wishlist.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center border-t border-zinc-100">
           <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
             <FiShoppingCart className="text-zinc-300" size={32} />
@@ -68,114 +58,102 @@ export default function WishlistClient() {
         </div>
       ) : (
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 border-t border-zinc-100 pt-8">
-          
           {/* Left: Product List */}
           <div className="flex-1 flex flex-col gap-6">
             <AnimatePresence>
-              {wishlistItems.map((item) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                  className="flex flex-col md:flex-row border border-[#ebebeb] rounded-xl overflow-hidden bg-[#fafafa]"
-                >
-                  {/* Image */}
-                  <Link 
-                    href={`/shop/${item.id}`}
-                    className="w-full md:w-48 bg-white shrink-0 flex items-center justify-center p-4 md:p-6 border-b md:border-b-0 md:border-r border-[#ebebeb] hover:bg-zinc-50 transition-colors"
+              {wishlist.map((w: WishlistItem) => {
+                const product = w.product;
+                const firstVariant = product?.variants?.[0];
+                const imageUrl = firstVariant?.primaryImage?.publicUrl ?? "";
+                const colorCode = firstVariant?.colorCode ?? "#31639d";
+                const colorName = firstVariant?.colorName ?? "";
+
+                return (
+                  <motion.div
+                    key={w.productId}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                    className="flex flex-col md:flex-row border border-[#ebebeb] rounded-xl overflow-hidden bg-[#fafafa]"
                   >
-                    <div className="relative w-full aspect-video md:aspect-square">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  </Link>
-
-                  {/* Details */}
-                  <div className="flex-1 p-4 md:p-5 flex flex-col relative">
-                    <button
-                      onClick={() => {
-                        removeFromWishlist(item.id);
-                        toast.info(`${item.name} removed from wishlist`);
-                      }}
-                      className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 transition-colors"
-                      aria-label="Remove from wishlist"
+                    {/* Image */}
+                    <Link
+                      href={`/shop/${product?.id}`}
+                      className="w-full md:w-48 bg-white shrink-0 flex items-center justify-center p-4 md:p-6 border-b md:border-b-0 md:border-r border-[#ebebeb] hover:bg-zinc-50 transition-colors"
                     >
-                      <FiX size={18} />
-                    </button>
-
-                    <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1.5">
-                      FOOTWEAR
-                    </span>
-                    
-                    <h3 className="text-xl md:text-2xl font-serif text-zinc-900 mb-2.5 pr-8 hover:text-zinc-600 transition-colors">
-                      <Link href={`/shop/${item.id}`}>{item.name}</Link>
-                    </h3>
-
-                    <div className="flex items-center space-x-2 mb-3 border-b border-[#ebebeb] pb-3">
-                      <div className={`w-3 h-3 rounded-full border border-zinc-200 ${
-                        (item.color || "Ocean Blue") === "Maroon" ? "bg-[#913b63]" :
-                        (item.color || "Ocean Blue") === "Green" ? "bg-[#3e5c46]" :
-                        "bg-[#31639d]"
-                      }`}></div>
-                      <span className="text-xs text-zinc-600 font-sans ml-2">{item.color || "Ocean Blue"}</span>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">SIZE</span>
-                        <span className="text-sm font-sans text-zinc-900">EU 38</span>
+                      <div className="relative w-full aspect-video md:aspect-square">
+                        {imageUrl && (
+                          <Image
+                            src={imageUrl}
+                            alt={product?.title ?? ""}
+                            fill
+                            className="object-contain"
+                          />
+                        )}
                       </div>
-                      <div>
-                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">QTY</span>
-                        <div className="flex items-center space-x-3">
-                          <button 
-                            onClick={() => updateWishlistQuantity(item.id, (item.quantity || 1) - 1)}
-                            className="text-zinc-400 hover:text-black transition-colors focus:outline-none"
-                            disabled={(item.quantity || 1) <= 1}
-                          >
-                            <FiMinus size={10} className={(item.quantity || 1) <= 1 ? "opacity-50 cursor-not-allowed" : ""} />
-                          </button>
-                          <span className="text-sm font-sans text-zinc-900">{item.quantity || 1}</span>
-                          <button 
-                            onClick={() => updateWishlistQuantity(item.id, (item.quantity || 1) + 1)}
-                            className="text-zinc-400 hover:text-black transition-colors focus:outline-none"
-                          >
-                            <FiPlus size={10} />
-                          </button>
-                        </div>
-                      </div>
-                      <div>
-                        <span className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1">PRICE</span>
-                        <span className="text-sm font-sans text-zinc-900">{item.priceText}</span>
-                      </div>
-                    </div>
+                    </Link>
 
-                    <div className="flex items-center gap-4 mt-auto">
-                      <button
-                        onClick={() => handleAddToCart(item)}
-                        className="px-6 py-3 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
-                      >
-                        MOVE TO BAG
-                      </button>
+                    {/* Details */}
+                    <div className="flex-1 p-4 md:p-5 flex flex-col relative">
                       <button
                         onClick={() => {
-                          removeFromWishlist(item.id);
-                          toast.info(`${item.name} removed from wishlist`);
+                          removeFromWishlist(w.productId, {
+                            onSuccess: () =>
+                              toast.info(`${product?.title} removed from wishlist`),
+                          });
                         }}
-                        className="px-4 py-3 text-[10px] md:text-xs font-bold tracking-widest text-zinc-400 hover:text-zinc-900 uppercase transition-colors font-sans"
+                        className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 transition-colors"
+                        aria-label="Remove from wishlist"
                       >
-                        REMOVE
+                        <FiX size={18} />
                       </button>
+
+                      <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1.5">
+                        FOOTWEAR
+                      </span>
+
+                      <h3 className="text-xl md:text-2xl font-serif text-zinc-900 mb-2.5 pr-8 hover:text-zinc-600 transition-colors">
+                        <Link href={`/shop/${product?.id}`}>{product?.title}</Link>
+                      </h3>
+
+                      <div className="flex items-center space-x-2 mb-3 border-b border-[#ebebeb] pb-3">
+                        <div
+                          className="w-3 h-3 rounded-full border border-zinc-200"
+                          style={{ backgroundColor: colorCode }}
+                        />
+                        <span className="text-xs text-zinc-600 font-sans ml-2">{colorName}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-sm font-semibold text-zinc-900 font-sans">
+                          {formatPrice(product?.price ?? "0")}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-4 mt-auto">
+                        <Link
+                          href={`/shop/${product?.id}`}
+                          className="px-6 py-3 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
+                        >
+                          VIEW PRODUCT
+                        </Link>
+                        <button
+                          onClick={() => {
+                            removeFromWishlist(w.productId, {
+                              onSuccess: () =>
+                                toast.info(`${product?.title} removed from wishlist`),
+                            });
+                          }}
+                          className="px-4 py-3 text-[10px] md:text-xs font-bold tracking-widest text-zinc-400 hover:text-zinc-900 uppercase transition-colors font-sans"
+                        >
+                          REMOVE
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
 
@@ -188,25 +166,21 @@ export default function WishlistClient() {
               <h2 className="text-2xl md:text-3xl font-serif text-zinc-900 mb-6 md:mb-8">
                 Wishlist Summary
               </h2>
-              
+
               <div className="border-t border-[#ebebeb] pt-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-xs text-zinc-500 font-sans">Saved items</span>
-                  <span className="text-sm text-zinc-900 font-sans font-medium">{wishlistItems.length}</span>
+                  <span className="text-sm text-zinc-900 font-sans font-medium">{wishlist.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-zinc-500 font-sans">Estimated subtotal</span>
-                  <span className="text-sm font-semibold text-zinc-900 font-sans">AED {subtotal.toFixed(2)}</span>
+                  <span className="text-sm font-semibold text-zinc-900 font-sans">
+                    AED {subtotal.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3 mt-8 md:mt-10">
-                <button
-                  onClick={handleMoveAllToBag}
-                  className="w-full py-3.5 md:py-4 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
-                >
-                  MOVE ALL TO BAG
-                </button>
                 <Link
                   href="/shop"
                   className="w-full py-3.5 md:py-4 bg-white border border-[#ebebeb] text-zinc-800 text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-zinc-50 hover:border-zinc-200 transition-colors font-sans text-center block"
