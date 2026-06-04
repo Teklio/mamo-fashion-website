@@ -150,8 +150,53 @@ export default function AddressPage() {
     setForm(initialFormState);
   };
 
+const citiesByCountry: Record<string, string[]> = {
+  AE: ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain"],
+  SA: ["Riyadh", "Jeddah", "Mecca", "Medina", "Dammam", "Khobar", "Dhahran"],
+  GB: ["London", "Manchester", "Birmingham", "Leeds", "Glasgow", "Liverpool"]
+};
+
   const renderFormFields = () => (
     <div className="flex flex-col gap-4">
+      {/* Country Code and City as first fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
+            Country Code *
+          </label>
+          <select 
+            value={form.countryCode}
+            onChange={e => setForm({ ...form, countryCode: e.target.value, city: "" })}
+            required
+            className="w-full bg-zinc-100 border border-transparent focus:border-zinc-300 focus:bg-white focus:outline-none rounded-md px-4 py-3 text-sm transition-colors text-black appearance-none"
+          >
+            <option value="">Select Country Code</option>
+            <option value="AE">AE (United Arab Emirates)</option>
+            <option value="SA">SA (Saudi Arabia)</option>
+            <option value="GB">GB (United Kingdom)</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
+            City *
+          </label>
+          <select 
+            value={form.city}
+            onChange={e => setForm({ ...form, city: e.target.value })}
+            disabled={!form.countryCode}
+            required
+            className="w-full bg-zinc-100 border border-transparent focus:border-zinc-300 focus:bg-white focus:outline-none rounded-md px-4 py-3 text-sm transition-colors text-black disabled:opacity-50 appearance-none"
+          >
+            <option value="">{form.countryCode ? "Select City" : "Select Country First"}</option>
+            {form.countryCode && citiesByCountry[form.countryCode]?.map((city) => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Name and Phone below Country Code / City */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input 
           label="Full Name" 
@@ -168,6 +213,7 @@ export default function AddressPage() {
           placeholder="e.g. 9187690560"
         />
       </div>
+
       <Input 
         label="Address Line 1" 
         value={form.line1} 
@@ -175,29 +221,14 @@ export default function AddressPage() {
         required 
         placeholder="e.g. XYZ Road, Southampton Street"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input 
-          label="City" 
-          value={form.city} 
-          onChange={e => setForm({ ...form, city: e.target.value })} 
-          required 
-          placeholder="e.g. London"
-        />
+
+      {/* District, Postal Code, and Landmark */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Input 
           label="District (Optional)" 
           value={form.district} 
           onChange={e => setForm({ ...form, district: e.target.value })} 
           placeholder="e.g. Greater London"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Input 
-          label="Country Code" 
-          value={form.countryCode} 
-          onChange={e => setForm({ ...form, countryCode: e.target.value })} 
-          required 
-          maxLength={2}
-          placeholder="e.g. SA"
         />
         <Input 
           label="Postal Code (Optional)" 
@@ -212,6 +243,7 @@ export default function AddressPage() {
           placeholder="e.g. Near Central Station"
         />
       </div>
+
       <label className="flex items-center gap-2 cursor-pointer mt-2">
         <input 
           type="checkbox" 
