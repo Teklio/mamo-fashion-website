@@ -48,3 +48,11 @@ export interface CreateOrderPayload {
   productVariantSizeId?: string;
   quantity?: number;
 }
+
+export interface BuyNowPayload {
+  productVariantSizeId: string;
+  quantity: number;
+  shippingAddress: string | InlineAddress;
+  billingAddress?: string | InlineAddress;
+  couponCode?: string;
+}

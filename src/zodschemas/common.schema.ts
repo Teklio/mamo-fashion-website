@@ -29,3 +29,12 @@ export const nonNegativeNumberSchema = z.coerce
 
 //date & time
 export const dateSchema = z.coerce.date().optional();
+
+// Contact form
+export const contactFormSchema = z.object({
+  fullName: z.string().trim().min(2, "Full name must be at least 2 characters").max(100),
+  email: z.string().trim().email("Invalid email address"),
+  subject: z.string().trim().min(3, "Subject is required").max(200),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000),
+});
+export type ContactFormType = z.infer<typeof contactFormSchema>;

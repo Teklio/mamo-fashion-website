@@ -112,7 +112,7 @@ export default function FeaturedProducts({
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           priority
-                          className={`object-contain p-4 transition-all duration-700 ease-in-out ${
+                          className={`object-cover transition-all duration-700 ease-in-out ${
                             hoverImage
                               ? "group-hover:opacity-0 group-hover:scale-95"
                               : "group-hover:scale-105"
@@ -153,7 +153,7 @@ export default function FeaturedProducts({
                     {/* Product Info */}
                     <div className="flex flex-col px-1">
                       <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">
-                        {product.colorName ?? ""}
+                        {product.title ?? ""}
                       </span>
                       <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide">
                         {formatPrice(product.price)}

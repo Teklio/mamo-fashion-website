@@ -23,25 +23,25 @@ export default function CheckoutSuccessClient({
 
     const run = async () => {
       for (let attempt = 0; attempt < 6; attempt += 1) {
-        const result = await verifyPaymentStatus(orderId, "success");
+        const result = await verifyPaymentStatus(orderId);
 
         if (result.status === "PAID") {
-          try {
-            await clearCart();
-          } catch {
-            // Cart clear failure should not block order navigation.
-          }
+          try { await clearCart(); } catch { /* non-blocking */ }
           router.replace("/account/orders");
           return;
         }
 
         if (result.status === "FAILED" || result.status === "CANCELLED") {
+          // Cart is cleared on the failure page after it verifies
           router.replace(`/checkout/failure?orderId=${orderId}`);
           return;
         }
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
+
+      // Polling exhausted — payment still PENDING. Order already exists so clear the cart.
+      try { await clearCart(); } catch { /* non-blocking */ }
     };
 
     void run();

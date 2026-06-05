@@ -27,7 +27,7 @@ export default function AccountSidebar() {
       onSuccess: () => {
         setIsLogoutModalOpen(false);
         toast.success("Logged out successfully");
-        router.replace("/login");
+        router.push("/");
       },
       onError: (err) => {
         const axiosErr = err as AxiosError<{ message: string }>;

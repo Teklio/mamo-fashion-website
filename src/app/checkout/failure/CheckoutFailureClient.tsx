@@ -20,50 +20,45 @@ const getFailureMessage = (status: "FAILED" | "CANCELLED" | "PENDING") => {
 
 export default function CheckoutFailureClient({
   orderId,
-  result,
 }: {
   orderId?: string;
-  result?: "failed" | "cancelled";
 }) {
   const router = useRouter();
   const { mutateAsync: clearCart } = useClearCart();
   const handledRef = useRef(false);
-  const [status, setStatus] = useState<"FAILED" | "CANCELLED" | "PENDING">(
-    result === "cancelled" ? "CANCELLED" : "FAILED",
-  );
+  const [status, setStatus] = useState<"FAILED" | "CANCELLED" | "PENDING">("FAILED");
 
   useEffect(() => {
     if (!orderId || handledRef.current) return;
     handledRef.current = true;
 
     const run = async () => {
-      const verification = await verifyPaymentStatus(orderId, result);
+      const verification = await verifyPaymentStatus(orderId);
 
       if (verification.status === "PAID") {
-        try {
-          await clearCart();
-        } catch {
-          // Cart clear failure should not block order navigation.
-        }
+        try { await clearCart(); } catch { /* non-blocking */ }
         router.replace("/account/orders");
         return;
       }
 
       if (verification.status === "CANCELLED") {
+        try { await clearCart(); } catch { /* non-blocking */ }
         setStatus("CANCELLED");
         return;
       }
 
       if (verification.status === "FAILED") {
+        try { await clearCart(); } catch { /* non-blocking */ }
         setStatus("FAILED");
         return;
       }
 
+      try { await clearCart(); } catch { /* non-blocking */ }
       setStatus("PENDING");
     };
 
     void run();
-  }, [clearCart, orderId, result, router]);
+  }, [clearCart, orderId, router]);
 
   return (
     <>
@@ -98,7 +93,7 @@ export default function CheckoutFailureClient({
               href="/checkout"
               className="w-full rounded-md bg-zinc-900 py-3.5 text-center font-sans text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-black"
             >
-              RETRY PAYMENT
+              RETRY CHECKOUT
             </Link>
             <Link
               href="/account/orders"

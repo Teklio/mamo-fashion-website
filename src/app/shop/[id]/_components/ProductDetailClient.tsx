@@ -102,11 +102,17 @@ export default function ProductDetailClient({
     if (!selectedSize) { toast.error("Please select a size"); return; }
     const sizeObj = selectedVariant?.sizes.find((s) => s.size === selectedSize);
     if (!sizeObj) return;
-    if (!isAuthenticated) { router.push("/login"); return; }
-    addToCartApi(
-      { productVariantSizeId: sizeObj.id, quantity },
-      { onSuccess: () => router.push("/checkout") },
-    );
+    const params = new URLSearchParams({
+      mode: "buynow",
+      pvs: sizeObj.id,
+      qty: String(quantity),
+      title: product.title,
+      price: String(product.price),
+      color: selectedColor,
+      size: selectedSize,
+      img: selectedVariant?.primaryImage?.publicUrl ?? "",
+    });
+    router.push(`/checkout?${params}`);
   };
 
   const handleWishlistToggle = () => {
@@ -120,9 +126,9 @@ export default function ProductDetailClient({
 
   return (
     <div className="flex flex-col gap-24">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-24">
         {/* Left: Images */}
-        <div className="flex flex-col-reverse lg:flex-row gap-6 lg:h-175">
+        <div className="flex flex-col-reverse col-span-3 lg:flex-row gap-6 lg:h-165">
           {/* Thumbnails */}
           <div className="flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto no-scrollbar pb-2 lg:pb-0">
             {variantImages.length > 0 ? (
@@ -139,7 +145,7 @@ export default function ProductDetailClient({
                     alt={`Thumbnail ${idx}`}
                     fill
                     sizes="96px"
-                    className="object-contain p-2"
+                    className="object-cover"
                   />
                 </button>
               ))
@@ -160,7 +166,7 @@ export default function ProductDetailClient({
                   alt={product.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-contain animate-in fade-in duration-300"
+                  className="object-cover animate-in fade-in duration-300"
                   priority
                 />
               ) : (
@@ -188,7 +194,7 @@ export default function ProductDetailClient({
         </div>
 
         {/* Right: Details */}
-        <div className="flex flex-col pt-4 lg:pt-12">
+        <div className="flex flex-col pt-4 col-span-2 lg:pt-12">
           <h1 className="text-3xl md:text-4xl font-serif text-zinc-900 mb-2">
             {product.title}
           </h1>

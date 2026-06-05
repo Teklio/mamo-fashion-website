@@ -5,6 +5,7 @@ import { loginSuccess } from "@/store/slices/authSlice";
 import type { AppDispatch } from "@/store";
 import type {
   ApplyCouponResponse,
+  BuyNowPayload,
   CheckoutAuthResponse,
   CreateOrderPayload,
   CreateOrderResponse,
@@ -79,17 +80,29 @@ export const useCreateOrder = () => {
   return useMutation({ mutationFn: createOrderApi });
 };
 
+const buyNowApi = async (
+  payload: BuyNowPayload,
+): Promise<CreateOrderResponse> => {
+  const res = await axiosInstance.post<CreateOrderResponse>("/orders", {
+    mode: "buynow",
+    productVariantSizeId: payload.productVariantSizeId,
+    quantity: payload.quantity,
+    shippingAddress: payload.shippingAddress,
+    billingAddress: payload.billingAddress,
+    couponCode: payload.couponCode,
+  });
+  return res.data;
+};
+
+export const useBuyNow = () => {
+  return useMutation({ mutationFn: buyNowApi });
+};
+
 export const verifyPaymentStatus = async (
   orderId: string,
-  result?: "success" | "failed" | "cancelled",
 ): Promise<VerifyPaymentResponse> => {
-  const params = new URLSearchParams({ orderId });
-  if (result) {
-    params.set("result", result);
-  }
-
   const res = await axiosInstance.get<VerifyPaymentResponse>(
-    `/payments/verify?${params.toString()}`,
+    `/payments/verify?orderId=${orderId}`,
   );
   return res.data;
 };

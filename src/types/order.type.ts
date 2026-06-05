@@ -18,6 +18,7 @@ export interface OrderItemVariant {
   id: string;
   colorName: string;
   colorCode: string;
+  primaryImage: { imageUrl: string } | null;
 }
 
 export interface OrderItemSize {

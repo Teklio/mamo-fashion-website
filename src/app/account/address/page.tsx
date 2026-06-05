@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiLoader, FiAlertTriangle } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
@@ -36,7 +36,7 @@ export default function AddressPage() {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     reset,
     formState: { errors, isDirty },
   } = useForm<AddressFormType>({
@@ -53,9 +53,9 @@ export default function AddressPage() {
     },
   });
 
-  const watchedCountryCode = watch("countryCode");
-  const watchedCity = watch("city");
-  const watchedIsDefault = watch("isDefault");
+  const watchedCountryCode = useWatch({ control, name: "countryCode" });
+  const watchedCity = useWatch({ control, name: "city" });
+  const watchedIsDefault = useWatch({ control, name: "isDefault" });
 
   const { data: countrycodeData, isLoading: isCountriesLoading } = useGetCountrycodes(countrySearch);
   const { data: citiesData, isLoading: isCitiesLoading } = useGetCities(watchedCountryCode ?? "");

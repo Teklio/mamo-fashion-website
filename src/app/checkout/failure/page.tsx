@@ -7,6 +7,6 @@ export default async function CheckoutFailurePage({
 }) {
   const params = await searchParams;
   return (
-    <CheckoutFailureClient orderId={params.orderId} result={params.result} />
+    <CheckoutFailureClient orderId={params.orderId}  />
   );
 }
