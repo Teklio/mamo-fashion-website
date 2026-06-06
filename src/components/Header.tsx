@@ -41,7 +41,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
     { name: "HOME", href: "/" },
     { name: "SHOP", href: "/shop" },
     { name: "HOUSE OF SORIN", href: "/about" },
-    { name: "CONTACT US", href: "/contact" },
+    { name: "CONTACT US", href: "/contact-us" },
   ];
 
   const mobileNavLinks = [
@@ -79,7 +79,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-[10px] lg:text-xs tracking-[0.1em] lg:tracking-[0.2em] whitespace-nowrap transition-colors duration-300 font-sans font-medium relative py-1 group ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"
+                className={`text-[10px] lg:text-xs tracking-widest lg:tracking-[0.2em] whitespace-nowrap transition-colors duration-300 font-sans font-medium relative py-1 group ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"
                   }`}
               >
                 {link.name}

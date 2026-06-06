@@ -494,7 +494,7 @@ export default function CheckoutClient() {
           {/* ── Footer links ──────────────────────────────────────────────── */}
           <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
             <div className="flex items-center gap-5">
-              <Link href="/refund-policy" className="font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-600">
+              <Link href="/return-and-refund-policy" className="font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-600">
                 Shipping &amp; Returns
               </Link>
               <Link href="/privacy-policy" className="font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-600">

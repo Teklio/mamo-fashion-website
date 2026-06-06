@@ -59,7 +59,7 @@ export default function Footer() {
               <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
                 <li>
                   <Link
-                    href="/contact"
+                    href="/contact-us"
                     className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors"
                   >
                     Contact
@@ -75,7 +75,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/contact?scrollTo=faq"
+                    href="/contact-us?scrollTo=faq"
                     className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors"
                   >
                     FAQ

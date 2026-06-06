@@ -547,7 +547,7 @@ export default function ProductDetailClient({
                   Handcrafted in limited quantities
                 </span>
                 <Link
-                  href="/contact"
+                  href="/contact-us"
                   className="text-sm font-medium text-zinc-900 underline underline-offset-4 hover:text-zinc-600 transition-colors"
                 >
                   Need help?
