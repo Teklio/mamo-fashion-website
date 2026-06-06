@@ -33,27 +33,30 @@ export default function CheckoutFailureClient({
     handledRef.current = true;
 
     const run = async () => {
+      const isBuyNow = sessionStorage.getItem("checkoutMode") === "buynow";
+      sessionStorage.removeItem("checkoutMode");
+
       const verification = await verifyPaymentStatus(orderId);
 
       if (verification.status === "PAID") {
-        try { await clearCart(); } catch { /* non-blocking */ }
+        if (!isBuyNow) { try { await clearCart(); } catch { /* non-blocking */ } }
         router.replace("/account/orders");
         return;
       }
 
       if (verification.status === "CANCELLED") {
-        try { await clearCart(); } catch { /* non-blocking */ }
+        if (!isBuyNow) { try { await clearCart(); } catch { /* non-blocking */ } }
         setStatus("CANCELLED");
         return;
       }
 
       if (verification.status === "FAILED") {
-        try { await clearCart(); } catch { /* non-blocking */ }
+        if (!isBuyNow) { try { await clearCart(); } catch { /* non-blocking */ } }
         setStatus("FAILED");
         return;
       }
 
-      try { await clearCart(); } catch { /* non-blocking */ }
+      if (!isBuyNow) { try { await clearCart(); } catch { /* non-blocking */ } }
       setStatus("PENDING");
     };
 

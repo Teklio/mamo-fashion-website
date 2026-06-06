@@ -22,17 +22,20 @@ export default function CheckoutSuccessClient({
     handledRef.current = true;
 
     const run = async () => {
+      const isBuyNow = sessionStorage.getItem("checkoutMode") === "buynow";
+
       for (let attempt = 0; attempt < 6; attempt += 1) {
         const result = await verifyPaymentStatus(orderId);
 
         if (result.status === "PAID") {
-          try { await clearCart(); } catch { /* non-blocking */ }
+          if (!isBuyNow) { try { await clearCart(); } catch { /* non-blocking */ } }
+          sessionStorage.removeItem("checkoutMode");
           router.replace("/account/orders");
           return;
         }
 
         if (result.status === "FAILED" || result.status === "CANCELLED") {
-          // Cart is cleared on the failure page after it verifies
+          // leave checkoutMode in sessionStorage — failure page will read and remove it
           router.replace(`/checkout/failure?orderId=${orderId}`);
           return;
         }
@@ -41,7 +44,8 @@ export default function CheckoutSuccessClient({
       }
 
       // Polling exhausted — payment still PENDING. Order already exists so clear the cart.
-      try { await clearCart(); } catch { /* non-blocking */ }
+      if (!isBuyNow) { try { await clearCart(); } catch { /* non-blocking */ } }
+      sessionStorage.removeItem("checkoutMode");
     };
 
     void run();

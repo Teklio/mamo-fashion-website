@@ -255,7 +255,10 @@ export default function CheckoutClient() {
           couponCode: couponResult?.couponCode,
         },
         {
-          onSuccess: (data) => { window.location.href = data.paymentUrl; },
+          onSuccess: (data) => {
+            sessionStorage.setItem("checkoutMode", "buynow");
+            window.location.href = data.paymentUrl;
+          },
           onError: (err) => {
             const ae = err as AxiosError<{ message: string }>;
             toast.error(ae.response?.data?.message || "Failed to create order");
@@ -274,6 +277,7 @@ export default function CheckoutClient() {
       },
       {
         onSuccess: (data) => {
+          sessionStorage.setItem("checkoutMode", "cart");
           window.location.href = data.paymentUrl;
         },
         onError: (err) => {
@@ -485,6 +489,22 @@ export default function CheckoutClient() {
                 </p>
               </div>
             </section>
+          </div>
+
+          {/* ── Footer links ──────────────────────────────────────────────── */}
+          <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
+            <div className="flex items-center gap-5">
+              <Link href="/refund-policy" className="font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-600">
+                Shipping &amp; Returns
+              </Link>
+              <Link href="/privacy-policy" className="font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-600">
+                Privacy
+              </Link>
+              <Link href="/terms-and-conditions" className="font-sans text-xs text-zinc-400 transition-colors hover:text-zinc-600">
+                Terms
+              </Link>
+            </div>
+            <span className="font-sans text-xs text-zinc-400">© SORIN — DUBAI, UAE</span>
           </div>
         </div>
 
