@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import Header from "@/components/Header";
-import ContactHero from "@/app/contact/_components/ContactHero";
-import ContactForm from "@/app/contact/_components/ContactForm";
-import Faq from "@/app/contact/_components/Faq";
+import ContactHero from "@/app/contact-us/_components/ContactHero";
+import ContactForm from "@/app/contact-us/_components/ContactForm";
+import Faq from "@/app/contact-us/_components/Faq";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
