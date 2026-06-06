@@ -23,14 +23,14 @@ export default function Footer() {
           </div>
 
           {/* Navigation Columns (Right) */}
-          <div className="lg:w-[70%] flex flex-col items-center md:flex-row justify-between md:items-start w-full gap-y-12 gap-x-8">
+          <div className="lg:w-[70%] grid grid-cols-2 md:flex md:flex-row md:justify-between md:items-start w-full gap-y-12 gap-x-8">
             {/* The House */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
+            <div className="flex flex-col items-start">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-start gap-2">
                 <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 THE HOUSE
               </h4>
-              <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
+              <ul className="flex flex-col space-y-5 items-start">
                 <li>
                   <Link
                     href="/about"
@@ -51,12 +51,12 @@ export default function Footer() {
             </div>
 
             {/* Customer Care */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
+            <div className="flex flex-col items-start">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-start gap-2">
                 <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 CUSTOMER CARE
               </h4>
-              <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
+              <ul className="flex flex-col space-y-5 items-start">
                 <li>
                   <Link
                     href="/contact-us"
@@ -85,12 +85,12 @@ export default function Footer() {
             </div>
 
             {/* Social */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-center md:justify-start gap-2">
+            <div className="flex flex-col items-start">
+              <h4 className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 flex items-center justify-start gap-2">
                 <span className="w-3 h-px bg-zinc-300 hidden md:block"></span>
                 SOCIAL
               </h4>
-              <ul className="flex flex-col space-y-5 items-center md:items-start text-center md:text-left">
+              <ul className="flex flex-col space-y-5 items-start">
                 <li>
                   <a
                     href="https://www.instagram.com/sorinofficial_/"
