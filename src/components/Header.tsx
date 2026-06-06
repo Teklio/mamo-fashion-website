@@ -59,7 +59,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
           : `bg-transparent pt-10 pb-5 ${theme === "light" ? "text-black" : "text-white"}`
           }`}
       >
-        <div className="max-w-400 mx-auto px-8 md:px-16 h-full flex items-center justify-between">
+        <div className="max-w-400 mx-auto px-6 md:px-8 lg:px-16 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative z-50 flex items-center">
             <Image
@@ -68,18 +68,18 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
               width={180}
               height={52}
               priority
-              className={`h-9 md:h-18 w-auto object-contain transition-all duration-500 ${isDarkText ? "brightness-0" : "brightness-100"
+              className={`h-9 md:h-12 lg:h-18 w-auto object-contain transition-all duration-500 ${isDarkText ? "brightness-0" : "brightness-100"
                 }`}
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-12">
+          <nav className="hidden md:flex items-center md:space-x-4 lg:space-x-8 xl:space-x-12">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-xs tracking-[0.2em] transition-colors duration-300 font-sans font-medium relative py-1 group ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"
+                className={`text-[10px] lg:text-xs tracking-[0.1em] lg:tracking-[0.2em] whitespace-nowrap transition-colors duration-300 font-sans font-medium relative py-1 group ${isDarkText ? "text-black/80 hover:text-black" : "text-white/80 hover:text-white"
                   }`}
               >
                 {link.name}
@@ -90,10 +90,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
           </nav>
 
           {/* Action Icons */}
-          <div className={`hidden md:flex items-center space-x-6 ${isDarkText ? "text-black/80" : "text-white/80"}`}>
+          <div className={`hidden md:flex items-center md:space-x-3 lg:space-x-6 ${isDarkText ? "text-black/80" : "text-white/80"}`}>
             <Link
               href="/wishlist"
-              className={`transition-colors duration-300 p-2 relative flex items-center ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
+              className={`transition-colors duration-300 md:p-1 lg:p-2 relative flex items-center ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
               aria-label="Wishlist"
             >
               <FiHeart size={18} className="stroke-[1.5]" />
@@ -106,14 +106,14 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
             </Link>
             <Link
               href="/account"
-              className={`transition-colors duration-300 p-2 ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
+              className={`transition-colors duration-300 md:p-1 lg:p-2 ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
               aria-label="Account"
             >
               <FiUser size={18} className="stroke-[1.5]" />
             </Link>
             <Link
               href="/cart"
-              className={`transition-colors duration-300 p-2 relative flex items-center ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
+              className={`transition-colors duration-300 md:p-1 lg:p-2 relative flex items-center ${isDarkText ? "hover:text-black" : "hover:text-white"}`}
               aria-label="Cart"
             >
               <FiShoppingBag size={18} className="stroke-[1.5]" />
