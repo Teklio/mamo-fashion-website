@@ -7,9 +7,10 @@ interface LogoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
-export default function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalProps) {
+export default function LogoutModal({ isOpen, onClose, onConfirm, isLoading = false }: LogoutModalProps) {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
@@ -62,11 +63,15 @@ export default function LogoutModal({ isOpen, onClose, onConfirm }: LogoutModalP
           >
             Cancel
           </button>
-          <button 
+          <button
             onClick={onConfirm}
-            className="flex-1 py-3.5 px-4 bg-black hover:bg-black/90 text-white text-xs font-sans font-semibold rounded-lg transition-colors"
+            disabled={isLoading}
+            className="flex-1 py-3.5 px-4 bg-black hover:bg-black/90 text-white text-xs font-sans font-semibold rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Yes, Log out
+            {isLoading ? (
+              <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : null}
+            {isLoading ? "Logging out…" : "Yes, Log out"}
           </button>
         </div>
       </div>

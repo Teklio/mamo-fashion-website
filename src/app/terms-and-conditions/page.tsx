@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Header from "@/components/Header";
-import { FiFileText } from "react-icons/fi";
 
 export const metadata: Metadata = {
   title: "SORIN | Terms & Conditions",

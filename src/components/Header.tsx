@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FiHeart, FiUser, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
 
 export default function Header({ theme = "dark" }: { theme?: "dark" | "light" }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { cartCount } = useCart();
-  const { wishlistItems } = useWishlist();
+  const cartCount = useSelector((s: RootState) => s.auth.cartCount);
+  const wishlistCount = useSelector((s: RootState) => s.auth.wishlistCount);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,7 +101,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
                 ? "bg-black text-white border-black/10"
                 : "bg-white text-black border-black/10"
                 }`}>
-                {wishlistItems.length}
+                {wishlistCount}
               </span>
             </Link>
             <Link
@@ -137,7 +137,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
                 ? "bg-black text-white"
                 : "bg-white text-black"
                 }`}>
-                {wishlistItems.length}
+                {wishlistCount}
               </span>
             </Link>
             <Link

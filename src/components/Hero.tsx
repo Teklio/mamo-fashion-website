@@ -10,15 +10,15 @@ export default function Hero() {
         const getSrc = () => {
             const width = window.innerWidth;
             if (width < 768) {
-                return "/assets/mobile.MOV";
+                return "/assets/mobile.mp4";
             } else if (width < 1024) {
-                return "/assets/tab.MOV";
+                return "/assets/tab.mp4";
             } else {
-                return "/assets/desk.MOV";
+                return "/assets/desk.mp4";
             }
         };
 
-        // Set the initial source on mount
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setVideoSrc(getSrc());
 
         const handleResize = () => {

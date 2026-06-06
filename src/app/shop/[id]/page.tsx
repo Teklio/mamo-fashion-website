@@ -1,38 +1,30 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ProductDetailClient from "./_components/ProductDetailClient";
 import Header from "@/components/Header";
 import FeaturedProducts from "@/components/FeaturedProducts";
+import type { CustomerProductDetail } from "@/types/product.type";
 
 export const metadata: Metadata = {
   title: "Product Detail | SORIN",
   description: "View product details.",
 };
 
-import { products } from "@/data/products";
-
-// In a real app, this would fetch from a database or API
-const getProductData = (id: string) => {
-  const product = products.find(p => p.id === id) || products[0];
-
-  // Set up detail gallery images: [Primary Image, Hover Image]
-  const productImages = [product.image];
-  if (product.hoverImage) {
-    productImages.push(product.hoverImage);
-  }
-
-  return {
-    id: product.id,
-    name: product.name,
-    priceText: product.priceText,
-    priceVal: product.priceVal,
-    description: "Handcrafted with coastal elegance, these rope sandals feature a soft woven footbed and signature twisted straps. Blending all-day comfort with effortless summer style.",
-    images: productImages,
-  };
-};
-
-export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const product = getProductData(id);
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/products/customer/${id}`,
+    { cache: "no-store" },
+  );
+
+  if (!res.ok) notFound();
+
+  const { product }: { product: CustomerProductDetail } = await res.json();
 
   return (
     <>
@@ -41,7 +33,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         <div className="max-w-400 mx-auto px-8 md:px-16 pb-16 lg:pb-24 border-b border-zinc-100">
           <ProductDetailClient product={product} />
         </div>
-        
+
         <FeaturedProducts title="Related Products" hideViewAll={true} />
       </main>
     </>
