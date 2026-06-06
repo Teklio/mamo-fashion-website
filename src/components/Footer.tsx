@@ -67,10 +67,10 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/refund-policy"
+                    href="/shipping-policy"
                     className="text-zinc-600 hover:text-zinc-950 text-[13px] md:text-sm font-serif transition-colors"
                   >
-                    Shipping & Returns
+                    Shipping Policy
                   </Link>
                 </li>
                 <li>

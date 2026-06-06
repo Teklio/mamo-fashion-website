@@ -22,69 +22,82 @@ export default function TermsAndConditionsPage() {
           {/* Content */}
           <div className="space-y-12 font-sans text-sm text-zinc-600 leading-relaxed">
             <section>
+              <p className="mb-4 text-xs text-zinc-500 uppercase tracking-widest">
+                Last Updated: 06-06-2026
+              </p>
+              <p className="mb-4">
+                Welcome to Sorin.ae. By accessing and using this website, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our website.
+              </p>
+            </section>
+
+            <section>
               <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
-                1. General Provisions & Company Information
+                1. Company Information
+              </h3>
+              <p>
+                Sorin Shoe Trading is an online retailer specializing in footwear products, including shoes, sandals, and slippers.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
+                2. User Obligations
               </h3>
               <p className="mb-4">
-                This platform is owned and operated by HOUSE OF SORIN. We specialize in premium luxury footwear and lifestyle products.
-              </p>
-              <p className="mb-4">
-                For customer support, queries, or communications:
+                By using this website, you agree to:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Brand Identity:</strong> HOUSE OF SORIN</li>
-                <li><strong>Headquarters:</strong> Dubai, United Arab Emirates (UAE)</li>
-                <li><strong>Primary Email Support:</strong> support@sorin.com</li>
-                <li><strong>WhatsApp Business:</strong> +971 50 728 4619</li>
+                <li>Provide accurate and complete information when placing orders.</li>
+                <li>Maintain the confidentiality of your account credentials.</li>
+                <li>Use the website only for lawful purposes.</li>
+                <li>Not engage in fraudulent, abusive, or harmful activities.</li>
               </ul>
             </section>
 
             <section>
               <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
-                2. Governing Law
-              </h3>
-              <p>
-                These Terms & Conditions, and any dispute arising from the use of this website or the purchase of our products, shall be governed by and construed in accordance with the federal laws of the United Arab Emirates and the local laws of the Emirate of Dubai, without giving effect to any principles of conflicts of law.
-              </p>
-            </section>
-
-            <section>
-              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
-                3. Customer Accounts & Security
-              </h3>
-              <p>
-                When creating an account on HOUSE OF SORIN, you agree to provide true, accurate, and complete information, including up-to-date shipping details. You are solely responsible for maintaining the confidentiality of your account credentials, including your password. You agree to accept responsibility for all activities that occur under your account. We reserve the right to suspend or terminate accounts that violate our security protocols.
-              </p>
-            </section>
-
-            <section>
-              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
-                4. Purchase Terms & Payment Gateways
+                3. Product Information
               </h3>
               <p className="mb-4">
-                By submitting an order, you warrant that you are legally authorized to use the designated payment method. We support the following payment methods:
+                We strive to ensure that product descriptions, images, specifications, and pricing are accurate. However, minor variations in color, appearance, or specifications may occur.
               </p>
+              <p>
+                We reserve the right to correct errors, inaccuracies, or omissions at any time without prior notice.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
+                4. Pricing and Payments
+              </h3>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Credit Card Processing:</strong> Managed securely via Checkout.com (supporting Visa, Mastercard, and American Express).</li>
-                <li><strong>Installment Plans:</strong> Tabby (Pay in 4 interest-free installments) and Tamara (Split in 3 interest-free installments). Installment options are subject to credit approvals determined by the respective platforms.</li>
+                <li>All prices are displayed in AED unless otherwise stated.</li>
+                <li>Prices may change without prior notice.</li>
+                <li>Payment must be completed through approved payment methods available on the website.</li>
+                <li>Orders will only be processed after successful payment authorization.</li>
               </ul>
             </section>
 
             <section>
               <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
-                5. Strict Sales Policy
+                5. Order Acceptance
               </h3>
-              <p>
-                Due to the limited-edition nature and custom craft of our products, <strong>all sales are final</strong>. We do not support returns, exchanges for change of mind, sizing errors, or order cancellations once payment is processed. You are responsible for ensuring that all selections (sizes, colors, delivery addresses) are verified before checkout.
-              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>All orders are subject to availability and acceptance.</li>
+                <li>We reserve the right to refuse or cancel any order for any reason.</li>
+                <li>If payment has already been made for a cancelled order, a refund will be processed according to our Refund Policy.</li>
+              </ul>
             </section>
 
             <section>
               <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
                 6. Intellectual Property
               </h3>
+              <p className="mb-4">
+                All website content including text, graphics, logos, images, product descriptions, designs, and software are the property of Sorin Shoe Trading and are protected under applicable intellectual property laws.
+              </p>
               <p>
-                All content, product designs, trademark names, images, illustrations, videos, text, logos, graphics, and layout assets displayed on this site are the exclusive property of HOUSE OF SORIN. Any unauthorized reproduction, distribution, modification, or display of these materials is strictly prohibited and subject to legal action under UAE copyright and intellectual property laws.
+                No content may be copied, reproduced, distributed, or used without prior written permission.
               </p>
             </section>
 
@@ -93,7 +106,28 @@ export default function TermsAndConditionsPage() {
                 7. Limitation of Liability
               </h3>
               <p>
-                HOUSE OF SORIN provides the website and services on an &quot;as is&quot; and &quot;as available&quot; basis. We make no representations or warranties of any kind, express or implied, regarding the operation of our website, the accuracy of our product listings, or the availability of the server. To the fullest extent permitted by UAE law, we disclaim all liability for any direct, indirect, incidental, or consequential damages resulting from the use of our services or products.
+                To the maximum extent permitted by law, Sorin Shoe Trading shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of this website or products purchased through it.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
+                8. Governing Law
+              </h3>
+              <p className="mb-4">
+                These Terms and Conditions shall be governed by and interpreted in accordance with the laws of the United Arab Emirates.
+              </p>
+              <p>
+                Any disputes shall be subject to the exclusive jurisdiction of the competent courts of the UAE.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
+                9. Changes to Terms
+              </h3>
+              <p>
+                We reserve the right to update or modify these Terms and Conditions at any time. Continued use of the website constitutes acceptance of any revisions.
               </p>
             </section>
           </div>
