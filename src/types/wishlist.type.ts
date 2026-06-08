@@ -4,29 +4,37 @@ export interface WishlistVariantImage {
   publicUrl: string;
 }
 
-export interface WishlistProductVariant {
+export interface WishlistVariantSize {
   id: string;
-  colorName: string;
-  colorCode: string;
-  primaryImage: WishlistVariantImage | null;
-  secondaryImage: WishlistVariantImage | null;
+  size: string;
+  stock: number;
 }
 
-export interface WishlistProduct {
+export interface WishlistVariantProduct {
   id: string;
   title: string;
   /** Prisma Decimal serialised as string, e.g. "289.00" */
   price: string;
   status: "ACTIVE" | "INACTIVE";
-  variants: WishlistProductVariant[];
+}
+
+export interface WishlistVariant {
+  id: string;
+  productId: string;
+  colorName: string;
+  colorCode: string;
+  primaryImage: WishlistVariantImage | null;
+  secondaryImage: WishlistVariantImage | null;
+  sizes: WishlistVariantSize[];
+  product: WishlistVariantProduct;
 }
 
 export interface WishlistItem {
   id: string;
   customerId: string;
-  productId: string;
+  variantId: string;
   createdAt: string;
-  product: WishlistProduct;
+  variant: WishlistVariant;
 }
 
 export interface WishlistApiResponse {

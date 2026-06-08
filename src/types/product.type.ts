@@ -1,18 +1,19 @@
 // ─── List item (used by FeaturedProducts and ShopGrid) ───────────────────────
 
 export interface CustomerProduct {
-  id: string;
+  id: string;         // variant id
+  productId: string;  // product id (used for navigation and wishlist)
   title: string;
   price: string;
-  showOnHomePage: boolean;
   primaryImageUrl: string | null;
   secondaryImageUrl: string | null;
   colorName: string | null;
   colorCode: string | null;
+  sizes: { id: string; size: string; stock: number }[];
 }
 
 export interface GetCustomerProductsResponse {
-  products: CustomerProduct[];
+  variants: CustomerProduct[];
   meta: { page: number; limit: number; total: number; totalPages: number };
 }
 

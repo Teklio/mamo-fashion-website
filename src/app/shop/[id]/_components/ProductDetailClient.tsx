@@ -20,8 +20,10 @@ import type { AxiosError } from "axios";
 
 export default function ProductDetailClient({
   product,
+  initialVariantId,
 }: {
   product: CustomerProductDetail;
+  initialVariantId?: string;
 }) {
   const router = useRouter();
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
@@ -31,7 +33,8 @@ export default function ProductDetailClient({
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
 
   const activeVariants = product.variants;
-  const defaultVariant = activeVariants[0];
+  const defaultVariant =
+    activeVariants.find((v) => v.id === initialVariantId) ?? activeVariants[0];
 
   const [selectedColor, setSelectedColor] = useState<string>(
     defaultVariant?.colorName ?? "",
@@ -78,7 +81,7 @@ export default function ProductDetailClient({
   }, [isSizeGuideOpen]);
 
   const priceText = formatPrice(product.price);
-  const isWishlisted = wishlistedIds.has(product.id);
+  const isWishlisted = wishlistedIds.has(selectedVariant?.id ?? "");
   const tabs = ["DESCRIPTION", "CARE", "SHIPPING & RETURNS"];
 
   const handleAddToCart = () => {
@@ -89,6 +92,9 @@ export default function ProductDetailClient({
     addToCartApi(
       { productVariantSizeId: sizeObj.id, quantity },
       {
+        onSuccess: () => {
+          toast.success("Added to cart!");
+        },
         onError: (err) => {
           const axiosErr = err as AxiosError<{ message: string }>;
           if (axiosErr.response?.status === 401) { router.push("/login"); return; }
@@ -117,10 +123,17 @@ export default function ProductDetailClient({
 
   const handleWishlistToggle = () => {
     if (!isAuthenticated) { router.push("/login"); return; }
+    if (!selectedVariant) return;
     if (isWishlisted) {
-      removeFromWishlist(product.id);
+      removeFromWishlist(selectedVariant.id, {
+        onSuccess: () => toast.success("Removed from wishlist"),
+        onError: () => toast.error("Failed to remove from wishlist"),
+      });
     } else {
-      addToWishlist({ productId: product.id });
+      addToWishlist({ variantId: selectedVariant.id }, {
+        onSuccess: () => toast.success("Added to wishlist"),
+        onError: () => toast.error("Failed to add to wishlist"),
+      });
     }
   };
 

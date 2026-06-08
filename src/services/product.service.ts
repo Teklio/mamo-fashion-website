@@ -11,7 +11,7 @@ export interface GetProductsFilters {
   minPrice?: number;
   maxPrice?: number;
   isAscending?: boolean;
-  showOnHomePage?: boolean;
+  showOnHomePage?: boolean; // filters by variant's showOnHomePage flag
 }
 
 const getCustomerProductsApi = async (

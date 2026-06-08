@@ -10,13 +10,23 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { registerSchema, type RegisterFormType } from "@/zodschemas/auth.schema";
+import { registerSchema } from "@/zodschemas/auth.schema";
 import { useRegister } from "@/services/auth.service";
 import type { AxiosError } from "axios";
+import { z } from "zod";
+import { passwordSchema } from "@/zodschemas/common.schema";
 
-// The phone field is handled outside react-hook-form (PhoneInput compound component)
-// and concatenated with the code on submit, so we omit it from the form schema.
-type CoreRegisterForm = Omit<RegisterFormType, "phone">;
+// Client-side only: extends the base schema with confirmPassword match validation.
+// confirmPassword is stripped before the API call.
+const clientRegisterSchema = registerSchema
+  .omit({ phone: true })
+  .extend({ confirmPassword: passwordSchema })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type CoreRegisterForm = z.infer<typeof clientRegisterSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,14 +38,19 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<CoreRegisterForm>({
-    resolver: zodResolver(registerSchema.omit({ phone: true })),
-    defaultValues: { name: "", email: "", password: "" },
+    resolver: zodResolver(clientRegisterSchema),
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const onSubmit = (data: CoreRegisterForm) => {
-    const fullPhone = phone.trim() || undefined;
+  const onSubmit = (formData: CoreRegisterForm) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...data } = formData;
+
     register(
-      { ...data, phone: fullPhone },
+      {
+        ...data,
+        phone: phone.trim() || undefined,
+      },
       {
         onSuccess: () => {
           toast.success("Account created! Please log in.");
@@ -43,7 +58,9 @@ export default function RegisterPage() {
         },
         onError: (err) => {
           const axiosErr = err as AxiosError<{ message: string }>;
-          toast.error(axiosErr.response?.data?.message || "Registration failed");
+          toast.error(
+            axiosErr.response?.data?.message || "Registration failed",
+          );
         },
       },
     );
@@ -62,7 +79,10 @@ export default function RegisterPage() {
             Create an account to save favourites &amp; track orders.
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-5 w-full">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col space-y-5 w-full"
+          >
             {/* Full Name */}
             <div>
               <Input
@@ -72,7 +92,9 @@ export default function RegisterPage() {
                 {...formRegister("name")}
               />
               {errors.name && (
-                <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
@@ -85,7 +107,9 @@ export default function RegisterPage() {
                 {...formRegister("email")}
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -105,7 +129,23 @@ export default function RegisterPage() {
                 {...formRegister("password")}
               />
               {errors.password && (
-                <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Confirm Password — client-side only, not sent to API */}
+            <div>
+              <Input
+                label="CONFIRM PASSWORD"
+                type="password"
+                {...formRegister("confirmPassword")}
+              />
+              {errors.confirmPassword && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.confirmPassword.message}
+                </p>
               )}
             </div>
 

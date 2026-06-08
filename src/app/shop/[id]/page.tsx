@@ -12,10 +12,13 @@ export const metadata: Metadata = {
 
 export default async function ProductDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ variant?: string }>;
 }) {
   const { id } = await params;
+  const { variant } = await searchParams;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/products/customer/${id}`,
@@ -31,7 +34,7 @@ export default async function ProductDetailPage({
       <Header theme="light" />
       <main className="min-h-screen mt-0 md:mt-10 pt-32 bg-white text-zinc-950">
         <div className="max-w-400 mx-auto px-8 md:px-16 pb-16 lg:pb-24 border-b border-zinc-100">
-          <ProductDetailClient product={product} />
+          <ProductDetailClient product={product} initialVariantId={variant} />
         </div>
 
         <FeaturedProducts title="Related Products" hideViewAll={true} />

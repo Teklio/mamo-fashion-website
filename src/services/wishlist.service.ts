@@ -12,13 +12,13 @@ const getWishlistApi = async (): Promise<WishlistApiResponse> => {
   return data;
 };
 
-const addToWishlistApi = async (payload: { productId: string }) => {
+const addToWishlistApi = async (payload: { variantId: string }) => {
   const { data } = await axiosInstance.post("/wishlist", payload);
   return data;
 };
 
-const removeFromWishlistApi = async (productId: string) => {
-  const { data } = await axiosInstance.delete(`/wishlist/${productId}`);
+const removeFromWishlistApi = async (variantId: string) => {
+  const { data } = await axiosInstance.delete(`/wishlist/${variantId}`);
   return data;
 };
 
@@ -60,8 +60,8 @@ export const useRemoveFromWishlist = () => {
   });
 };
 
-/** Returns a Set of product IDs in the user's wishlist (empty Set when not authenticated). */
+/** Returns a Set of variant IDs in the user's wishlist (empty Set when not authenticated). */
 export const useWishlistedIds = (): Set<string> => {
   const { data } = useGetWishlist();
-  return new Set((data?.wishlist ?? []).map((w: WishlistItem) => w.productId));
+  return new Set((data?.wishlist ?? []).map((w: WishlistItem) => w.variantId));
 };

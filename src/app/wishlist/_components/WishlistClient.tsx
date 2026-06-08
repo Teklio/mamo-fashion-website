@@ -15,7 +15,7 @@ export default function WishlistClient() {
 
   const wishlist = data?.wishlist ?? [];
   const subtotal = wishlist.reduce(
-    (acc: number, w: WishlistItem) => acc + Number(w.product?.price ?? 0),
+    (acc: number, w: WishlistItem) => acc + Number(w.variant?.product?.price ?? 0),
     0,
   );
 
@@ -62,15 +62,13 @@ export default function WishlistClient() {
           <div className="flex-1 flex flex-col gap-6">
             <AnimatePresence>
               {wishlist.map((w: WishlistItem) => {
-                const product = w.product;
-                const firstVariant = product?.variants?.[0];
-                const imageUrl = firstVariant?.primaryImage?.publicUrl ?? "";
-                const colorCode = firstVariant?.colorCode ?? "#31639d";
-                const colorName = firstVariant?.colorName ?? "";
+                const variant = w.variant;
+                const product = variant?.product;
+                const imageUrl = variant?.primaryImage?.publicUrl ?? "";
 
                 return (
                   <motion.div
-                    key={w.productId}
+                    key={w.variantId}
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -79,7 +77,7 @@ export default function WishlistClient() {
                   >
                     {/* Image */}
                     <Link
-                      href={`/shop/${product?.id}`}
+                      href={`/shop/${variant?.productId}`}
                       className="w-full md:w-48 bg-white shrink-0 flex items-center justify-center p-4 md:p-6 border-b md:border-b-0 md:border-r border-[#ebebeb] hover:bg-zinc-50 transition-colors"
                     >
                       <div className="relative w-full aspect-video md:aspect-square">
@@ -98,7 +96,7 @@ export default function WishlistClient() {
                     <div className="flex-1 p-4 md:p-5 flex flex-col relative">
                       <button
                         onClick={() => {
-                          removeFromWishlist(w.productId, {
+                          removeFromWishlist(w.variantId, {
                             onSuccess: () =>
                               toast.info(`${product?.title} removed from wishlist`),
                           });
@@ -114,15 +112,17 @@ export default function WishlistClient() {
                       </span>
 
                       <h3 className="text-xl md:text-2xl font-serif text-zinc-900 mb-2.5 pr-8 hover:text-zinc-600 transition-colors">
-                        <Link href={`/shop/${product?.id}`}>{product?.title}</Link>
+                        <Link href={`/shop/${variant?.productId}`}>{product?.title}</Link>
                       </h3>
 
                       <div className="flex items-center space-x-2 mb-3 border-b border-[#ebebeb] pb-3">
                         <div
                           className="w-3 h-3 rounded-full border border-zinc-200"
-                          style={{ backgroundColor: colorCode }}
+                          style={{ backgroundColor: variant?.colorCode ?? "#31639d" }}
                         />
-                        <span className="text-xs text-zinc-600 font-sans ml-2">{colorName}</span>
+                        <span className="text-xs text-zinc-600 font-sans ml-2">
+                          {variant?.colorName ?? ""}
+                        </span>
                       </div>
 
                       <div className="flex items-center gap-2 mb-4">
@@ -133,14 +133,14 @@ export default function WishlistClient() {
 
                       <div className="flex items-center gap-4 mt-auto">
                         <Link
-                          href={`/shop/${product?.id}`}
+                          href={`/shop/${variant?.productId}`}
                           className="px-6 py-3 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
                         >
                           VIEW PRODUCT
                         </Link>
                         <button
                           onClick={() => {
-                            removeFromWishlist(w.productId, {
+                            removeFromWishlist(w.variantId, {
                               onSuccess: () =>
                                 toast.info(`${product?.title} removed from wishlist`),
                             });
