@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "SORIN | Shipping Policy",
-  description: "Read the Shipping Policy governing deliveries, processing times, and logistics for HOUSE OF SORIN.",
+  title: "EVORIA FASHION | Shipping Policy",
+  description: "Read the Shipping Policy governing deliveries, processing times, and logistics for HOUSE OF EVORIA FASHION.",
 };
 
 export default function ShippingPolicyPage() {
@@ -33,7 +33,7 @@ export default function ShippingPolicyPage() {
                 Shipping Partner
               </h3>
               <p>
-                Sorin.ae uses SMSA Express and other approved logistics partners for domestic and international deliveries.
+                Evoria.ae uses SMSA Express and other approved logistics partners for domestic and international deliveries.
               </p>
             </section>
 
@@ -105,7 +105,7 @@ export default function ShippingPolicyPage() {
                 Delivery Delays
               </h3>
               <p className="mb-4">
-                Sorin.ae shall not be responsible for delays caused by:
+                Evoria.ae shall not be responsible for delays caused by:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Customs inspections</li>

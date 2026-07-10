@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import FeaturedProducts from "@/components/FeaturedProducts";
-import HouseOfSorin from "@/components/HouseOfSorin";
-import SorinWorld from "@/components/SorinWorld";
+import HouseOfEvoria from "@/components/HouseOfEvoria";
+import EvoriaWorld from "@/components/EvoriaWorld";
 import BlueLadyBanner from "@/components/BlueLadyBanner";
 
 export default function Home() {
@@ -12,8 +12,8 @@ export default function Home() {
       <Hero />
       <div className="relative z-10 bg-white text-zinc-950">
         <FeaturedProducts />
-        <HouseOfSorin />
-        <SorinWorld />
+        <HouseOfEvoria />
+        <EvoriaWorld />
         <BlueLadyBanner />
       </div>
     </main>

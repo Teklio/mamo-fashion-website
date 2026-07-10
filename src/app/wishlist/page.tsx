@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import WishlistClient from "./_components/WishlistClient";
 
 export const metadata: Metadata = {
-  title: "Wishlist | SORIN",
-  description: "View your saved styles and favorites at SORIN.",
+  title: "Wishlist | EVORIA FASHION",
+  description: "View your saved styles and favorites at EVORIA FASHION.",
 };
 
 export default function WishlistPage() {

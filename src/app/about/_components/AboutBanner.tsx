@@ -18,8 +18,8 @@
 //         {/* Background Image */}
 //         <div className="absolute inset-0 w-full h-full">
 //           <Image
-//             src="/assets/about/banner.jpg"
-//             alt="SORIN Endless Escape"
+//             src="/images/hero_banner_1783421048490.png"
+//             alt="EVORIA FASHION Endless Escape"
 //             fill
 //             sizes="(max-width: 1280px) 100vw, 1280px"
 //             className="object-cover object-center"

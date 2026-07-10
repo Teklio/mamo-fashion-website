@@ -6,7 +6,7 @@ import FeaturedProducts from "@/components/FeaturedProducts";
 import type { CustomerProductDetail } from "@/types/product.type";
 
 export const metadata: Metadata = {
-  title: "Product Detail | SORIN",
+  title: "Product Detail | EVORIA FASHION",
   description: "View product details.",
 };
 

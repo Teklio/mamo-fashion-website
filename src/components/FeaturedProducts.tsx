@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useGetProducts } from "@/services/product.service";
+import { mockProducts } from "@/lib/mockProducts";
 import ProductCard from "@/components/ProductCard";
 
 export default function FeaturedProducts({
@@ -12,7 +12,7 @@ export default function FeaturedProducts({
   title?: string;
   hideViewAll?: boolean;
 } = {}) {
-  const { data, isLoading } = useGetProducts({ showOnHomePage: true });
+  const data = { variants: mockProducts };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -53,32 +53,21 @@ export default function FeaturedProducts({
         </motion.div>
 
         {/* Product Cards Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex flex-col gap-4">
-                <div className="aspect-square w-full bg-[#f3f3f3] rounded-sm animate-pulse" />
-                <div className="h-4 w-24 bg-zinc-100 rounded animate-pulse px-1" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {(data?.variants ?? []).map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                cardVariants={cardVariants}
-              />
-            ))}
-          </motion.div>
-        )}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          {(data?.variants ?? []).map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              cardVariants={cardVariants}
+            />
+          ))}
+        </motion.div>
       </div>
     </section>
   );

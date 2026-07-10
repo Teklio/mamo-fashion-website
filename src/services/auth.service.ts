@@ -1,13 +1,12 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// src/services/auth.service.ts  — MOCK (no API calls)
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store";
-import { axiosInstance } from "@/lib/axios";
 import { loginSuccess, logoutSuccess, updateProfile } from "@/store/slices/authSlice";
-import type {
-  CustomerLoginResponse,
-  MessageResponse,
-  ValidateResetTokenResponse,
-} from "@/types/auth.type";
+import { mockLoginResponse, mockMessageResponse } from "@/lib/mockData";
 import type {
   LoginFormType,
   RegisterFormType,
@@ -18,15 +17,13 @@ import type {
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 
-const loginApi = async (data: LoginFormType): Promise<CustomerLoginResponse> => {
-  const res = await axiosInstance.post("/customer/auth/login", data);
-  return res.data;
-};
-
 export const useLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: loginApi,
+    mutationFn: async (_data: LoginFormType) => {
+      await new Promise((r) => setTimeout(r, 500)); // simulate network delay
+      return mockLoginResponse;
+    },
     onSuccess: (data) => {
       dispatch(loginSuccess(data));
     },
@@ -35,26 +32,24 @@ export const useLogin = () => {
 
 // ─── Register ─────────────────────────────────────────────────────────────────
 
-const registerApi = async (data: RegisterFormType): Promise<MessageResponse> => {
-  const res = await axiosInstance.post("/customer/auth/register", data);
-  return res.data;
-};
-
 export const useRegister = () => {
-  return useMutation({ mutationFn: registerApi });
+  return useMutation({
+    mutationFn: async (_data: RegisterFormType) => {
+      await new Promise((r) => setTimeout(r, 500));
+      return { message: "Registration successful! You can now log in." };
+    },
+  });
 };
 
 // ─── Logout ───────────────────────────────────────────────────────────────────
 
-const logoutApi = async (): Promise<MessageResponse> => {
-  const res = await axiosInstance.post("/customer/auth/logout");
-  return res.data;
-};
-
 export const useLogout = () => {
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: logoutApi,
+    mutationFn: async () => {
+      await new Promise((r) => setTimeout(r, 200));
+      return mockMessageResponse;
+    },
     onSuccess: () => {
       dispatch(logoutSuccess());
     },
@@ -63,15 +58,13 @@ export const useLogout = () => {
 
 // ─── Update Profile ───────────────────────────────────────────────────────────
 
-const updateProfileApi = async (data: UpdateProfileFormType): Promise<MessageResponse> => {
-  const res = await axiosInstance.patch("/customer/auth/update-profile", data);
-  return res.data;
-};
-
 export const useUpdateProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: updateProfileApi,
+    mutationFn: async (_data: UpdateProfileFormType) => {
+      await new Promise((r) => setTimeout(r, 400));
+      return mockMessageResponse;
+    },
     onSuccess: (_data, variables) => {
       dispatch(updateProfile({ name: variables.name, phone: variables.phone }));
     },
@@ -80,44 +73,35 @@ export const useUpdateProfile = () => {
 
 // ─── Update Password ──────────────────────────────────────────────────────────
 
-const updatePasswordApi = async (data: UpdatePasswordFormType): Promise<MessageResponse> => {
-  const res = await axiosInstance.patch("/customer/auth/update-password", {
-    currentPassword: data.currentPassword,
-    newPassword: data.newPassword,
-  });
-  return res.data;
-};
-
 export const useUpdatePassword = () => {
-  return useMutation({ mutationFn: updatePasswordApi });
+  return useMutation({
+    mutationFn: async (_data: UpdatePasswordFormType) => {
+      await new Promise((r) => setTimeout(r, 400));
+      return mockMessageResponse;
+    },
+  });
 };
 
 // ─── Forgot Password ──────────────────────────────────────────────────────────
 
-const forgotPasswordApi = async (data: ForgotPasswordFormType): Promise<MessageResponse> => {
-  const res = await axiosInstance.post("/customer/auth/forgot-password", data);
-  return res.data;
-};
-
 export const useForgotPassword = () => {
-  return useMutation({ mutationFn: forgotPasswordApi });
+  return useMutation({
+    mutationFn: async (_data: ForgotPasswordFormType) => {
+      await new Promise((r) => setTimeout(r, 400));
+      return { message: "Password reset link sent to your email." };
+    },
+  });
 };
 
 // ─── Validate Reset Token ─────────────────────────────────────────────────────
 
-const validateResetTokenApi = async (token: string): Promise<ValidateResetTokenResponse> => {
-  const res = await axiosInstance.patch(
-    "/customer/auth/validate-reset-token",
-    {},
-    { params: { token } },
-  );
-  return res.data;
-};
-
 export const useValidateResetToken = (token: string | null) => {
   return useQuery({
     queryKey: ["validate-reset-token", token],
-    queryFn: () => validateResetTokenApi(token!),
+    queryFn: async () => {
+      await new Promise((r) => setTimeout(r, 300));
+      return { valid: true };
+    },
     enabled: !!token,
     retry: false,
   });
@@ -125,14 +109,11 @@ export const useValidateResetToken = (token: string | null) => {
 
 // ─── Reset Password ───────────────────────────────────────────────────────────
 
-const resetPasswordApi = async (data: {
-  token: string;
-  newPassword: string;
-}): Promise<MessageResponse> => {
-  const res = await axiosInstance.patch("/customer/auth/reset-password", data);
-  return res.data;
-};
-
 export const useResetPassword = () => {
-  return useMutation({ mutationFn: resetPasswordApi });
+  return useMutation({
+    mutationFn: async (_data: { token: string; newPassword: string }) => {
+      await new Promise((r) => setTimeout(r, 400));
+      return { message: "Password reset successfully. You can now log in." };
+    },
+  });
 };

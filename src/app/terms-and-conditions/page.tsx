@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "SORIN | Terms & Conditions",
-  description: "Read the Terms & Conditions governing the use of the HOUSE OF SORIN platform and purchases.",
+  title: "EVORIA FASHION | Terms & Conditions",
+  description: "Read the Terms & Conditions governing the use of the HOUSE OF EVORIA FASHION platform and purchases.",
 };
 
 export default function TermsAndConditionsPage() {
@@ -26,7 +26,7 @@ export default function TermsAndConditionsPage() {
                 Last Updated: 06-06-2026
               </p>
               <p className="mb-4">
-                Welcome to Sorin.ae. By accessing and using this website, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our website.
+                Welcome to Evoria.ae. By accessing and using this website, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our website.
               </p>
             </section>
 
@@ -35,7 +35,7 @@ export default function TermsAndConditionsPage() {
                 1. Company Information
               </h3>
               <p>
-                Sorin Shoe Trading is an online retailer specializing in footwear products, including shoes, sandals, and slippers.
+                Evoria Shoe Trading is an online retailer specializing in footwear products, including shoes, sandals, and slippers.
               </p>
             </section>
 
@@ -94,7 +94,7 @@ export default function TermsAndConditionsPage() {
                 6. Intellectual Property
               </h3>
               <p className="mb-4">
-                All website content including text, graphics, logos, images, product descriptions, designs, and software are the property of Sorin Shoe Trading and are protected under applicable intellectual property laws.
+                All website content including text, graphics, logos, images, product descriptions, designs, and software are the property of Evoria Shoe Trading and are protected under applicable intellectual property laws.
               </p>
               <p>
                 No content may be copied, reproduced, distributed, or used without prior written permission.
@@ -106,7 +106,7 @@ export default function TermsAndConditionsPage() {
                 7. Limitation of Liability
               </h3>
               <p>
-                To the maximum extent permitted by law, Sorin Shoe Trading shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of this website or products purchased through it.
+                To the maximum extent permitted by law, Evoria Shoe Trading shall not be liable for any indirect, incidental, special, or consequential damages arising from the use of this website or products purchased through it.
               </p>
             </section>
 

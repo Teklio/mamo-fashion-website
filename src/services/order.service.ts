@@ -1,40 +1,53 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// src/services/order.service.ts  — MOCK (no API calls)
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { axiosInstance } from "@/lib/axios";
 import type { RootState } from "@/store";
 import type {
   GetCustomerOrdersResponse,
   GetCustomerOrderResponse,
 } from "@/types/order.type";
-
-const getCustomerOrdersApi = async (): Promise<GetCustomerOrdersResponse> => {
-  const { data } = await axiosInstance.get<GetCustomerOrdersResponse>("/orders");
-  return data;
-};
+import { mockOrdersResponse } from "@/lib/mockData";
 
 export const useGetCustomerOrders = () => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   return useQuery({
     queryKey: ["customer-orders"],
-    queryFn: getCustomerOrdersApi,
+    queryFn: async (): Promise<GetCustomerOrdersResponse> => {
+      await new Promise((r) => setTimeout(r, 200));
+      return mockOrdersResponse;
+    },
     enabled: isAuthenticated,
-    staleTime: 2 * 60 * 1000,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
-};
-
-const getCustomerOrderApi = async (id: string): Promise<GetCustomerOrderResponse> => {
-  const { data } = await axiosInstance.get<GetCustomerOrderResponse>(`/orders/${id}`);
-  return data;
 };
 
 export const useGetCustomerOrder = (id: string | null) => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   return useQuery({
     queryKey: ["customer-order", id],
-    queryFn: () => getCustomerOrderApi(id!),
+    queryFn: async (): Promise<GetCustomerOrderResponse> => {
+      await new Promise((r) => setTimeout(r, 200));
+      return {
+        order: {
+          id: id ?? "order-mock-1",
+          status: "CONFIRMED",
+          subTotal: "95.00",
+          discount: "0.00",
+          total: "95.00",
+          currencyCode: "INR",
+          createdAt: new Date().toISOString(),
+          items: [],
+          payment: { status: "SUCCESS", amount: "95.00", paymentType: "UPI" },
+          shippingAddress: null,
+        },
+      };
+    },
     enabled: isAuthenticated && !!id,
-    staleTime: 2 * 60 * 1000,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };

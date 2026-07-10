@@ -1,6 +1,9 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// src/services/cart.service.ts  — MOCK (no API calls)
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { axiosInstance } from "@/lib/axios";
 import {
   setCartCount,
   incrementCartCount,
@@ -8,42 +11,7 @@ import {
 } from "@/store/slices/authSlice";
 import type { AppDispatch, RootState } from "@/store";
 import type { CartApiResponse, CartItem } from "@/types/cart.type";
-
-// ─── API functions ────────────────────────────────────────────────────────────
-
-const getCartApi = async (): Promise<CartApiResponse> => {
-  const { data } = await axiosInstance.get<CartApiResponse>("/cart");
-  return data;
-};
-
-const addToCartApi = async (payload: {
-  productVariantSizeId: string;
-  quantity: number;
-}) => {
-  const { data } = await axiosInstance.post("/cart/items", payload);
-  return data;
-};
-
-const updateCartItemApi = async ({
-  id,
-  quantity,
-}: {
-  id: string;
-  quantity: number;
-}) => {
-  const { data } = await axiosInstance.patch(`/cart/items/${id}`, { quantity });
-  return data;
-};
-
-const removeCartItemApi = async (id: string) => {
-  const { data } = await axiosInstance.delete(`/cart/items/${id}`);
-  return data;
-};
-
-const clearCartApi = async () => {
-  const { data } = await axiosInstance.delete("/cart");
-  return data;
-};
+import { mockCartResponse } from "@/lib/mockData";
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -51,9 +19,12 @@ export const useGetCart = () => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   return useQuery({
     queryKey: ["cart"],
-    queryFn: getCartApi,
+    queryFn: async (): Promise<CartApiResponse> => {
+      await new Promise((r) => setTimeout(r, 100));
+      return mockCartResponse;
+    },
     enabled: isAuthenticated,
-    staleTime: 30 * 1000,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };
@@ -62,7 +33,10 @@ export const useAddToCart = () => {
   const qc = useQueryClient();
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: addToCartApi,
+    mutationFn: async (payload: { productVariantSizeId: string; quantity: number }) => {
+      await new Promise((r) => setTimeout(r, 300));
+      return { message: "Added to cart" };
+    },
     onSuccess: (_data, variables) => {
       dispatch(incrementCartCount(variables.quantity));
       qc.invalidateQueries({ queryKey: ["cart"] });
@@ -74,7 +48,10 @@ export const useUpdateCartItem = () => {
   const qc = useQueryClient();
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: updateCartItemApi,
+    mutationFn: async ({ id, quantity }: { id: string; quantity: number }) => {
+      await new Promise((r) => setTimeout(r, 200));
+      return { message: "Cart updated" };
+    },
     onMutate: ({ id, quantity }) => {
       const cartData = qc.getQueryData<CartApiResponse>(["cart"]);
       const existing = cartData?.cart?.items?.find((i: CartItem) => i.id === id);
@@ -83,7 +60,7 @@ export const useUpdateCartItem = () => {
     },
     onSuccess: (_data, _vars, context) => {
       if (context?.diff !== 0) {
-        dispatch(incrementCartCount(context.diff)); // works for negative diffs too
+        dispatch(incrementCartCount(context.diff));
       }
       qc.invalidateQueries({ queryKey: ["cart"] });
     },
@@ -94,7 +71,10 @@ export const useRemoveCartItem = () => {
   const qc = useQueryClient();
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: removeCartItemApi,
+    mutationFn: async (_id: string) => {
+      await new Promise((r) => setTimeout(r, 200));
+      return { message: "Item removed" };
+    },
     onMutate: (id) => {
       const cartData = qc.getQueryData<CartApiResponse>(["cart"]);
       const item = cartData?.cart?.items?.find((i: CartItem) => i.id === id);
@@ -111,7 +91,10 @@ export const useClearCart = () => {
   const qc = useQueryClient();
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: clearCartApi,
+    mutationFn: async () => {
+      await new Promise((r) => setTimeout(r, 200));
+      return { message: "Cart cleared" };
+    },
     onSuccess: () => {
       dispatch(setCartCount(0));
       qc.invalidateQueries({ queryKey: ["cart"] });

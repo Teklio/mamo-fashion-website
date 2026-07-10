@@ -40,7 +40,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
   const navLinks = [
     { name: "HOME", href: "/" },
     { name: "SHOP", href: "/shop" },
-    { name: "HOUSE OF SORIN", href: "/about" },
+    { name: "ABOUT EVORIA", href: "/about" },
     { name: "CONTACT US", href: "/contact-us" },
   ];
 
@@ -62,15 +62,9 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
         <div className="max-w-400 mx-auto px-6 md:px-8 lg:px-16 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative z-50 flex items-center">
-            <Image
-              src="/assets/Home/logo.png"
-              alt="SORIN Logo"
-              width={180}
-              height={52}
-              priority
-              className={`h-9 md:h-12 lg:h-18 w-auto object-contain transition-all duration-500 ${isDarkText ? "brightness-0" : "brightness-100"
-                }`}
-            />
+            <span className={`text-xl md:text-2xl font-serif tracking-widest font-bold transition-all duration-500 ${isDarkText ? "text-black" : "text-white"}`}>
+              EVORIA FASHION
+            </span>
           </Link>
 
           {/* Desktop Navigation */}

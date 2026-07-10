@@ -5,15 +5,15 @@ import AboutFounder from "@/app/about/_components/AboutFounder";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "The House of SORIN | Our Story",
-  description: "Discover the story and craftsmanship behind HOUSE OF SORIN.",
+  title: "The House of EVORIA FASHION | Our Story",
+  description: "Discover the story and craftsmanship behind HOUSE OF EVORIA FASHION.",
 };
 
 export default function AboutPage() {
   return (
-    <main className="relative min-h-screen bg-white overflow-x-hidden text-zinc-950">
-      <Header theme="light" />
-      <div className="relative z-10 bg-white text-zinc-950">
+    <main className="relative min-h-screen bg-zinc-950 overflow-x-hidden text-white">
+      <Header theme="dark" />
+      <div className="relative z-10 bg-transparent text-white">
         <AboutHero />
         <AboutFounder />
         {/* <AboutBanner /> */}

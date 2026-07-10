@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { ppFragmentSerif, ppFragmentText } from "@/lib/font";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Toaster from "@/components/Toaster";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const globalFontSans = Outfit({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const globalFontSerif = Outfit({
+  variable: "--font-playfair",
   subsets: ["latin"],
 });
 
@@ -19,12 +18,13 @@ export const metadata: Metadata = {
   icons: {
     icon: "/fevicon.jpg",
   },
-  title: "SORIN | Endless Escape",
-  description: "Discover the luxury collection of HOUSE OF SORIN.",
+  title: "Evoria Fashion | Girls & Women's Ethnic Wear",
+  description: "Discover the premium collection of churidars, ethnic dresses and more at Evoria Fashion.",
 };
 
 import StoreProvider from "@/store/provider";
 import QueryProvider from "@/providers/QueryProvider";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function RootLayout({
   children,
@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${ppFragmentSerif.variable} ${ppFragmentText.variable} h-full antialiased`}
+      className={`${globalFontSans.variable} ${globalFontSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white">
         <StoreProvider>
@@ -42,6 +42,7 @@ export default function RootLayout({
             {children}
             <Footer />
             <Toaster />
+            <WhatsAppButton />
           </QueryProvider>
         </StoreProvider>
       </body>

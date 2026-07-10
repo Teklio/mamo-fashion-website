@@ -5,14 +5,14 @@ import { FiChevronDown } from "react-icons/fi";
 import { useSearchParams } from "next/navigation";
 
 const faqs = [
-  { question: "How long does delivery take?", answer: "Delivery typically takes 3-5 business days for domestic orders, and 7-14 days for international shipments." },
-  { question: "Where are our products manufactured?", answer: "Our products are ethically crafted by skilled artisans in our dedicated facilities." },
-  { question: "How quickly can I expect a reply if I contact Sorin?", answer: "We aim to respond to all inquiries within 24 hours during regular business days." },
-  { question: "What if an item is unavailable?", answer: "If an item is out of stock, you can sign up for notifications on the product page to be alerted when it returns." },
-  { question: "How are exchange and return orders done?", answer: "Returns and exchanges can be initiated within 14 days of receiving your order through our Returns Portal." },
-  { question: "Can I cancel my order?", answer: "Orders can be canceled within 1 hour of placement. After that, they enter processing." },
-  { question: "How can I check my order status?", answer: "You can track your order using the link provided in your shipping confirmation email or via your SORIN Account." },
-  { question: "Can I edit or cancel my order after purchase?", answer: "If you need to make changes, please contact us immediately. Once shipped, changes cannot be made." },
+  { question: "How do I know my correct size?", answer: "We provide detailed size guides on every product page, including measurements for bust, waist, and hips. If you're between sizes in our dresses, we recommend sizing up for a more comfortable fit." },
+  { question: "What materials do you use for your dresses?", answer: "We source premium fabrics globally, including pure silks, breathable linens, and high-quality cotton blends. The specific fabric composition and care instructions are listed on each item's detail page." },
+  { question: "Can I return a dress if it doesn't fit?", answer: "Yes! We accept returns within 14 days of delivery. The item must be unworn, unwashed, and have all original tags attached. We provide a prepaid return label for your convenience." },
+  { question: "Do you offer styling advice or personal shopping?", answer: "Absolutely. Our expert styling team is available via WhatsApp or email to help you find the perfect outfit for any occasion, from casual brunches to evening galas." },
+  { question: "How long does delivery take for new collections?", answer: "Standard delivery typically takes 3-5 business days. For our limited-edition pre-order collections, estimated shipping dates are clearly noted on the product page." },
+  { question: "Are your garments sustainable?", answer: "Sustainability is at our core. We produce in small, limited-run batches to minimize waste and partner with ethical manufacturers who ensure fair wages and safe working conditions." },
+  { question: "How should I care for my Evoria garments?", answer: "To preserve the rich colors and delicate fabrics, we recommend dry cleaning our evening wear and gentle hand washing for our casual linen and cotton pieces. Always check the care label inside your garment." },
+  { question: "Do you restock sold-out items?", answer: "Since we operate on limited drops to ensure exclusivity, we rarely restock sold-out items. However, you can sign up for 'Back in Stock' notifications in case of returns." },
 ];
 
 export default function Faq() {

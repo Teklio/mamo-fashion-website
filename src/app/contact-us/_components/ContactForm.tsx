@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import type { AxiosError } from "axios";
-import Input from "@/components/Input";
 import { useContactUs } from "@/services/settings.service";
 import { contactFormSchema, type ContactFormType } from "@/zodschemas/common.schema";
 
@@ -37,76 +36,101 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="py-20 px-6 max-w-6xl mx-auto">
-      <div className="flex flex-col md:flex-row gap-16 items-start">
+    <section className="py-24 px-6 max-w-6xl mx-auto mb-20">
+      <div className="flex flex-col lg:flex-row gap-16 items-center bg-white rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] border border-zinc-100 p-8 md:p-12">
 
-        {/* Left Side: Form */}
-        <div className="w-full md:w-1/2 flex flex-col">
-          <h2 className="text-3xl md:text-4xl font-serif text-black mb-2">
-            Send us a Message
+        {/* Left Side: Image */}
+        <div className="w-full lg:w-5/12 relative h-96 md:h-[600px] rounded-3xl overflow-hidden shadow-2xl group">
+          <div className="absolute inset-0 bg-zinc-900/10 z-10 group-hover:bg-transparent transition-colors duration-700"></div>
+          <Image
+            src="/images/churidar.jpg"
+            alt="EVORIA FASHION Contact"
+            fill
+            className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
+          />
+        </div>
+
+        {/* Right Side: Form */}
+        <div className="w-full lg:w-7/12 flex flex-col pt-4">
+          <span className="text-[10px] tracking-[0.4em] text-zinc-400 font-sans font-semibold uppercase mb-4">
+            WRITE TO US
+          </span>
+          <h2 className="text-4xl md:text-5xl font-serif text-zinc-900 mb-4 font-light">
+            Send a Message
           </h2>
-          <p className="text-zinc-500 font-serif mb-10 text-sm">
-            We typically respond within 24 hours
+          <p className="text-zinc-500 font-sans tracking-wide mb-12 max-w-lg leading-relaxed">
+            Whether you have a question about our collections, need styling advice, or just want to say hello, we'd love to hear from you.
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-6 w-full">
-            <div className="flex flex-col">
-              <Input label="FULL NAME" type="text" placeholder="Your name" {...register("fullName")} />
-              {errors.fullName && (
-                <p className="mt-1 text-xs text-red-500">{errors.fullName.message}</p>
-              )}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-8 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="flex flex-col relative">
+                <input 
+                  type="text" 
+                  placeholder="Your Name" 
+                  {...register("fullName")} 
+                  className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
+                />
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
+                {errors.fullName && (
+                  <p className="mt-2 text-[10px] uppercase tracking-wider text-red-500">{errors.fullName.message}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col relative">
+                <input 
+                  type="email" 
+                  placeholder="Email Address" 
+                  {...register("email")} 
+                  className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
+                />
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
+                {errors.email && (
+                  <p className="mt-2 text-[10px] uppercase tracking-wider text-red-500">{errors.email.message}</p>
+                )}
+              </div>
             </div>
 
-            <div className="flex flex-col">
-              <Input label="EMAIL" type="email" placeholder="your@email.com" {...register("email")} />
-              {errors.email && (
-                <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col">
-              <Input label="SUBJECT" type="text" placeholder="What is this about?" {...register("subject")} />
+            <div className="flex flex-col relative">
+              <input 
+                type="text" 
+                placeholder="Subject" 
+                {...register("subject")} 
+                className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
+              />
+              <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
               {errors.subject && (
-                <p className="mt-1 text-xs text-red-500">{errors.subject.message}</p>
+                <p className="mt-2 text-[10px] uppercase tracking-wider text-red-500">{errors.subject.message}</p>
               )}
             </div>
 
-            <div className="flex flex-col">
-              <label className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-2">
-                MESSAGE
-              </label>
+            <div className="flex flex-col relative">
               <textarea
                 placeholder="Your message..."
                 {...register("message")}
-                className="w-full bg-zinc-100 border border-transparent focus:border-zinc-300 focus:bg-white focus:outline-none rounded-md px-4 py-3 text-sm transition-colors text-black placeholder:text-zinc-400 min-h-37.5 resize-y"
+                className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 min-h-[120px] resize-y peer"
               />
+              <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
               {errors.message && (
-                <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>
+                <p className="mt-2 text-[10px] uppercase tracking-wider text-red-500">{errors.message.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={isPending}
-              className="w-full bg-[#111] hover:bg-black text-white text-xs tracking-[0.2em] font-sans font-semibold uppercase py-4 rounded-lg mt-4 transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12.5"
+              className="group relative w-full md:w-auto md:px-12 bg-zinc-900 hover:bg-black text-white text-xs tracking-[0.2em] font-sans font-semibold uppercase py-5 rounded-full mt-4 transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] hover:-translate-y-1 overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              {isPending ? (
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                "SEND MESSAGE"
-              )}
+              <span className="absolute inset-0 w-full h-full bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"></span>
+              <span className="relative flex justify-center items-center">
+                {isPending ? (
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "SEND MESSAGE"
+                )}
+              </span>
             </button>
           </form>
-        </div>
-
-        {/* Right Side: Image */}
-        <div className="w-full md:w-1/2 relative h-125 md:h-162.5 rounded-2xl overflow-hidden shadow-lg">
-          <Image
-            src="/assets/about/2.jpg"
-            alt="SORIN Lifestyle"
-            fill
-            className="object-cover object-center"
-          />
         </div>
       </div>
     </section>

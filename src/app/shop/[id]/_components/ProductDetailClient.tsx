@@ -164,7 +164,7 @@ export default function ProductDetailClient({
               ))
             ) : (
               <div className="w-20 h-20 lg:w-24 lg:h-24 shrink-0 bg-[#f3f3f3] rounded-sm flex items-center justify-center">
-                <span className="text-zinc-300 text-[9px] font-sans tracking-widest">SORIN</span>
+                <span className="text-zinc-300 text-[9px] font-sans tracking-widest">EVORIA FASHION</span>
               </div>
             )}
           </div>
@@ -184,7 +184,7 @@ export default function ProductDetailClient({
                 />
               ) : (
                 <span className="text-zinc-200 text-sm font-sans tracking-[0.3em] uppercase select-none">
-                  SORIN
+                  EVORIA FASHION
                 </span>
               )}
             </div>
@@ -424,7 +424,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <h2 className="text-2xl font-serif text-zinc-900 mb-2">
-                      SORIN Size Guide
+                      EVORIA FASHION Size Guide
                     </h2>
                     <p className="text-sm text-zinc-500 font-sans max-w-md leading-relaxed">
                       Use the chart below to find your perfect fit. Measurements

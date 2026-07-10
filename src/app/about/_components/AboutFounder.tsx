@@ -4,45 +4,14 @@ import { motion } from "framer-motion";
 
 export default function AboutFounder() {
   return (
-    <div className="w-full bg-white text-zinc-950 pb-20 md:pb-32 pt-16 md:pt-24">
-      {/* Two Image Gallery (Full Width) */}
-      {/* <div className="w-full grid grid-cols-1 md:grid-cols-2">
-        <motion.div
-          className="relative w-full aspect-square md:aspect-auto md:h-[70vh] lg:h-[90vh]"
-          initial={{ opacity: 0, x: -60 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
-        >
-          <Image
-            src="/assets/about/1.jpg"
-            alt="SORIN Sandals Close-up"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover object-center"
-          />
-        </motion.div>
-        <motion.div
-          className="relative w-full aspect-square md:aspect-auto md:h-[70vh] lg:h-[90vh]"
-          initial={{ opacity: 0, x: 60 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
-        >
-          <Image
-            src="/assets/about/2.jpg"
-            alt="SORIN Lifestyle Beach Chair"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover object-center"
-          />
-        </motion.div>
-      </div> */}
+    <div className="w-full bg-zinc-950 text-white pb-24 md:pb-40 pt-16 md:pt-24 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Founder Quote */}
-      <div className="max-w-4xl mx-auto flex flex-col items-center text-center px-6">
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center px-6">
         <motion.span
-          className="text-[10px] tracking-[0.2em] text-zinc-400 font-sans font-semibold uppercase mb-8 md:mb-12"
+          className="text-[10px] tracking-[0.4em] text-amber-300 font-sans font-semibold uppercase mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -52,26 +21,30 @@ export default function AboutFounder() {
         </motion.span>
 
         <motion.h3
-          className="text-2xl md:text-3xl lg:text-[2rem] leading-[1.6] md:leading-[1.8] font-serif text-zinc-800 mb-10 md:mb-14"
+          className="text-3xl md:text-4xl lg:text-5xl leading-[1.6] md:leading-[1.8] font-serif text-white mb-14 font-light"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
         >
-          &ldquo;SORIN is not a brand. It is a way of moving <br className="hidden md:block" />
+          <span className="text-amber-300/40 text-6xl md:text-8xl leading-none absolute -top-8 -left-4 md:-left-12 -z-10 font-serif">&ldquo;</span>
+          EVORIA FASHION is not a brand. It is a way of moving <br className="hidden md:block" />
           through the world unhurried, sun warmed, in <br className="hidden md:block" />
-          love with the long way home.&rdquo;
+          love with the long way home.
+          <span className="text-amber-300/40 text-6xl md:text-8xl leading-none absolute -bottom-12 -right-4 md:-right-12 -z-10 font-serif">&rdquo;</span>
         </motion.h3>
 
         <motion.div
-          className="flex items-center text-[10px] tracking-[0.2em] text-zinc-400 font-sans uppercase"
+          className="flex flex-col items-center gap-4 mt-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
         >
-          <span className="w-6 h-px bg-zinc-300 mr-4"></span>
-          THE FOUNDER
+          <div className="w-px h-16 bg-gradient-to-b from-amber-300 to-transparent"></div>
+          <span className="text-[10px] tracking-[0.3em] text-zinc-400 font-sans uppercase">
+            THE FOUNDER
+          </span>
         </motion.div>
       </div>
     </div>

@@ -310,7 +310,7 @@ export default function CheckoutClient() {
             <section className="rounded-2xl border border-zinc-200 p-6 md:p-8">
               <h2 className="mb-1 font-serif text-xl text-zinc-900">Sign In to Checkout</h2>
               <p className="mb-6 font-sans text-xs text-zinc-500">
-                New to SORIN? We&apos;ll create your account automatically.
+                New to EVORIA FASHION? We&apos;ll create your account automatically.
               </p>
               <form onSubmit={handleAuth} className="flex flex-col gap-4">
                 <div>
@@ -504,7 +504,7 @@ export default function CheckoutClient() {
                 Terms
               </Link>
             </div>
-            <span className="font-sans text-xs text-zinc-400">© SORIN — DUBAI, UAE</span>
+            <span className="font-sans text-xs text-zinc-400">© EVORIA FASHION — DUBAI, UAE</span>
           </div>
         </div>
 

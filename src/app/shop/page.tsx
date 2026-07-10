@@ -4,8 +4,8 @@ import ShopGrid from "./_components/ShopGrid";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Shop | SORIN",
-  description: "Explore the Signature Styles collection at SORIN.",
+  title: "Shop | EVORIA FASHION",
+  description: "Explore the Signature Styles collection at EVORIA FASHION.",
 };
 
 export default function ShopPage() {

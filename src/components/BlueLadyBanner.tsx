@@ -19,8 +19,8 @@ export default function BlueLadyBanner() {
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const }}
       >
         <Image
-          src="/assets/Home/banner.jpg"
-          alt="SORIN Editorial Fashion"
+          src="/images/banner-foot.jpg"
+          alt="EVORIA FASHION Editorial Fashion"
           fill
           sizes="100vw"
           className="object-cover object-center"

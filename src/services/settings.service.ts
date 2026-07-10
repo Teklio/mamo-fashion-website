@@ -1,5 +1,13 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// src/services/settings.service.ts  — MOCK (no API calls)
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "@/lib/axios";
+import {
+  mockPhonecodes,
+  mockCountrycodes,
+  mockCities,
+} from "@/lib/mockData";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -15,87 +23,79 @@ export interface Countrycode {
   countrycode: string;
 }
 
-interface GetPhonecodesResponse {
-  phonecodes: Phonecode[];
-}
-
-interface GetCountrycodesResponse {
-  countrycodes: Countrycode[];
-}
-
 export interface City {
   cityName: string;
 }
 
 // ─── Cities ───────────────────────────────────────────────────────────────────
 
-const getCitiesApi = async (countryCode: string): Promise<City[]> => {
-  const { data } = await axiosInstance.get<City[]>(`/settings/cities/${countryCode}`);
-  return data;
-};
-
 export const useGetCities = (countryCode: string) => {
   return useQuery({
     queryKey: ["settings-cities", countryCode],
-    queryFn: () => getCitiesApi(countryCode),
+    queryFn: async (): Promise<City[]> => {
+      await new Promise((r) => setTimeout(r, 100));
+      return mockCities;
+    },
     enabled: !!countryCode,
-    staleTime: 10 * 60 * 1000,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };
 
-// ─── Contact Us ───────────────────────────────────────────────────────────────
-
-interface ContactUsPayload {
-  fullName: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
 // ─── Phone codes ──────────────────────────────────────────────────────────────
-
-const getPhonecodesApi = async (search = ""): Promise<GetPhonecodesResponse> => {
-  const { data } = await axiosInstance.get("/settings/phonecodes", {
-    params: search.trim() ? { search: search.trim() } : undefined,
-  });
-  return data;
-};
 
 export const useGetPhonecodes = (search = "") => {
   return useQuery({
     queryKey: ["settings-phonecodes", search],
-    queryFn: () => getPhonecodesApi(search),
-    staleTime: 10 * 60 * 1000,
+    queryFn: async () => {
+      await new Promise((r) => setTimeout(r, 100));
+      const filtered = search
+        ? {
+            phonecodes: mockPhonecodes.phonecodes.filter((p) =>
+              p.name.toLowerCase().includes(search.toLowerCase())
+            ),
+          }
+        : mockPhonecodes;
+      return filtered;
+    },
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };
 
 // ─── Country codes ────────────────────────────────────────────────────────────
 
-const getCountrycodesApi = async (search = ""): Promise<GetCountrycodesResponse> => {
-  const { data } = await axiosInstance.get("/settings/countrycodes", {
-    params: search.trim() ? { search: search.trim() } : undefined,
-  });
-  return data;
-};
-
 export const useGetCountrycodes = (search = "") => {
   return useQuery({
     queryKey: ["settings-countrycodes", search],
-    queryFn: () => getCountrycodesApi(search),
-    staleTime: 10 * 60 * 1000,
+    queryFn: async () => {
+      await new Promise((r) => setTimeout(r, 100));
+      const filtered = search
+        ? {
+            countrycodes: mockCountrycodes.countrycodes.filter((c) =>
+              c.name.toLowerCase().includes(search.toLowerCase())
+            ),
+          }
+        : mockCountrycodes;
+      return filtered;
+    },
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };
 
 // ─── Contact Us ───────────────────────────────────────────────────────────────
 
-const contactUsApi = async (payload: ContactUsPayload): Promise<{ message: string }> => {
-  const { data } = await axiosInstance.post("/settings/contactus", payload);
-  return data;
-};
-
 export const useContactUs = () => {
-  return useMutation({ mutationFn: contactUsApi });
+  return useMutation({
+    mutationFn: async (_payload: {
+      fullName: string;
+      email: string;
+      subject: string;
+      message: string;
+    }) => {
+      await new Promise((r) => setTimeout(r, 500));
+      return { message: "Thank you for contacting us! We'll get back to you shortly." };
+    },
+  });
 };
