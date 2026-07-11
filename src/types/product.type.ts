@@ -9,6 +9,9 @@ export interface CustomerProduct {
   secondaryImageUrl: string | null;
   colorName: string | null;
   colorCode: string | null;
+  mainCategory: "Women" | "Kids";
+  subCategory: string;
+  material: string;
   sizes: { id: string; size: string; stock: number }[];
 }
 
@@ -40,6 +43,9 @@ export interface CustomerProductDetail {
   price: string;
   description: string | null;
   feature: string | null;
+  mainCategory: "Women" | "Kids";
+  subCategory: string;
+  material: string;
   variants: CustomerProductVariant[];
 }
 

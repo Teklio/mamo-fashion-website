@@ -62,11 +62,10 @@ export default function AccountSidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-xs md:text-sm font-sans transition-colors whitespace-nowrap ${
-                    isActive
+                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-xs md:text-sm font-sans transition-colors whitespace-nowrap ${isActive
                       ? "bg-black text-white"
                       : "text-zinc-600 hover:bg-zinc-50 hover:text-black bg-zinc-50/50 lg:bg-transparent"
-                  }`}
+                    }`}
                 >
                   <Icon size={14} />
                   {item.name}
@@ -76,7 +75,7 @@ export default function AccountSidebar() {
           </nav>
 
           {/* Log Out */}
-          <button 
+          <button
             onClick={() => setIsLogoutModalOpen(true)}
             className="flex items-center justify-center lg:justify-start gap-2.5 px-4 py-2.5 mt-4 lg:mt-8 rounded-lg text-xs md:text-sm font-sans text-red-500 hover:text-red-600 hover:bg-red-50/40 bg-red-50/20 lg:bg-transparent transition-colors w-full text-center lg:text-left"
           >

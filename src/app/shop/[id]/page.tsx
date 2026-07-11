@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import ProductDetailClient from "./_components/ProductDetailClient";
 import Header from "@/components/Header";
 import FeaturedProducts from "@/components/FeaturedProducts";
-import type { CustomerProductDetail } from "@/types/product.type";
+import { mockProducts } from "@/lib/mockProducts";
+import type { CustomerProductDetail, CustomerProductVariant } from "@/types/product.type";
 
 export const metadata: Metadata = {
   title: "Product Detail | EVORIA FASHION",
@@ -20,14 +21,32 @@ export default async function ProductDetailPage({
   const { id } = await params;
   const { variant } = await searchParams;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/products/customer/${id}`,
-    { cache: "no-store" },
-  );
+  const productVariant = mockProducts.find(p => p.productId === id || p.id === id);
+  if (!productVariant) notFound();
 
-  if (!res.ok) notFound();
+  const relatedVariants = mockProducts.filter(p => p.productId === productVariant.productId || p.title === productVariant.title);
+  
+  const mappedVariants: CustomerProductVariant[] = relatedVariants.map(v => ({
+    id: v.id,
+    colorName: v.colorName || "Default",
+    colorCode: v.colorCode || "#000",
+    primaryImage: v.primaryImageUrl ? { id: v.primaryImageUrl, publicUrl: v.primaryImageUrl } : null,
+    secondaryImage: v.secondaryImageUrl ? { id: v.secondaryImageUrl, publicUrl: v.secondaryImageUrl } : null,
+    images: [],
+    sizes: v.sizes,
+  }));
 
-  const { product }: { product: CustomerProductDetail } = await res.json();
+  const product: CustomerProductDetail = {
+    id: productVariant.productId,
+    title: productVariant.title,
+    price: productVariant.price,
+    description: "Experience premium quality with this handcrafted piece. Perfect for any occasion.",
+    feature: "Handcrafted",
+    mainCategory: productVariant.mainCategory,
+    subCategory: productVariant.subCategory,
+    material: productVariant.material,
+    variants: mappedVariants,
+  };
 
   return (
     <>
@@ -37,7 +56,7 @@ export default async function ProductDetailPage({
           <ProductDetailClient product={product} initialVariantId={variant} />
         </div>
 
-        <FeaturedProducts title="Related Products" hideViewAll={true} />
+        <FeaturedProducts title="Related Products" hideViewAll={true} category={product.mainCategory} />
       </main>
     </>
   );

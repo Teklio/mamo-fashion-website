@@ -45,7 +45,7 @@ export default function HouseOfEvoria() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ delay: 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            Born on the sun kissed shores of Dubai, EVORIA FASHION redefines coastal luxury
+            Born on the sun kissed shores of Kerala, EVORIA FASHION redefines coastal luxury
             through timeless craftsmanship and effortless elegance. Inspired by the sea
             breeze and golden light, each piece is designed for those who follow the sun.
             More than a brand, EVORIA FASHION is a lifestyle your endless escape. Take the

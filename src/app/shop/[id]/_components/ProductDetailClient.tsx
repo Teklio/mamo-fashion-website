@@ -66,6 +66,8 @@ export default function ProductDetailClient({
     .filter((s) => s.stock > 0)
     .map((s) => s.size);
 
+  const totalStock = (selectedVariant?.sizes ?? []).reduce((acc, curr) => acc + curr.stock, 0);
+
   const handleColorChange = (colorName: string) => {
     setSelectedColor(colorName);
     setActiveImage(0);
@@ -141,36 +143,9 @@ export default function ProductDetailClient({
     <div className="flex flex-col gap-24">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-24">
         {/* Left: Images */}
-        <div className="flex flex-col-reverse col-span-3 lg:flex-row gap-6 lg:h-165">
-          {/* Thumbnails */}
-          <div className="flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto no-scrollbar pb-2 lg:pb-0">
-            {variantImages.length > 0 ? (
-              variantImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImage(idx)}
-                  className={`relative w-20 h-20 lg:w-24 lg:h-24 shrink-0 bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all ${
-                    activeImage === idx ? "border-zinc-900" : "border-transparent"
-                  }`}
-                >
-                  <Image
-                    src={img}
-                    alt={`Thumbnail ${idx}`}
-                    fill
-                    sizes="96px"
-                    className="object-cover"
-                  />
-                </button>
-              ))
-            ) : (
-              <div className="w-20 h-20 lg:w-24 lg:h-24 shrink-0 bg-[#f3f3f3] rounded-sm flex items-center justify-center">
-                <span className="text-zinc-300 text-[9px] font-sans tracking-widest">EVORIA FASHION</span>
-              </div>
-            )}
-          </div>
-
+        <div className="flex flex-col col-span-3 gap-4">
           {/* Main Image */}
-          <div className="relative flex-1 bg-[#f3f3f3] rounded-sm overflow-hidden min-h-100 lg:min-h-full">
+          <div className="relative w-full bg-[#f3f3f3] rounded-sm overflow-hidden min-h-[400px] lg:min-h-[600px]">
             <div className="absolute inset-0 flex items-center justify-center p-8">
               {variantImages[activeImage] ? (
                 <Image
@@ -204,6 +179,35 @@ export default function ProductDetailClient({
               />
             </button>
           </div>
+
+          {/* Thumbnails (Max 3) */}
+          <div className="grid grid-cols-3 gap-4">
+            {variantImages.length > 0 ? (
+              variantImages.slice(0, 3).map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImage(idx)}
+                  className={`relative w-full aspect-[4/5] bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all ${
+                    activeImage === idx ? "border-zinc-900" : "border-transparent"
+                  }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`Thumbnail ${idx}`}
+                    fill
+                    sizes="(max-width: 1024px) 33vw, 16vw"
+                    className="object-cover"
+                  />
+                </button>
+              ))
+            ) : (
+              [1, 2, 3].map((_, idx) => (
+                <div key={idx} className="w-full aspect-[4/5] bg-[#f3f3f3] rounded-sm flex items-center justify-center">
+                  <span className="text-zinc-300 text-[9px] font-sans tracking-widest text-center px-2">EVORIA FASHION</span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         {/* Right: Details */}
@@ -214,8 +218,12 @@ export default function ProductDetailClient({
           <p className="text-xl font-semibold text-zinc-900 mb-1">
             {priceText}
           </p>
-          <p className="text-xs text-zinc-500 font-sans mb-8">
-            Inclusive of duties. Complimentary shipping.
+          <p className="text-xs font-sans mb-8">
+            <span className={totalStock > 0 ? "text-emerald-600" : "text-red-500"}>
+              {totalStock > 0 ? `${totalStock} items left in stock` : "Out of stock"}
+            </span>
+            <span className="text-zinc-300 mx-2">|</span>
+            <span className="text-zinc-500">Inclusive of duties. Complimentary shipping.</span>
           </p>
 
           {/* Color & Quantity */}

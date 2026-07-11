@@ -33,8 +33,8 @@ export default function ContactHero() {
             <FiPhone size={22} />
           </div>
           <h3 className="font-serif text-xl text-zinc-900 mb-3 relative z-10">Call Us</h3>
-          <a href="tel:+971507284619" className="font-sans text-sm text-zinc-600 hover:text-zinc-900 transition-colors relative z-10 mb-4">
-            +971 50 728 4619
+          <a href="tel:+919876543210" className="font-sans text-sm text-zinc-600 hover:text-zinc-900 transition-colors relative z-10 mb-4">
+            +91 98 7654 3210
           </a>
           <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-sans relative z-10">
             Mon-Fri from 9am to 6pm
@@ -48,8 +48,8 @@ export default function ContactHero() {
             <FiMessageCircle size={22} />
           </div>
           <h3 className="font-serif text-xl text-zinc-900 mb-3 relative z-10">WhatsApp</h3>
-          <a href="https://wa.me/971507284619" target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-zinc-600 hover:text-green-600 transition-colors relative z-10 mb-4">
-            +971 50 728 4619
+          <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-zinc-600 hover:text-green-600 transition-colors relative z-10 mb-4">
+            +91 98 7654 3210
           </a>
           <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-sans relative z-10">
             Quick responses
@@ -63,8 +63,8 @@ export default function ContactHero() {
           </div>
           <h3 className="font-serif text-xl text-zinc-900 mb-3 relative z-10">Our Studio</h3>
           <p className="font-sans text-sm text-zinc-600 relative z-10 mb-2 text-center max-w-sm">
-            Building 4, Dubai Design District (d3)<br />
-            Dubai, United Arab Emirates
+            Building 4, InfoPark<br />
+            Kochi, Kerala, India
           </p>
           <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="text-[10px] uppercase tracking-[0.2em] text-zinc-900 font-sans font-semibold relative z-10 hover:underline mt-2">
             Get Directions

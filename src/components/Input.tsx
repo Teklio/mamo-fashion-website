@@ -26,15 +26,15 @@ export default function Input({ label, rightLabel, type, className = "", ...prop
         )}
       </div>
       <div className="relative">
-        <input 
+        <input
           type={inputType}
           className={`w-full bg-zinc-100 border border-transparent focus:border-zinc-300 focus:bg-white focus:outline-none rounded-md px-4 py-3 text-sm transition-colors text-black placeholder:text-zinc-400 ${className}`}
           suppressHydrationWarning
           {...props}
         />
         {isPassword && (
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 focus:outline-none"
             aria-label={showPassword ? "Hide password" : "Show password"}

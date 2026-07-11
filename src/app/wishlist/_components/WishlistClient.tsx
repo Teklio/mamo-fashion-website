@@ -5,19 +5,42 @@ import Image from "next/image";
 import { FiX, FiShoppingCart } from "react-icons/fi";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useGetWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
+import { useAddToCart } from "@/services/cart.service";
 import { formatPrice } from "@/services/product.service";
 import type { WishlistItem } from "@/types/wishlist.type";
 
 export default function WishlistClient() {
+  const router = useRouter();
   const { data, isLoading } = useGetWishlist();
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
+  const { mutate: addToCart } = useAddToCart();
 
   const wishlist = data?.wishlist ?? [];
   const subtotal = wishlist.reduce(
     (acc: number, w: WishlistItem) => acc + Number(w.variant?.product?.price ?? 0),
     0,
   );
+
+  const handleMoveToCart = () => {
+    let added = 0;
+    wishlist.forEach((w) => {
+      const availableSize = w.variant?.sizes?.find(s => s.stock > 0);
+      if (availableSize) {
+        addToCart({ productVariantSizeId: availableSize.id, quantity: 1 });
+        added++;
+        // Optionally remove from wishlist here if desired, but we'll leave it for now
+      }
+    });
+    
+    if (added > 0) {
+      toast.success(`${added} items moved to cart!`);
+      router.push("/cart");
+    } else {
+      toast.error("No items have available sizes in stock.");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -175,12 +198,18 @@ export default function WishlistClient() {
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-zinc-500 font-sans">Estimated subtotal</span>
                   <span className="text-sm font-semibold text-zinc-900 font-sans">
-                    AED {subtotal.toFixed(2)}
+                    INR {subtotal.toFixed(2)}
                   </span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3 mt-8 md:mt-10">
+                <button
+                  onClick={handleMoveToCart}
+                  className="w-full py-3.5 md:py-4 bg-[#111] border border-[#111] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans text-center block"
+                >
+                  PROCEED TO CART
+                </button>
                 <Link
                   href="/shop"
                   className="w-full py-3.5 md:py-4 bg-white border border-[#ebebeb] text-zinc-800 text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-zinc-50 hover:border-zinc-200 transition-colors font-sans text-center block"

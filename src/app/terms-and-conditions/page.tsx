@@ -71,7 +71,7 @@ export default function TermsAndConditionsPage() {
                 4. Pricing and Payments
               </h3>
               <ul className="list-disc pl-6 space-y-2">
-                <li>All prices are displayed in AED unless otherwise stated.</li>
+                <li>All prices are displayed in INR unless otherwise stated.</li>
                 <li>Prices may change without prior notice.</li>
                 <li>Payment must be completed through approved payment methods available on the website.</li>
                 <li>Orders will only be processed after successful payment authorization.</li>
@@ -118,7 +118,7 @@ export default function TermsAndConditionsPage() {
                 These Terms and Conditions shall be governed by and interpreted in accordance with the laws of the United Arab Emirates.
               </p>
               <p>
-                Any disputes shall be subject to the exclusive jurisdiction of the competent courts of the UAE.
+                Any disputes shall be subject to the exclusive jurisdiction of the competent courts of India.
               </p>
             </section>
 

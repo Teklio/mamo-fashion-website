@@ -45,7 +45,7 @@ export default function ShippingPolicyPage() {
                 We currently deliver to:
               </p>
               <ul className="list-disc pl-6 space-y-2 mb-4">
-                <li>United Arab Emirates (UAE)</li>
+                <li>India</li>
                 <li>Kingdom of Saudi Arabia (KSA)</li>
                 <li>Gulf Cooperation Council (GCC) countries</li>
                 <li>Selected international destinations</li>
@@ -70,7 +70,7 @@ export default function ShippingPolicyPage() {
                 Estimated Delivery Times
               </h3>
               <ul className="list-disc pl-6 space-y-2 mb-4">
-                <li>UAE: 1-5 business days</li>
+                <li>India: 3-5 business days</li>
                 <li>KSA: 3-7 business days</li>
                 <li>GCC Countries: 5-10 business days</li>
                 <li>International: 7-15 business days</li>

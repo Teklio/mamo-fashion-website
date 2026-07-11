@@ -4,14 +4,20 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FiHeart, FiUser, FiShoppingBag, FiMenu, FiX } from "react-icons/fi";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "@/store";
+import { useGetCart } from "@/services/cart.service";
+import { useGetWishlist } from "@/services/wishlist.service";
+import { setCartCount, setWishlistCount } from "@/store/slices/authSlice";
 
 export default function Header({ theme = "dark" }: { theme?: "dark" | "light" }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartCount = useSelector((s: RootState) => s.auth.cartCount);
   const wishlistCount = useSelector((s: RootState) => s.auth.wishlistCount);
+  const dispatch = useDispatch<AppDispatch>();
+  const { data: cartData } = useGetCart();
+  const { data: wishlistData } = useGetWishlist();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +30,24 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Sync mock API data with Redux store (fixes dev server reload persisting Redux but clearing mock data)
+  useEffect(() => {
+    if (cartData?.cart?.items) {
+      const itemsCount = cartData.cart.items.reduce((sum, item) => sum + item.quantity, 0);
+      if (itemsCount !== cartCount) {
+        dispatch(setCartCount(itemsCount));
+      }
+    }
+  }, [cartData, cartCount, dispatch]);
+
+  useEffect(() => {
+    if (wishlistData?.wishlist) {
+      if (wishlistData.wishlist.length !== wishlistCount) {
+        dispatch(setWishlistCount(wishlistData.wishlist.length));
+      }
+    }
+  }, [wishlistData, wishlistCount, dispatch]);
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {

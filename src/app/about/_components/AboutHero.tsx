@@ -45,7 +45,7 @@ export default function AboutHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            Born on the sun kissed shores of Dubai, EVORIA FASHION redefines coastal luxury through refined craftsmanship and effortless allure. Each creation embodies the art of timeless elegance, from signature details to silhouettes that whisper of sea breeze and sophistication.
+            Born on the sun kissed shores of Kerala, EVORIA FASHION redefines coastal luxury through refined craftsmanship and effortless allure. Each creation embodies the art of timeless elegance, from signature details to silhouettes that whisper of sea breeze and sophistication.
           </motion.p>
         </div>
       </div>

@@ -33,6 +33,7 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
   const hoverImage = product.secondaryImageUrl ?? undefined;
   const availableSizes = product.sizes.filter((s) => s.stock > 0);
   const isWishlisted = wishlistedIds.has(product.id);
+  const totalStock = availableSizes.reduce((acc, curr) => acc + curr.stock, 0);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -114,15 +115,19 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
           {/* Wishlist Button */}
           <button
             onClick={handleWishlistToggle}
-            className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-xs border border-zinc-100 hover:scale-110 active:scale-95 transition-all duration-300 z-10"
+            className={`absolute top-3.5 right-3.5 w-8 h-8 rounded-full flex items-center justify-center shadow-xs border transition-all duration-300 z-10 ${
+              isWishlisted
+                ? "bg-black border-black text-white hover:scale-110 active:scale-95"
+                : "bg-white border-zinc-100 text-zinc-700 hover:text-black hover:scale-110 active:scale-95"
+            }`}
             aria-label="Add to Wishlist"
           >
             <FiHeart
               size={14}
               className={`transition-all duration-300 stroke-[1.8] ${
                 isWishlisted
-                  ? "fill-black text-black scale-110"
-                  : "text-zinc-700 hover:text-black"
+                  ? "fill-white text-white scale-110"
+                  : ""
               }`}
             />
           </button>
@@ -164,8 +169,11 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
             <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">
               {product.title ?? ""}
             </span>
-            <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide">
+            <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide mb-0.5">
               {formatPrice(product.price)}
+            </span>
+            <span className={`text-[10px] font-sans ${totalStock > 0 ? "text-emerald-600" : "text-red-500"}`}>
+              {totalStock > 0 ? `${totalStock} in stock` : "Out of stock"}
             </span>
           </div>
 

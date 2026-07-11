@@ -145,7 +145,7 @@ export default function CartPage() {
                       </div>
 
                       <p className="font-serif text-base sm:text-lg text-black whitespace-nowrap min-w-24 text-right">
-                        AED {(getUnitPrice(item) * item.quantity).toFixed(2)}
+                        INR {(getUnitPrice(item) * item.quantity).toFixed(2)}
                       </p>
 
                       <button
@@ -179,7 +179,7 @@ export default function CartPage() {
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-zinc-500 font-sans text-xs tracking-wider">Subtotal</span>
                   <span className="text-black font-sans text-xs font-semibold">
-                    AED {subtotal.toFixed(2)}
+                    INR {subtotal.toFixed(2)}
                   </span>
                 </div>
 
@@ -200,7 +200,7 @@ export default function CartPage() {
                     TOTAL
                   </span>
                   <span className="text-black font-serif text-lg md:text-xl">
-                    AED {subtotal.toFixed(2)}
+                    INR {subtotal.toFixed(2)}
                   </span>
                 </div>
 

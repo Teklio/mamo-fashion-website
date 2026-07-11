@@ -8,11 +8,17 @@ import ProductCard from "@/components/ProductCard";
 export default function FeaturedProducts({
   title = "Signature Styles",
   hideViewAll = false,
+  category,
 }: {
   title?: string;
   hideViewAll?: boolean;
+  category?: string;
 } = {}) {
-  const data = { variants: mockProducts };
+  const filteredProducts = category 
+    ? mockProducts.filter(p => p.mainCategory === category || p.subCategory === category)
+    : mockProducts;
+  const displayProducts = filteredProducts.slice(0, 4);
+  const data = { variants: displayProducts };
 
   const containerVariants = {
     hidden: { opacity: 0 },

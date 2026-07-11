@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import Input from "@/components/Input";
 import PhoneInput from "@/components/shared/PhoneInput";
 import { SearchableDropdown } from "@/components/shared/SearchableDropdown";
-import { useGetCountrycodes, useGetCities } from "@/services/settings.service";
+import { useGetCities } from "@/services/settings.service";
 import {
   useGetCustomerAddresses,
   useAddCustomerAddress,
@@ -44,7 +44,7 @@ export default function AddressPage() {
     defaultValues: {
       name: "",
       line1: "",
-      countryCode: "",
+      countryCode: "IN",
       city: "",
       district: "",
       postalCode: "",
@@ -53,21 +53,11 @@ export default function AddressPage() {
     },
   });
 
-  const watchedCountryCode = useWatch({ control, name: "countryCode" });
   const watchedCity = useWatch({ control, name: "city" });
   const watchedIsDefault = useWatch({ control, name: "isDefault" });
 
-  const { data: countrycodeData, isLoading: isCountriesLoading } = useGetCountrycodes(countrySearch);
-  const { data: citiesData, isLoading: isCitiesLoading } = useGetCities(watchedCountryCode ?? "");
+  const { data: citiesData, isLoading: isCitiesLoading } = useGetCities("IN");
 
-  const countryOptions = useMemo(
-    () =>
-      (countrycodeData?.countrycodes ?? []).map((c) => ({
-        value: c.countrycode,
-        label: `${c.countrycode} – ${c.name}`,
-      })),
-    [countrycodeData],
-  );
 
   const cityOptions = useMemo(
     () => (citiesData ?? []).map((c) => ({ value: c.cityName, label: c.cityName })),
@@ -84,7 +74,7 @@ export default function AddressPage() {
     reset({
       name: "",
       line1: "",
-      countryCode: "",
+      countryCode: "IN",
       city: "",
       district: "",
       postalCode: "",
@@ -128,7 +118,7 @@ export default function AddressPage() {
       phone: phone.trim(),
       line1: data.line1,
       city: data.city,
-      countryCode: data.countryCode,
+      countryCode: "IN",
       district: data.district?.trim() || null,
       postalCode: data.postalCode?.trim() || null,
       landMark: data.landMark?.trim() || null,
@@ -187,30 +177,9 @@ export default function AddressPage() {
       className="border border-black/20 rounded-xl p-6 bg-zinc-50 flex flex-col gap-4"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Country Code — controlled via setValue */}
-        <div className="flex flex-col">
-          <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
-            Country Code *
-          </label>
-          <SearchableDropdown
-            value={watchedCountryCode ?? ""}
-            onChange={(v) => {
-              setValue("countryCode", v, { shouldValidate: true, shouldDirty: true });
-              setValue("city", "", { shouldDirty: true });
-            }}
-            options={countryOptions}
-            placeholder="Select country"
-            searchPlaceholder="Search country…"
-            loading={isCountriesLoading}
-            onSearchChange={setCountrySearch}
-          />
-          {errors.countryCode && (
-            <p className="mt-1 text-xs text-red-500">{errors.countryCode.message}</p>
-          )}
-        </div>
 
         {/* City — controlled via setValue */}
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
             City *
           </label>
@@ -218,15 +187,14 @@ export default function AddressPage() {
             value={watchedCity ?? ""}
             onChange={(v) => setValue("city", v, { shouldValidate: true, shouldDirty: true })}
             options={cityOptions}
-            placeholder={watchedCountryCode ? "Select city" : "Select country first"}
+            placeholder="Select city"
             searchPlaceholder="Search city…"
             loading={isCitiesLoading}
-            disabled={!watchedCountryCode}
           />
           {errors.city && (
             <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>
           )}
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -268,7 +236,7 @@ export default function AddressPage() {
           {...register("district")}
         />
         <Input
-          label="Postal Code (optional)"
+          label="Postal Code *"
           placeholder="e.g. 12345"
           {...register("postalCode")}
         />

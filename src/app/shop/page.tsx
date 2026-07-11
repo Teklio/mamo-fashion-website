@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import ShopGrid from "./_components/ShopGrid";
 import Header from "@/components/Header";
 
@@ -27,7 +28,9 @@ export default function ShopPage() {
           </h1>
 
           {/* Product Grid */}
-          <ShopGrid />
+          <Suspense fallback={<div>Loading shop...</div>}>
+            <ShopGrid />
+          </Suspense>
         </div>
       </main>
     </>

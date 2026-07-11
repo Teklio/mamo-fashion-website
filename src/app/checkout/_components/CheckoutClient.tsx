@@ -38,7 +38,7 @@ const Spinner = () => (
   <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
 );
 
-const fmt = (v: string | number) => `AED ${Number(v).toFixed(2)}`;
+const fmt = (v: string | number) => `INR ${Number(v).toFixed(2)}`;
 
 export default function CheckoutClient() {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
@@ -504,7 +504,7 @@ export default function CheckoutClient() {
                 Terms
               </Link>
             </div>
-            <span className="font-sans text-xs text-zinc-400">© EVORIA FASHION — DUBAI, UAE</span>
+            <span className="font-sans text-xs text-zinc-400">© EVORIA FASHION — KERALA, INDIA</span>
           </div>
         </div>
 
@@ -554,7 +554,7 @@ export default function CheckoutClient() {
                             {product?.title ?? "-"}
                           </p>
                           <p className="mt-0.5 font-sans text-xs text-zinc-400">
-                            {variant?.colorName}{item.size?.size ? ` · AED ${item.size.size}` : ""} · x{item.quantity}
+                            {variant?.colorName}{item.size?.size ? ` · Size: ${item.size.size}` : ""} · x{item.quantity}
                           </p>
                         </div>
                         <p className="whitespace-nowrap font-sans text-sm font-semibold text-zinc-900">

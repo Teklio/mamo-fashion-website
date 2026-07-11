@@ -12,9 +12,9 @@ export const inlineAddressSchema = z.object({
   phone: phoneSchema,
   line1: z.string().min(5, "Address must be at least 5 characters").max(50),
   city: z.string().min(2, "City is required"),
-  countryCode: z.string().length(2, "Select a country"),
+  countryCode: z.string().optional(),
   district: z.string().max(50).optional(),
-  postalCode: z.string().max(20).optional(),
+  postalCode: z.string().min(1, "Postal code is required").max(20),
   landMark: z.string().optional(),
 });
 export type InlineAddressFormType = z.infer<typeof inlineAddressSchema>;

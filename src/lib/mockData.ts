@@ -25,6 +25,9 @@ export const mockProductDetailResponse: GetCustomerProductResponse = {
       "A beautiful handcrafted dress from the Evoria Fashion collection. Made with premium fabric and attention to detail for a perfect fit.",
     feature:
       "Premium breathable fabric · Hand-stitched details · Available in multiple sizes · Machine washable",
+    mainCategory: "Women",
+    subCategory: "frock Nighties",
+    material: "Cotton",
     variants: mockProducts.map((p) => ({
       id: p.id,
       colorName: p.colorName ?? "Default",
