@@ -90,9 +90,10 @@ export const useContactUs = () => {
   return useMutation({
     mutationFn: async (_payload: {
       fullName: string;
-      email: string;
-      subject: string;
-      message: string;
+      phone?: string;
+      email?: string;
+      subject?: string;
+      message?: string;
     }) => {
       await new Promise((r) => setTimeout(r, 500));
       return { message: "Thank you for contacting us! We'll get back to you shortly." };

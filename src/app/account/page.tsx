@@ -97,11 +97,11 @@ export default function AccountDetailsPage() {
                 <p className="mt-1 text-xs text-red-500">{profileErrors.name.message}</p>
               )}
             </div>
-            <div>
+            {/* <div>
               <Input label="Email Address" type="email" defaultValue={email} disabled />
-            </div>
+            </div> */}
             <div>
-              <Input label="Phone Number" type="tel" placeholder="+971..." {...profileRegister("phone")} />
+              <Input label="Phone Number" type="tel" placeholder="+91..." {...profileRegister("phone")} />
               {profileErrors.phone && (
                 <p className="mt-1 text-xs text-red-500">{profileErrors.phone.message}</p>
               )}
@@ -122,7 +122,7 @@ export default function AccountDetailsPage() {
         </form>
 
         {/* Password section */}
-        <div className="w-full lg:w-1/2 border-t lg:border-t-0 lg:border-l border-black/10 pt-8 lg:pt-0 lg:pl-12 flex flex-col justify-start">
+        {/* <div className="w-full lg:w-1/2 border-t lg:border-t-0 lg:border-l border-black/10 pt-8 lg:pt-0 lg:pl-12 flex flex-col justify-start">
           <h3 className="font-semibold text-black text-lg mb-1 font-sans">Password</h3>
           <p className="text-zinc-500 text-sm font-sans mb-6">
             It&apos;s a good idea to use a strong password.
@@ -134,11 +134,11 @@ export default function AccountDetailsPage() {
           >
             <FiLock size={16} /> Update Password
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Password modal */}
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isPasswordModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
@@ -199,7 +199,7 @@ export default function AccountDetailsPage() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </div>
   );
 }

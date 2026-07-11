@@ -11,7 +11,7 @@ const faqs = [
   { question: "Do you offer styling advice or personal shopping?", answer: "Absolutely. Our expert styling team is available via WhatsApp or email to help you find the perfect outfit for any occasion, from casual brunches to evening galas." },
   { question: "How long does delivery take for new collections?", answer: "Standard delivery typically takes 3-5 business days. For our limited-edition pre-order collections, estimated shipping dates are clearly noted on the product page." },
   { question: "Are your garments sustainable?", answer: "Sustainability is at our core. We produce in small, limited-run batches to minimize waste and partner with ethical manufacturers who ensure fair wages and safe working conditions." },
-  { question: "How should I care for my Evoria garments?", answer: "To preserve the rich colors and delicate fabrics, we recommend dry cleaning our evening wear and gentle hand washing for our casual linen and cotton pieces. Always check the care label inside your garment." },
+  { question: "How should I care for my Mamo garments?", answer: "To preserve the rich colors and delicate fabrics, we recommend dry cleaning our evening wear and gentle hand washing for our casual linen and cotton pieces. Always check the care label inside your garment." },
   { question: "Do you restock sold-out items?", answer: "Since we operate on limited drops to ensure exclusivity, we rarely restock sold-out items. However, you can sign up for 'Back in Stock' notifications in case of returns." },
 ];
 

@@ -64,7 +64,7 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
   const navLinks = [
     { name: "HOME", href: "/" },
     { name: "SHOP", href: "/shop" },
-    { name: "ABOUT EVORIA", href: "/about" },
+    { name: "ABOUT MAMO", href: "/about" },
     { name: "CONTACT US", href: "/contact-us" },
   ];
 
@@ -86,9 +86,14 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
         <div className="max-w-400 mx-auto px-6 md:px-8 lg:px-16 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative z-50 flex items-center">
-            <span className={`text-xl md:text-2xl font-serif tracking-widest font-bold transition-all duration-500 ${isDarkText ? "text-black" : "text-white"}`}>
-              EVORIA FASHION
-            </span>
+            <Image
+              src="/logo/mamo-logo.png"
+              alt="Mamo Fashion"
+              width={160}
+              height={40}
+              className={`transition-all duration-500 object-contain h-8 md:h-14 w-auto ${isDarkText ? "brightness-0" : "brightness-0 invert"}`}
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}

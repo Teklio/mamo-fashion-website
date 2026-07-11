@@ -10,19 +10,23 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
         {/* Top Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start w-full gap-12 md:gap-16 mb-16 md:mb-24">
-          
+
           {/* Brand & Model Image (Left) */}
           <div className="w-full lg:w-[35%] flex flex-col justify-start items-start">
             <Link href="/" className="inline-block mb-8">
-              <span className="text-2xl md:text-3xl font-serif tracking-widest font-bold text-white">
-                EVORIA FASHION
-              </span>
+              <Image
+                src="/logo/mamo-logo.png"
+                alt="Mamo Fashion"
+                width={200}
+                height={100}
+                className="object-contain h-10 md:h-16 w-auto brightness-0 invert"
+              />
             </Link>
             <div className="relative w-full h-48 md:h-64 rounded-2xl overflow-hidden shadow-lg group">
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
               <Image
                 src="/images/hero_banner.png"
-                alt="Evoria Fashion Model"
+                alt="Mamo Fashion Model"
                 fill
                 className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
               />
@@ -40,20 +44,38 @@ export default function Footer() {
               <ul className="flex flex-col space-y-5 items-start">
                 <li>
                   <Link
-                    href="/about"
+                    href="/shop"
                     className="text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
                   >
-                    About Evoria
+                    Our Shop 
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/journal"
+                    href="/about"
                     className="text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
                   >
-                    Journal
+                    About Mamo
                   </Link>
                 </li>
+                
+                <li>
+                  <Link
+                    href="/shop?category=Kids"
+                    className="text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
+                  >
+                    Kids Collection
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/shop?category=Women"
+                    className="text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
+                  >
+                    Women Collection 
+                  </Link>
+                </li>
+            
               </ul>
             </div>
 
@@ -139,7 +161,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-zinc-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[10px] text-zinc-500 font-sans tracking-widest uppercase">
-            &copy; 2026 EVORIA FASHION. ALL RIGHTS RESERVED
+            &copy; 2026 MAMO FASHION. ALL RIGHTS RESERVED
           </p>
           <div className="flex items-center space-x-4 text-[10px] text-zinc-500 font-sans tracking-widest uppercase">
             <Link

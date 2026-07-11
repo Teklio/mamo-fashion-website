@@ -20,7 +20,7 @@ export default function BlueLadyBanner() {
       >
         <Image
           src="/images/banner-foot.jpg"
-          alt="EVORIA FASHION Editorial Fashion"
+          alt="MAMO FASHION Editorial Fashion"
           fill
           sizes="100vw"
           className="object-cover object-center"

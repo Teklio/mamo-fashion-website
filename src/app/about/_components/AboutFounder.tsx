@@ -28,7 +28,7 @@ export default function AboutFounder() {
           transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
         >
           <span className="text-amber-300/40 text-6xl md:text-8xl leading-none absolute -top-8 -left-4 md:-left-12 -z-10 font-serif">&ldquo;</span>
-          EVORIA FASHION is not a brand. It is a way of moving <br className="hidden md:block" />
+          MAMO FASHION is not a brand. It is a way of moving <br className="hidden md:block" />
           through the world unhurried, sun warmed, in <br className="hidden md:block" />
           love with the long way home.
           <span className="text-amber-300/40 text-6xl md:text-8xl leading-none absolute -bottom-12 -right-4 md:-right-12 -z-10 font-serif">&rdquo;</span>

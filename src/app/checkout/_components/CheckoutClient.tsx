@@ -206,7 +206,7 @@ export default function CheckoutClient() {
       phone: addrPhone.trim(),
       line1: v.line1,
       city: v.city,
-      countryCode: v.countryCode,
+      countryCode: v.countryCode || "",
       district: v.district || undefined,
       postalCode: v.postalCode || undefined,
       landMark: v.landMark || undefined,
@@ -227,7 +227,7 @@ export default function CheckoutClient() {
       phone: billingAddrPhone.trim(),
       line1: v.line1,
       city: v.city,
-      countryCode: v.countryCode,
+      countryCode: v.countryCode || "",
       district: v.district || undefined,
       postalCode: v.postalCode || undefined,
       landMark: v.landMark || undefined,
@@ -310,7 +310,7 @@ export default function CheckoutClient() {
             <section className="rounded-2xl border border-zinc-200 p-6 md:p-8">
               <h2 className="mb-1 font-serif text-xl text-zinc-900">Sign In to Checkout</h2>
               <p className="mb-6 font-sans text-xs text-zinc-500">
-                New to EVORIA FASHION? We&apos;ll create your account automatically.
+                New to MAMO FASHION? We&apos;ll create your account automatically.
               </p>
               <form onSubmit={handleAuth} className="flex flex-col gap-4">
                 <div>
@@ -504,7 +504,7 @@ export default function CheckoutClient() {
                 Terms
               </Link>
             </div>
-            <span className="font-sans text-xs text-zinc-400">© EVORIA FASHION — KERALA, INDIA</span>
+            <span className="font-sans text-xs text-zinc-400">© MAMO FASHION — KERALA, INDIA</span>
           </div>
         </div>
 
@@ -565,51 +565,7 @@ export default function CheckoutClient() {
                   })}
             </div>
 
-            {/* Coupon */}
-            <div className="mb-5 border-t border-zinc-100 pt-4">
-              {couponResult ? (
-                <div className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 px-3 py-2.5">
-                  <div className="flex items-center gap-1.5">
-                    <FiTag size={12} className="text-green-600" />
-                    <span className="font-mono text-xs font-semibold text-green-700">
-                      {couponResult.couponCode}
-                    </span>
-                    <span className="font-sans text-xs text-green-600">
-                      ({Number(couponResult.discountPercentage).toFixed(0)}% off)
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => { setCouponResult(null); setCouponInput(""); setCouponError(""); }}
-                    className="text-zinc-400 transition-colors hover:text-zinc-700"
-                  >
-                    <FiX size={14} />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={couponInput}
-                      onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
-                      placeholder="COUPON CODE"
-                      className="flex-1 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2.5 font-mono text-xs tracking-widest transition-colors placeholder:font-sans placeholder:tracking-normal placeholder:text-zinc-400 focus:border-zinc-300 focus:bg-white focus:outline-none"
-                    />
-                    <button
-                      onClick={handleApplyCoupon}
-                      disabled={isApplyingCoupon || !couponInput.trim()}
-                      className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2.5 font-sans text-xs font-semibold text-white transition-colors hover:bg-black disabled:opacity-50"
-                    >
-                      {isApplyingCoupon ? <FiLoader size={11} className="animate-spin" /> : null}
-                      APPLY
-                    </button>
-                  </div>
-                  {couponError && (
-                    <p className="mt-1.5 font-sans text-xs text-red-500">{couponError}</p>
-                  )}
-                </>
-              )}
-            </div>
+
 
             {/* Pricing rows */}
             <div className="space-y-2.5 border-t border-zinc-100 pt-4">
@@ -675,45 +631,7 @@ function InlineAddressForm({
 }: InlineAddressFormProps) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="flex flex-col">
-          <label className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
-            Country *
-          </label>
-          <SearchableDropdown
-            value={watchedCountry ?? ""}
-            onChange={(value) => {
-              form.setValue("countryCode", value, { shouldValidate: true });
-              form.setValue("city", "", { shouldValidate: true });
-            }}
-            options={countryOpts}
-            placeholder="Select country"
-            searchPlaceholder="Search country..."
-            loading={loadingCountries}
-            onSearchChange={onCountrySearchChange}
-          />
-          {form.formState.errors.countryCode && (
-            <p className="mt-1 text-xs text-red-500">{form.formState.errors.countryCode.message}</p>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
-            City *
-          </label>
-          <SearchableDropdown
-            value={watchedCity ?? ""}
-            onChange={(value) => form.setValue("city", value, { shouldValidate: true })}
-            options={cityOpts}
-            placeholder={watchedCountry ? "Select city" : "Select country first"}
-            searchPlaceholder="Search city..."
-            loading={loadingCities}
-            disabled={!watchedCountry}
-          />
-          {form.formState.errors.city && (
-            <p className="mt-1 text-xs text-red-500">{form.formState.errors.city.message}</p>
-          )}
-        </div>
-      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Input label="Full Name *" placeholder="e.g. Angela R" {...form.register("name")} />
@@ -721,25 +639,39 @@ function InlineAddressForm({
             <p className="mt-1 text-xs text-red-500">{form.formState.errors.name.message}</p>
           )}
         </div>
-        <PhoneInput
-          label="PHONE *"
-          value={phone}
-          onChange={(v) => {
-            onPhoneChange(v);
-            form.setValue("phone", v, { shouldValidate: true });
-          }}
-          placeholder="50 123 4567"
-        />
+        <div>
+          <Input
+            label="Phone Number"
+            type="tel"
+            placeholder="+91..."
+            value={phone}
+            onChange={(e) => {
+              onPhoneChange(e.target.value);
+              form.setValue("phone", e.target.value, { shouldValidate: true });
+            }}
+          />
+          {form.formState.errors.phone && (
+            <p className="mt-1 text-xs text-red-500">{form.formState.errors.phone.message}</p>
+          )}
+        </div>
       </div>
-      <div>
-        <Input label="Address Line 1 *" placeholder="e.g. 123 Sheikh Zayed Rd" {...form.register("line1")} />
-        {form.formState.errors.line1 && (
-          <p className="mt-1 text-xs text-red-500">{form.formState.errors.line1.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Input label="Address Line 1" placeholder="e.g. 123 Sheikh Zayed Rd" {...form.register("line1")} />
+          {form.formState.errors.line1 && (
+            <p className="mt-1 text-xs text-red-500">{form.formState.errors.line1.message}</p>
+          )}
+        </div>
+        <div>
+          <Input label="City *" placeholder="e.g. London" {...form.register("city")} />
+          {form.formState.errors.city && (
+            <p className="mt-1 text-xs text-red-500">{form.formState.errors.city.message}</p>
+          )}
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Input label="District (optional)" placeholder="e.g. Downtown" {...form.register("district")} />
-        <Input label="Postal Code (optional)" placeholder="e.g. 00000" {...form.register("postalCode")} />
+        <Input label="District" placeholder="e.g. Downtown" {...form.register("district")} />
+        <Input label="Postal Code" placeholder="e.g. 00000" {...form.register("postalCode")} />
       </div>
     </div>
   );

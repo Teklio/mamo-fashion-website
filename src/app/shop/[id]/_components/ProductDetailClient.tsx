@@ -159,7 +159,7 @@ export default function ProductDetailClient({
                 />
               ) : (
                 <span className="text-zinc-200 text-sm font-sans tracking-[0.3em] uppercase select-none">
-                  EVORIA FASHION
+                  MAMO FASHION
                 </span>
               )}
             </div>
@@ -203,7 +203,7 @@ export default function ProductDetailClient({
             ) : (
               [1, 2, 3].map((_, idx) => (
                 <div key={idx} className="w-full aspect-[4/5] bg-[#f3f3f3] rounded-sm flex items-center justify-center">
-                  <span className="text-zinc-300 text-[9px] font-sans tracking-widest text-center px-2">EVORIA FASHION</span>
+                  <span className="text-zinc-300 text-[9px] font-sans tracking-widest text-center px-2">MAMO FASHION</span>
                 </div>
               ))
             )}
@@ -432,7 +432,7 @@ export default function ProductDetailClient({
                   </div>
                   <div>
                     <h2 className="text-2xl font-serif text-zinc-900 mb-2">
-                      EVORIA FASHION Size Guide
+                      MAMO FASHION Size Guide
                     </h2>
                     <p className="text-sm text-zinc-500 font-sans max-w-md leading-relaxed">
                       Use the chart below to find your perfect fit. Measurements
