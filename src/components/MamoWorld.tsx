@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function EvoriaWorld() {
+export default function MamoWorld() {
   return (
     <section className="w-full py-16 md:py-24 px-8 md:px-16 bg-white text-zinc-950 border-t border-zinc-100">
       <div className="max-w-400 mx-auto">
@@ -16,7 +16,7 @@ export default function EvoriaWorld() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
         >
-          The EVORIA FASHION World
+          The MAMO FASHION World
         </motion.h2>
 
         {/* Collage Grid */}
@@ -33,7 +33,7 @@ export default function EvoriaWorld() {
             
             <Image
                 src="/images/naseeb-3.jpg"
-                alt="Evoria Lifestyle"
+                alt="Mamo Lifestyle"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-103"
@@ -56,7 +56,7 @@ export default function EvoriaWorld() {
             >
               <Image
                 src="/images/banner-dress.jpg"
-                alt="EVORIA FASHION Footwear Detail"
+                alt="MAMO FASHION Footwear Detail"
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-103"
@@ -75,7 +75,7 @@ export default function EvoriaWorld() {
               >
                 <Image
                   src="/images/naseeb-1.jpg"
-                  alt="EVORIA FASHION Beach Lifestyle"
+                  alt="MAMO FASHION Beach Lifestyle"
                   fill
                   sizes="(max-width: 1024px) 50vw, 30vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-103"
@@ -92,7 +92,7 @@ export default function EvoriaWorld() {
               >
                 <Image
                   src="/images/nasseb-2.jpg"
-                  alt="EVORIA FASHION Fashion Green Coordinates"
+                  alt="MAMO FASHION Fashion Green Coordinates"
                   fill
                   sizes="(max-width: 1024px) 50vw, 30vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-103"

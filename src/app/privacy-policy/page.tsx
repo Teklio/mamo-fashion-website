@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "EVORIA FASHION | Privacy Policy",
-  description: "Understand how HOUSE OF EVORIA FASHION collects, uses, and safeguards your personal data.",
+  title: "MAMO FASHION | Privacy Policy",
+  description: "Understand how HOUSE OF MAMO FASHION collects, uses, and safeguards your personal data.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
                 Last Updated: 06-06-2026
               </p>
               <p className="mb-4">
-                At Evoria.ae, we are committed to protecting your privacy.
+                At Mamo.ae, we are committed to protecting your privacy.
               </p>
             </section>
 

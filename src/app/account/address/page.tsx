@@ -7,7 +7,6 @@ import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiLoader, FiAlertTriangle } fr
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import Input from "@/components/Input";
-import PhoneInput from "@/components/shared/PhoneInput";
 import { SearchableDropdown } from "@/components/shared/SearchableDropdown";
 import { useGetCities } from "@/services/settings.service";
 import {
@@ -116,7 +115,7 @@ export default function AddressPage() {
     const payload: AddressPayload = {
       name: data.name,
       phone: phone.trim(),
-      line1: data.line1,
+      line1: data.line1 || "",
       city: data.city,
       countryCode: "IN",
       district: data.district?.trim() || null,
@@ -176,26 +175,7 @@ export default function AddressPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="border border-black/20 rounded-xl p-6 bg-zinc-50 flex flex-col gap-4"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        {/* City — controlled via setValue */}
-        {/* <div className="flex flex-col">
-          <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
-            City *
-          </label>
-          <SearchableDropdown
-            value={watchedCity ?? ""}
-            onChange={(v) => setValue("city", v, { shouldValidate: true, shouldDirty: true })}
-            options={cityOptions}
-            placeholder="Select city"
-            searchPlaceholder="Search city…"
-            loading={isCitiesLoading}
-          />
-          {errors.city && (
-            <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>
-          )}
-        </div> */}
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -209,34 +189,48 @@ export default function AddressPage() {
           )}
         </div>
 
-        {/* Phone — outside RHF; combined code + number */}
-        <PhoneInput
-          label="PHONE *"
-          value={phone}
-          onChange={setPhone}
-          placeholder="50 123 4567"
-        />
+        {/* Phone */}
+        <div>
+          <Input
+            label="PHONE *"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="50 123 4567"
+          />
+        </div>
       </div>
 
-      <div>
-        <Input
-          label="Address Line 1 *"
-          placeholder="e.g. XYZ Road, Southampton Street"
-          {...register("line1")}
-        />
-        {errors.line1 && (
-          <p className="mt-1 text-xs text-red-500">{errors.line1.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Input
+            label="Address Line 1"
+            placeholder="e.g. XYZ Road, Southampton Street"
+            {...register("line1")}
+          />
+          {errors.line1 && (
+            <p className="mt-1 text-xs text-red-500">{errors.line1.message}</p>
+          )}
+        </div>
+        <div>
+          <Input
+            label="City *"
+            placeholder="e.g. London"
+            {...register("city")}
+          />
+          {errors.city && (
+            <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Input
-          label="District (optional)"
+          label="District"
           placeholder="e.g. Greater London"
           {...register("district")}
         />
         <Input
-          label="Postal Code *"
+          label="Pin Code *"
           placeholder="e.g. 12345"
           {...register("postalCode")}
         />

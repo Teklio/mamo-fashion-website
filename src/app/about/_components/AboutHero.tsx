@@ -12,7 +12,7 @@ export default function AboutHero() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/banner-foot.jpg"
-            alt="Evoria Lifestyle"
+            alt="Mamo Lifestyle"
             fill
             className="object-cover opacity-40 mix-blend-overlay"
             priority
@@ -30,13 +30,30 @@ export default function AboutHero() {
             OUR STORY
           </motion.span>
 
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
+            className="mb-8 relative flex justify-center items-center"
+          >
+            <div className="absolute inset-0 bg-white/10 blur-3xl rounded-full scale-[2] pointer-events-none"></div>
+            <Image
+              src="/logo/mamo-logo.png"
+              alt="Mamo Fashion Logo"
+              width={400}
+              height={100}
+              className="relative z-10 object-contain h-20 md:h-28 lg:h-32 w-auto brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+              priority
+            />
+          </motion.div>
+
           <motion.h1
             className="text-5xl md:text-6xl lg:text-8xl font-serif tracking-wide font-light mb-8 text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            The House Of EVORIA
+            The House Of MAMO
           </motion.h1>
 
           <motion.p
@@ -45,7 +62,7 @@ export default function AboutHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            Born on the sun kissed shores of Kerala, EVORIA FASHION redefines coastal luxury through refined craftsmanship and effortless allure. Each creation embodies the art of timeless elegance, from signature details to silhouettes that whisper of sea breeze and sophistication.
+            Born on the sun kissed shores of Kerala, MAMO FASHION redefines coastal luxury through refined craftsmanship and effortless allure. Each creation embodies the art of timeless elegance, from signature details to silhouettes that whisper of sea breeze and sophistication.
           </motion.p>
         </div>
       </div>
@@ -69,7 +86,7 @@ export default function AboutHero() {
             Curated for you.
           </h2>
           <p className="text-zinc-400 text-base md:text-lg leading-relaxed font-light">
-            Each EVORIA FASHION piece is woven by master artisans across a slow, deliberate week. We honor the hands that make them, creating exclusive collections that carry the imperfect, beautiful signature of their maker.
+            Each MAMO FASHION piece is woven by master artisans across a slow, deliberate week. We honor the hands that make them, creating exclusive collections that carry the imperfect, beautiful signature of their maker.
           </p>
         </motion.div>
 
@@ -84,7 +101,7 @@ export default function AboutHero() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 transition-opacity duration-500 group-hover:opacity-40"></div>
           <Image
             src="/images/grid-1.jpg"
-            alt="EVORIA FASHION Craftsmanship"
+            alt="MAMO FASHION Craftsmanship"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"

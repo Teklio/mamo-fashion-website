@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function HouseOfEvoria() {
+export default function HouseOfMamo() {
   return (
     <section className="w-full py-16 px-8 md:px-16 bg-white text-zinc-950">
       <div className="max-w-400 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -18,7 +18,7 @@ export default function HouseOfEvoria() {
         >
           <Image
             src="/images/grid-2.jpg"
-            alt="The House of EVORIA FASHION Beach Sandals"
+            alt="The House of MAMO FASHION Beach Sandals"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             priority
@@ -35,7 +35,7 @@ export default function HouseOfEvoria() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            The House Of EVORIA FASHION
+            The House Of MAMO FASHION
           </motion.h2>
 
           <motion.p
@@ -45,10 +45,10 @@ export default function HouseOfEvoria() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ delay: 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           >
-            Born on the sun kissed shores of Kerala, EVORIA FASHION redefines coastal luxury
+            Born on the sun kissed shores of Kerala, MAMO FASHION redefines coastal luxury
             through timeless craftsmanship and effortless elegance. Inspired by the sea
             breeze and golden light, each piece is designed for those who follow the sun.
-            More than a brand, EVORIA FASHION is a lifestyle your endless escape. Take the
+            More than a brand, MAMO FASHION is a lifestyle your endless escape. Take the
             sunshine with you.
           </motion.p>
 

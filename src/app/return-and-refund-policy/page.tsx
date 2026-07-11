@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "EVORIA FASHION | Refund & Cancellation Policy",
-  description: "Read the refund, return, and cancellation policies of HOUSE OF EVORIA FASHION.",
+  title: "MAMO FASHION | Refund & Cancellation Policy",
+  description: "Read the refund, return, and cancellation policies of HOUSE OF MAMO FASHION.",
 };
 
 export default function RefundPolicyPage() {
@@ -45,7 +45,7 @@ export default function RefundPolicyPage() {
                 3. Damaged or Defective Items
               </h3>
               <p className="text-sm text-zinc-600 leading-relaxed">
-                In the rare event that you receive a manufacturing defect or the wrong item, HOUSE OF EVORIA FASHION will make it right. You must contact our customer support team within <strong>48 hours</strong> of delivery with clear photographs of the unused product and packaging. Upon inspection and verification of the defect, we will arrange a replacement of the identical item at no extra cost to you.
+                In the rare event that you receive a manufacturing defect or the wrong item, HOUSE OF MAMO FASHION will make it right. You must contact our customer support team within <strong>48 hours</strong> of delivery with clear photographs of the unused product and packaging. Upon inspection and verification of the defect, we will arrange a replacement of the identical item at no extra cost to you.
               </p>
             </section>
 

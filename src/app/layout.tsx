@@ -16,10 +16,10 @@ const globalFontSerif = Outfit({
 
 export const metadata: Metadata = {
   icons: {
-    icon: "/fevicon.jpg",
+    icon: "/fevicon.png",
   },
-  title: "Evoria Fashion | Girls & Women's Ethnic Wear",
-  description: "Discover the premium collection of churidars, ethnic dresses and more at Evoria Fashion.",
+  title: "Mamo Fashion | Girls & Women's Ethnic Wear",
+  description: "Discover the premium collection of churidars, ethnic dresses and more at Mamo Fashion.",
 };
 
 import StoreProvider from "@/store/provider";

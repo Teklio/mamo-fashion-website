@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // src/lib/mockData.ts
-// Central mock data store for Evoria Fashion (no backend required)
+// Central mock data store for Mamo Fashion (no backend required)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { CartApiResponse } from "@/types/cart.type";
@@ -19,10 +19,10 @@ export const mockProductsResponse: GetCustomerProductsResponse = {
 export const mockProductDetailResponse: GetCustomerProductResponse = {
   product: {
     id: "prod-1",
-    title: "Evoria Signature Dress",
+    title: "Mamo Signature Dress",
     price: "95.00",
     description:
-      "A beautiful handcrafted dress from the Evoria Fashion collection. Made with premium fabric and attention to detail for a perfect fit.",
+      "A beautiful handcrafted dress from the Mamo Fashion collection. Made with premium fabric and attention to detail for a perfect fit.",
     feature:
       "Premium breathable fabric · Hand-stitched details · Available in multiple sizes · Machine washable",
     mainCategory: "Women",
@@ -80,7 +80,7 @@ export const mockSettings = {
     _id: "settings-1",
     minimumOrderValue: 0,
     orderLimits: { min: 1, max: 10 },
-    supportEmail: "support@evoria.fashion",
+    supportEmail: "support@mamo.fashion",
     supportPhone: "+91 9876543210",
   },
 };
@@ -126,7 +126,7 @@ export const mockLoginResponse = {
   user: {
     id: "user-mock-1",
     name: "Guest User",
-    email: "guest@evoria.fashion",
+    email: "guest@mamo.fashion",
     phone: null,
     isActive: true,
   },

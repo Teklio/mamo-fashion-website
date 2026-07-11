@@ -6,8 +6,8 @@ import Faq from "@/app/contact-us/_components/Faq";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "EVORIA FASHION | Contact Us",
-  description: "Get in touch with HOUSE OF EVORIA FASHION customer care.",
+  title: "MAMO FASHION | Contact Us",
+  description: "Get in touch with HOUSE OF MAMO FASHION customer care.",
 };
 
 export default function ContactPage() {

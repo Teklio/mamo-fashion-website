@@ -19,7 +19,7 @@
 //         <div className="absolute inset-0 w-full h-full">
 //           <Image
 //             src="/images/hero_banner_1783421048490.png"
-//             alt="EVORIA FASHION Endless Escape"
+//             alt="MAMO FASHION Endless Escape"
 //             fill
 //             sizes="(max-width: 1280px) 100vw, 1280px"
 //             className="object-cover object-center"

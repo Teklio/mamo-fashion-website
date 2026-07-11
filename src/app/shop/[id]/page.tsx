@@ -7,7 +7,7 @@ import { mockProducts } from "@/lib/mockProducts";
 import type { CustomerProductDetail, CustomerProductVariant } from "@/types/product.type";
 
 export const metadata: Metadata = {
-  title: "Product Detail | EVORIA FASHION",
+  title: "Product Detail | MAMO FASHION",
   description: "View product details.",
 };
 

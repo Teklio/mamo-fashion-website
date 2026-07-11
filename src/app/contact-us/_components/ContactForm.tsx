@@ -44,7 +44,7 @@ export default function ContactForm() {
           <div className="absolute inset-0 bg-zinc-900/10 z-10 group-hover:bg-transparent transition-colors duration-700"></div>
           <Image
             src="/images/churidar.jpg"
-            alt="EVORIA FASHION Contact"
+            alt="MAMO FASHION Contact"
             fill
             className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
           />
@@ -65,10 +65,10 @@ export default function ContactForm() {
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-8 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="flex flex-col relative">
-                <input 
-                  type="text" 
-                  placeholder="Your Name" 
-                  {...register("fullName")} 
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  {...register("fullName")}
                   className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
                 />
                 <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
@@ -78,10 +78,10 @@ export default function ContactForm() {
               </div>
 
               <div className="flex flex-col relative">
-                <input 
-                  type="email" 
-                  placeholder="Email Address" 
-                  {...register("email")} 
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  {...register("email")}
                   className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
                 />
                 <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
@@ -92,10 +92,10 @@ export default function ContactForm() {
             </div>
 
             <div className="flex flex-col relative">
-              <input 
-                type="text" 
-                placeholder="Subject" 
-                {...register("subject")} 
+              <input
+                type="text"
+                placeholder="Subject"
+                {...register("subject")}
                 className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
               />
               <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>

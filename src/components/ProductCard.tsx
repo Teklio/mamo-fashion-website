@@ -99,7 +99,7 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
             />
           ) : (
             <span className="text-zinc-300 text-xs font-sans tracking-widest uppercase select-none">
-              EVORIA FASHION
+              MAMO FASHION
             </span>
           )}
           {hoverImage && (
