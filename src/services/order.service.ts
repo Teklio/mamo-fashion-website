@@ -1,5 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// src/services/order.service.ts  — MOCK (no API calls)
+// src/services/order.service.ts  — MOCK (no backend yet)
+// TODO(backend): mamo-fashion-server has NO live order routes (order.routes.ts is
+//   commented out and order.controller.ts does not exist). Wire these once the
+//   backend order endpoints exist.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +12,11 @@ import type {
   GetCustomerOrdersResponse,
   GetCustomerOrderResponse,
 } from "@/types/order.type";
-import { mockOrdersResponse } from "@/lib/mockData";
+
+const mockOrdersResponse: GetCustomerOrdersResponse = {
+  orders: [],
+  meta: { page: 1, limit: 10, total: 0, totalPages: 1 },
+};
 
 export const useGetCustomerOrders = () => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);

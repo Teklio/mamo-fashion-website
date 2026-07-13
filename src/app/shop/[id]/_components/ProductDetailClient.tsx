@@ -8,68 +8,62 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { formatPrice } from "@/services/product.service";
+import { formatPrice, useGetProduct } from "@/services/product.service";
 import { useAddToCart } from "@/services/cart.service";
 import { useWishlistedIds, useAddToWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
 import type { RootState } from "@/store";
-import type {
-  CustomerProductDetail,
-  CustomerProductVariant,
-} from "@/types/product.type";
+import { firstColorCode } from "@/types/product.type";
+import type { CustomerProductVariant } from "@/types/product.type";
 import type { AxiosError } from "axios";
 
 export default function ProductDetailClient({
-  product,
+  productId,
   initialVariantId,
 }: {
-  product: CustomerProductDetail;
+  productId: string;
   initialVariantId?: string;
 }) {
   const router = useRouter();
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
+  const { data, isLoading, isError } = useGetProduct(productId);
   const { mutate: addToCartApi, isPending: isAdding } = useAddToCart();
   const wishlistedIds = useWishlistedIds();
   const { mutate: addToWishlist } = useAddToWishlist();
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
 
-  const activeVariants = product.variants;
+  const product = data?.product;
+  const activeVariants = product?.variants ?? [];
   const defaultVariant =
     activeVariants.find((v) => v.id === initialVariantId) ?? activeVariants[0];
 
-  const [selectedColor, setSelectedColor] = useState<string>(
-    defaultVariant?.colorName ?? "",
-  );
+  // null = no explicit user choice yet → fall back to the default variant's color.
+  const [selectedColorOverride, setSelectedColorOverride] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<string>("DESCRIPTION");
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
+  const selectedColor = selectedColorOverride ?? defaultVariant?.colorName ?? "";
+
   // Derived from selected color
-  const selectedVariant: CustomerProductVariant =
+  const selectedVariant: CustomerProductVariant | undefined =
     activeVariants.find((v) => v.colorName === selectedColor) ?? defaultVariant;
 
-  // Build image gallery: primary → secondary → rest (deduped)
+  // Build image gallery: primary → gallery images
   const variantImages: string[] = [
-    selectedVariant?.primaryImage?.publicUrl,
-    selectedVariant?.secondaryImage?.publicUrl,
-    ...(selectedVariant?.images ?? [])
-      .filter(
-        (img) =>
-          img.id !== selectedVariant?.primaryImage?.id &&
-          img.id !== selectedVariant?.secondaryImage?.id,
-      )
-      .map((img) => img.publicUrl),
+    selectedVariant?.primaryImageUrl,
+    ...(selectedVariant?.imageUrls ?? []),
   ].filter(Boolean) as string[];
 
   const availableSizes = (selectedVariant?.sizes ?? [])
     .filter((s) => s.stock > 0)
-    .map((s) => s.size);
+    .map((s) => s.name);
 
   const totalStock = (selectedVariant?.sizes ?? []).reduce((acc, curr) => acc + curr.stock, 0);
 
   const handleColorChange = (colorName: string) => {
-    setSelectedColor(colorName);
+    setSelectedColorOverride(colorName);
     setActiveImage(0);
     setSelectedSize(null);
   };
@@ -82,13 +76,38 @@ export default function ProductDetailClient({
     };
   }, [isSizeGuideOpen]);
 
-  const priceText = formatPrice(product.price);
-  const isWishlisted = wishlistedIds.has(selectedVariant?.id ?? "");
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <span className="w-8 h-8 border-2 border-zinc-200 border-t-zinc-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError || !product) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-center">
+        <h2 className="text-2xl font-serif text-zinc-900">Product not found</h2>
+        <p className="text-sm text-zinc-500 font-sans">
+          This product is unavailable or has been removed.
+        </p>
+        <Link
+          href="/shop"
+          className="inline-block bg-black text-white text-xs tracking-[0.2em] font-sans font-semibold uppercase px-8 py-4 rounded-md transition-colors hover:bg-black/90"
+        >
+          Back to Shop
+        </Link>
+      </div>
+    );
+  }
+
+  const priceText = formatPrice(product.commonPrice);
+  const isWishlisted = wishlistedIds.has(product.id);
   const tabs = ["DESCRIPTION", "CARE", "SHIPPING & RETURNS"];
 
   const handleAddToCart = () => {
     if (!selectedSize) { toast.error("Please select a size"); return; }
-    const sizeObj = selectedVariant?.sizes.find((s) => s.size === selectedSize);
+    const sizeObj = selectedVariant?.sizes.find((s) => s.name === selectedSize);
     if (!sizeObj) return;
     if (!isAuthenticated) { router.push("/login"); return; }
     addToCartApi(
@@ -108,31 +127,30 @@ export default function ProductDetailClient({
 
   const handleBuyNow = () => {
     if (!selectedSize) { toast.error("Please select a size"); return; }
-    const sizeObj = selectedVariant?.sizes.find((s) => s.size === selectedSize);
+    const sizeObj = selectedVariant?.sizes.find((s) => s.name === selectedSize);
     if (!sizeObj) return;
     const params = new URLSearchParams({
       mode: "buynow",
       pvs: sizeObj.id,
       qty: String(quantity),
-      title: product.title,
-      price: String(product.price),
+      title: product.name,
+      price: String(product.commonPrice),
       color: selectedColor,
       size: selectedSize,
-      img: selectedVariant?.primaryImage?.publicUrl ?? "",
+      img: selectedVariant?.primaryImageUrl ?? "",
     });
     router.push(`/checkout?${params}`);
   };
 
   const handleWishlistToggle = () => {
     if (!isAuthenticated) { router.push("/login"); return; }
-    if (!selectedVariant) return;
     if (isWishlisted) {
-      removeFromWishlist(selectedVariant.id, {
+      removeFromWishlist(product.id, {
         onSuccess: () => toast.success("Removed from wishlist"),
         onError: () => toast.error("Failed to remove from wishlist"),
       });
     } else {
-      addToWishlist({ variantId: selectedVariant.id }, {
+      addToWishlist({ productId: product.id }, {
         onSuccess: () => toast.success("Added to wishlist"),
         onError: () => toast.error("Failed to add to wishlist"),
       });
@@ -151,7 +169,7 @@ export default function ProductDetailClient({
                 <Image
                   key={`${selectedColor}-${activeImage}`}
                   src={variantImages[activeImage]}
-                  alt={product.title}
+                  alt={product.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover animate-in fade-in duration-300"
@@ -213,7 +231,7 @@ export default function ProductDetailClient({
         {/* Right: Details */}
         <div className="flex flex-col pt-4 col-span-2 lg:pt-12">
           <h1 className="text-3xl md:text-4xl font-serif text-zinc-900 mb-2">
-            {product.title}
+            {product.name}
           </h1>
           <p className="text-xl font-semibold text-zinc-900 mb-1">
             {priceText}
@@ -248,7 +266,7 @@ export default function ProductDetailClient({
                     <div
                       className="w-8 h-8 rounded-full"
                       style={{
-                        backgroundColor: variant.colorCode,
+                        backgroundColor: firstColorCode(variant.colorCodes),
                         border:
                           selectedColor === variant.colorName
                             ? "none"

@@ -62,7 +62,7 @@ export default function CheckoutClient() {
   const { mutate: createOrder, isPending: isCreatingOrder } = useCreateOrder();
   const { mutate: buyNow, isPending: isBuyingNow } = useBuyNow();
 
-  const cartItems = cartData?.cart?.items ?? [];
+  const cartItems = cartData?.items ?? [];
   const savedAddresses = addrData?.addresses ?? [];
   const defaultAddress =
     savedAddresses.find((address) => address.isDefault) ??
@@ -149,11 +149,7 @@ export default function CheckoutClient() {
   const rawSubtotal = isBuyNow
     ? buyNowPrice * buyNowQty
     : cartItems.reduce((sum: number, item: CartItem) => {
-        const price =
-          Number(item.price) > 0
-            ? Number(item.price)
-            : Number(item.size?.variant?.product?.price ?? 0);
-        return sum + price * item.quantity;
+        return sum + Number(item.price) * item.quantity;
       }, 0);
 
   const subtotal = couponResult ? Number(couponResult.subTotal) : rawSubtotal;
@@ -361,7 +357,7 @@ export default function CheckoutClient() {
                           <p className="font-sans text-sm font-semibold text-zinc-900">{addr.name}</p>
                           <p className="mt-0.5 font-sans text-xs text-zinc-400">{addr.phone}</p>
                           <p className="mt-1 font-sans text-xs text-zinc-600">
-                            {addr.line1}, {addr.city}, {addr.countryCode}
+                            {addr.line1 ? `${addr.line1}, ` : ""}{addr.city}, {addr.district} {addr.pinCode}
                           </p>
                         </div>
                         <Radio selected={addressMode === "saved" && selectedAddressId === addr.id} />
@@ -441,7 +437,7 @@ export default function CheckoutClient() {
                               <p className="font-sans text-sm font-semibold text-zinc-900">{addr.name}</p>
                               <p className="mt-0.5 font-sans text-xs text-zinc-400">{addr.phone}</p>
                               <p className="mt-1 font-sans text-xs text-zinc-600">
-                                {addr.line1}, {addr.city}, {addr.countryCode}
+                                {addr.line1 ? `${addr.line1}, ` : ""}{addr.city}, {addr.district} {addr.pinCode}
                               </p>
                             </div>
                             <Radio selected={billingMode === "saved" && selectedBillingAddressId === addr.id} />
@@ -537,24 +533,21 @@ export default function CheckoutClient() {
                     <div key={i} className="h-14 animate-pulse rounded-lg bg-zinc-100" />
                   ))
                 : cartItems.map((item: CartItem) => {
-                    const variant = item.size?.variant;
-                    const product = variant?.product;
-                    const imgUrl = variant?.primaryImage?.publicUrl ?? "";
-                    const unitPrice =
-                      Number(item.price) > 0 ? Number(item.price) : Number(product?.price ?? 0);
+                    const imgUrl = item.primaryImageUrl ?? "";
+                    const unitPrice = Number(item.price);
                     return (
                       <div key={item.id} className="flex gap-3">
                         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
                           {imgUrl && (
-                            <Image src={imgUrl} alt={product?.title ?? ""} fill sizes="56px" className="object-cover" />
+                            <Image src={imgUrl} alt={item.product?.name ?? ""} fill sizes="56px" className="object-cover" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="truncate font-sans text-sm font-semibold text-zinc-900">
-                            {product?.title ?? "-"}
+                            {item.product?.name ?? "-"}
                           </p>
                           <p className="mt-0.5 font-sans text-xs text-zinc-400">
-                            {variant?.colorName}{item.size?.size ? ` · Size: ${item.size.size}` : ""} · x{item.quantity}
+                            {item.color?.name}{item.size?.name ? ` · Size: ${item.size.name}` : ""} · x{item.quantity}
                           </p>
                         </div>
                         <p className="whitespace-nowrap font-sans text-sm font-semibold text-zinc-900">

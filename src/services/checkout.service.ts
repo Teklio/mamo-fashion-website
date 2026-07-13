@@ -1,5 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// src/services/checkout.service.ts  — MOCK (no API calls)
+// src/services/checkout.service.ts  — MOCK (no backend yet)
+// TODO(backend): mamo-fashion-server has NO live order/checkout/payment routes
+//   (routes/order.routes.ts & routes/payment.routes.ts are commented out and the
+//   controllers do not exist). These hooks stay mocked until those are built.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useMutation } from "@tanstack/react-query";

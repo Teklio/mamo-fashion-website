@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useGetCart, useUpdateCartItem, useRemoveCartItem } from "@/services/cart.service";
 import type { RootState } from "@/store";
 import type { CartItem } from "@/types/cart.type";
+import { firstColorCode } from "@/types/product.type";
 
 export default function CartPage() {
   const cartCount = useSelector((s: RootState) => s.auth.cartCount);
@@ -16,18 +17,13 @@ export default function CartPage() {
   const { mutate: updateItem } = useUpdateCartItem();
   const { mutate: removeItem, isPending: isRemoving } = useRemoveCartItem();
 
-  const cartItems = data?.cart?.items ?? [];
+  const cartItems = data?.items ?? [];
 
-  // item.price is the CartItem's stored unit price (Prisma Decimal → string).
-  // Fall back to the product's current price if stored price is missing or 0.
-  const getUnitPrice = (item: CartItem): number => {
-    const stored = Number(item.price);
-    if (stored > 0) return stored;
-    return Number(item.size?.variant?.product?.price ?? 0);
-  };
+  const getLineTotal = (item: CartItem): number =>
+    Number(item.lineTotal) || Number(item.price) * item.quantity;
 
-  const subtotal = cartItems.reduce(
-    (total: number, item: CartItem) => total + getUnitPrice(item) * item.quantity,
+  const subtotal = data?.subtotal ?? cartItems.reduce(
+    (total: number, item: CartItem) => total + getLineTotal(item),
     0,
   );
 
@@ -71,14 +67,12 @@ export default function CartPage() {
             {/* Left Column: Cart Items */}
             <div className="w-full lg:w-[60%] flex flex-col">
               {cartItems.map((item: CartItem) => {
-                const variant = item.size?.variant;
-                const product = variant?.product;
-                const imageUrl = variant?.primaryImage?.publicUrl ?? "";
-                const colorName = variant?.colorName ?? "";
-                const colorCode = variant?.colorCode ?? "#31639d";
-                const sizeName = item.size?.size ?? "";
-                const productId = product?.id ?? "";
-                const title = product?.title ?? "";
+                const imageUrl = item.primaryImageUrl ?? "";
+                const colorName = item.color?.name ?? "";
+                const colorCode = firstColorCode(item.color?.colorCodes);
+                const sizeName = item.size?.name ?? "";
+                const productId = item.product?.id ?? "";
+                const title = item.product?.name ?? "";
 
                 return (
                   <div
@@ -145,7 +139,7 @@ export default function CartPage() {
                       </div>
 
                       <p className="font-serif text-base sm:text-lg text-black whitespace-nowrap min-w-24 text-right">
-                        INR {(getUnitPrice(item) * item.quantity).toFixed(2)}
+                        INR {getLineTotal(item).toFixed(2)}
                       </p>
 
                       <button

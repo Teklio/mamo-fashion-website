@@ -1,20 +1,24 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// src/services/address.service.ts  — MOCK (no API calls)
+// src/services/address.service.ts  — real API calls to mamo-fashion-server
+// Server address fields: name, phone, line1?, city, district, pinCode, landMark?,
+// isDefault. There is no countryCode. GET returns a raw Address[] array.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
+import api from "@/lib/axios";
+import { endpoints } from "@/lib/endpoints";
 import type { RootState } from "@/store";
 
 export interface CustomerAddress {
   id: string;
+  customerId: string;
   name: string;
   phone: string;
-  line1: string;
+  line1: string | null;
   city: string;
-  district: string | null;
-  countryCode: string;
-  postalCode: string | null;
+  district: string;
+  pinCode: string;
   landMark: string | null;
   isDefault: boolean;
   createdAt: string;
@@ -24,17 +28,13 @@ export interface CustomerAddress {
 export interface AddressPayload {
   name: string;
   phone: string;
-  line1: string;
+  line1?: string;
   city: string;
-  district?: string | null;
-  countryCode: string;
-  postalCode?: string | null;
-  landMark?: string | null;
+  district: string;
+  pinCode: string;
+  landMark?: string;
   isDefault?: boolean;
 }
-
-// In-memory address store (persists during session)
-let _addresses: CustomerAddress[] = [];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -42,9 +42,9 @@ export const useGetCustomerAddresses = () => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   return useQuery({
     queryKey: ["customer-addresses"],
-    queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 100));
-      return { addresses: _addresses };
+    queryFn: async (): Promise<{ addresses: CustomerAddress[] }> => {
+      const res = await api.get<CustomerAddress[]>(endpoints.address.base);
+      return { addresses: res.data };
     },
     enabled: isAuthenticated,
     staleTime: 0,
@@ -56,22 +56,11 @@ export const useAddCustomerAddress = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (payload: AddressPayload) => {
-      await new Promise((r) => setTimeout(r, 300));
-      const newAddress: CustomerAddress = {
-        ...payload,
-        id: `addr-${Date.now()}`,
-        district: payload.district ?? null,
-        postalCode: payload.postalCode ?? null,
-        landMark: payload.landMark ?? null,
-        isDefault: payload.isDefault ?? _addresses.length === 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      if (newAddress.isDefault) {
-        _addresses = _addresses.map((a) => ({ ...a, isDefault: false }));
-      }
-      _addresses = [..._addresses, newAddress];
-      return { message: "Address added", address: newAddress };
+      const res = await api.post<{ message: string; address: CustomerAddress }>(
+        endpoints.address.base,
+        payload,
+      );
+      return res.data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["customer-addresses"] }),
   });
@@ -81,12 +70,11 @@ export const useUpdateCustomerAddress = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: Partial<AddressPayload> }) => {
-      await new Promise((r) => setTimeout(r, 300));
-      _addresses = _addresses.map((a) =>
-        a.id === id ? { ...a, ...payload, updatedAt: new Date().toISOString() } : a
+      const res = await api.patch<{ message: string; address: CustomerAddress }>(
+        endpoints.address.item(id),
+        payload,
       );
-      const updated = _addresses.find((a) => a.id === id)!;
-      return { message: "Address updated", address: updated };
+      return res.data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["customer-addresses"] }),
   });
@@ -96,9 +84,8 @@ export const useDeleteCustomerAddress = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await new Promise((r) => setTimeout(r, 200));
-      _addresses = _addresses.filter((a) => a.id !== id);
-      return { message: "Address deleted" };
+      const res = await api.delete<{ message: string }>(endpoints.address.item(id));
+      return res.data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["customer-addresses"] }),
   });

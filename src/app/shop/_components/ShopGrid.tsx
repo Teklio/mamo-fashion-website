@@ -5,6 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { FiChevronDown, FiCheck, FiChevronRight, FiFilter, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGetProducts } from "@/services/product.service";
+import {
+  useMainCategories,
+  useSubCategories,
+  useMaterials,
+  useColors,
+  useSizes,
+} from "@/services/catalog.service";
+import { firstColorCode } from "@/types/product.type";
 import ProductCard from "@/components/ProductCard";
 
 export default function ShopGrid() {
@@ -13,7 +21,7 @@ export default function ShopGrid() {
 
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  
+
   // Accordion states
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const [isSizeOpen, setIsSizeOpen] = useState(false);
@@ -23,21 +31,50 @@ export default function ShopGrid() {
 
   const [minPriceInput, setMinPriceInput] = useState<number | "">("");
   const [maxPriceInput, setMaxPriceInput] = useState<number | "">("");
-  const [sortBy, setSortBy] = useState<"low-to-high" | "high-to-low" | "bestseller" | "new-arrivals">("low-to-high");
+  const [sortBy, setSortBy] = useState<"low-to-high" | "high-to-low" | "bestseller" | "new-arrivals">("new-arrivals");
 
-  const [activeCategory, setActiveCategory] = useState<string | null>(initialCategory || null);
+  // Category is a mainCategoryId; subcategory a subCategoryId (server filter).
+  // `undefined` = user hasn't chosen → fall back to the ?category= default.
+  const [mainCategoryChoice, setMainCategoryChoice] = useState<string | null | undefined>(undefined);
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
-  const [activeSizes, setActiveSizes] = useState<string[]>([]);
-  const [activeColor, setActiveColor] = useState<string | null>(null);
-  const [activeMaterial, setActiveMaterial] = useState<string | null>(null);
+  const [activeSizes, setActiveSizes] = useState<string[]>([]); // size names, client-side
+  const [activeColor, setActiveColor] = useState<string | null>(null); // color name, client-side
+  const [activeMaterial, setActiveMaterial] = useState<string | null>(null); // materialId, server filter
 
   const [appliedMin, setAppliedMin] = useState<number | undefined>(undefined);
   const [appliedMax, setAppliedMax] = useState<number | undefined>(undefined);
 
+  // Catalog metadata for the filter UI
+  const { data: mainCategories = [] } = useMainCategories();
+
+  // Resolve an initial ?category= name to a main category id (no effect needed).
+  const initialMainCategoryId = useMemo(() => {
+    if (!initialCategory || !mainCategories.length) return null;
+    const match = mainCategories.find(
+      (c) => c.name.toLowerCase() === initialCategory.toLowerCase(),
+    );
+    return match?.id ?? null;
+  }, [initialCategory, mainCategories]);
+
+  // Effective selected main category: explicit choice wins, else the URL default.
+  const activeMainCategory =
+    mainCategoryChoice === undefined ? initialMainCategoryId : mainCategoryChoice;
+
+  const { data: subCategories = [] } = useSubCategories(activeMainCategory ?? undefined);
+  const { data: materials = [] } = useMaterials();
+  const { data: colors = [] } = useColors();
+  const { data: sizes = [] } = useSizes();
+
+  const isAscending =
+    sortBy === "low-to-high" ? true : sortBy === "high-to-low" ? false : undefined;
+
   const { data, isLoading } = useGetProducts({
+    limit: 100,
     minPrice: appliedMin,
     maxPrice: appliedMax,
-    isAscending: sortBy === "low-to-high",
+    isAscending,
+    subCategoryId: activeSubcategory ?? undefined,
+    materialId: activeMaterial ?? undefined,
   });
 
   const variants = data?.variants ?? [];
@@ -64,42 +101,31 @@ export default function ShopGrid() {
     setMaxPriceInput("");
     setAppliedMin(undefined);
     setAppliedMax(undefined);
-    setActiveCategory(null);
+    setMainCategoryChoice(null);
     setActiveSubcategory(null);
     setActiveSizes([]);
     setActiveColor(null);
     setActiveMaterial(null);
   };
 
-  // Local filtering based on new fields since API is mocked
+  // Color + size are not server-side product filters, so apply them client-side
+  // to the returned page of variants.
   const filteredVariants = useMemo(() => {
     let result = [...variants];
 
-    if (activeCategory) {
-      result = result.filter(v => v.mainCategory === activeCategory);
-    }
-    if (activeSubcategory) {
-      result = result.filter(v => v.subCategory === activeSubcategory);
-    }
     if (activeColor) {
-      result = result.filter(v => v.colorName?.toLowerCase().includes(activeColor.toLowerCase()));
-    }
-    if (activeMaterial) {
-      result = result.filter(v => v.material === activeMaterial);
+      result = result.filter((v) =>
+        v.colorName?.toLowerCase().includes(activeColor.toLowerCase()),
+      );
     }
     if (activeSizes.length > 0) {
-      result = result.filter(v => v.sizes.some(s => activeSizes.includes(s.size)));
-    }
-
-    if (sortBy === "high-to-low") {
-      result.sort((a, b) => Number(b.price) - Number(a.price));
-    } else if (sortBy === "low-to-high") {
-      result.sort((a, b) => Number(a.price) - Number(b.price));
+      result = result.filter((v) =>
+        v.sizes.some((s) => activeSizes.includes(s.name)),
+      );
     }
 
     return result;
-  }, [variants, activeCategory, activeSubcategory, activeColor, activeMaterial, activeSizes, sortBy]);
-
+  }, [variants, activeColor, activeSizes]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -114,21 +140,6 @@ export default function ShopGrid() {
       transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
-
-  const categories = {
-    Women: ["prayer set", "shawl", "cotton knistic", "co-ord set", "3 piece set", "2 piece set", "Kuftan Nighties", "korean Nighties", "Cotton Nighties", "frock Nighties"],
-    Kids: ["Daily wear", "dusty wear", "korean nighties", "prayer dress"]
-  };
-
-  const filterColors = [
-    { name: "White", code: "#ffffff" },
-    { name: "Pink", code: "#ffb6c1" },
-    { name: "Blue", code: "#3b5998" },
-    { name: "Rose", code: "#dcae96" },
-    { name: "Navy", code: "#000080" },
-  ];
-
-  const allSizes = ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 
   // Reusable Filter Sidebar Content (stored as JSX, NOT a component, to avoid remounting)
   const filterContent = (
@@ -149,35 +160,38 @@ export default function ShopGrid() {
         <AnimatePresence>
           {isCategoryOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden space-y-2 pt-2">
-              {Object.entries(categories).map(([main, subs]) => (
-                <div key={main} className="space-y-1">
-                  <button 
+              {mainCategories.map((main) => (
+                <div key={main.id} className="space-y-1">
+                  <button
                     onClick={() => {
-                      setActiveCategory(activeCategory === main ? null : main);
+                      setMainCategoryChoice(activeMainCategory === main.id ? null : main.id);
                       setActiveSubcategory(null);
                     }}
-                    className={`flex items-center justify-between w-full text-sm font-sans py-1.5 transition-colors ${activeCategory === main ? "font-bold text-zinc-900" : "text-zinc-600 hover:text-zinc-900"}`}
+                    className={`flex items-center justify-between w-full text-sm font-sans py-1.5 transition-colors ${activeMainCategory === main.id ? "font-bold text-zinc-900" : "text-zinc-600 hover:text-zinc-900"}`}
                   >
-                    {main}
-                    <FiChevronRight size={14} className={`transition-transform ${activeCategory === main ? "rotate-90" : ""}`} />
+                    {main.name}
+                    <FiChevronRight size={14} className={`transition-transform ${activeMainCategory === main.id ? "rotate-90" : ""}`} />
                   </button>
                   <AnimatePresence>
-                    {activeCategory === main && (
+                    {activeMainCategory === main.id && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden pl-3 space-y-1"
                       >
-                        {subs.map(sub => (
+                        {subCategories.map((sub) => (
                           <button
-                            key={sub}
-                            onClick={() => setActiveSubcategory(activeSubcategory === sub ? null : sub)}
-                            className={`block w-full text-left text-xs font-sans py-1.5 transition-colors ${activeSubcategory === sub ? "font-semibold text-zinc-900" : "text-zinc-500 hover:text-zinc-800"}`}
+                            key={sub.id}
+                            onClick={() => setActiveSubcategory(activeSubcategory === sub.id ? null : sub.id)}
+                            className={`block w-full text-left text-xs font-sans py-1.5 transition-colors ${activeSubcategory === sub.id ? "font-semibold text-zinc-900" : "text-zinc-500 hover:text-zinc-800"}`}
                           >
-                            {sub}
+                            {sub.name}
                           </button>
                         ))}
+                        {subCategories.length === 0 && (
+                          <p className="text-[11px] text-zinc-400 font-sans py-1.5">No subcategories</p>
+                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -198,23 +212,26 @@ export default function ShopGrid() {
           {isSizeOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-2">
               <div className="flex flex-wrap gap-2">
-                {allSizes.map((size) => (
-                  <label key={size} className="cursor-pointer group">
-                    <input 
-                      type="checkbox" 
-                      className="hidden" 
-                      checked={activeSizes.includes(size)}
+                {sizes.map((size) => (
+                  <label key={size.id} className="cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      checked={activeSizes.includes(size.name)}
                       onChange={() => {
-                        setActiveSizes(prev => 
-                          prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
+                        setActiveSizes((prev) =>
+                          prev.includes(size.name) ? prev.filter((s) => s !== size.name) : [...prev, size.name],
                         );
-                      }} 
+                      }}
                     />
-                    <div className={`w-10 h-10 rounded-sm border flex items-center justify-center transition-all ${activeSizes.includes(size) ? 'bg-zinc-900 border-zinc-900 text-white' : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-500'}`}>
-                      <span className="text-xs font-sans font-medium">{size}</span>
+                    <div className={`min-w-10 h-10 px-2 rounded-sm border flex items-center justify-center transition-all ${activeSizes.includes(size.name) ? 'bg-zinc-900 border-zinc-900 text-white' : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-500'}`}>
+                      <span className="text-xs font-sans font-medium">{size.name}</span>
                     </div>
                   </label>
                 ))}
+                {sizes.length === 0 && (
+                  <p className="text-[11px] text-zinc-400 font-sans">No sizes</p>
+                )}
               </div>
             </motion.div>
           )}
@@ -268,18 +285,18 @@ export default function ShopGrid() {
           {isColorOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-2">
               <div className="flex flex-col gap-3">
-                {filterColors.map(color => (
+                {colors.map((color) => (
                   <button
-                    key={color.name}
+                    key={color.id}
                     onClick={() => setActiveColor(activeColor === color.name ? null : color.name)}
                     className="flex items-center space-x-3 group text-left w-fit"
                   >
-                    <div 
+                    <div
                       className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center ${activeColor === color.name ? 'border-zinc-900 scale-110' : 'border-zinc-300 group-hover:border-zinc-500'}`}
                     >
-                      <div 
+                      <div
                         className="w-4 h-4 rounded-full shadow-inner"
-                        style={{ backgroundColor: color.code }}
+                        style={{ backgroundColor: firstColorCode(color.colorCodes) }}
                       />
                     </div>
                     <span className={`text-sm font-sans transition-colors ${activeColor === color.name ? "text-zinc-900 font-bold" : "text-zinc-600 group-hover:text-zinc-900"}`}>
@@ -287,6 +304,9 @@ export default function ShopGrid() {
                     </span>
                   </button>
                 ))}
+                {colors.length === 0 && (
+                  <p className="text-[11px] text-zinc-400 font-sans">No colors</p>
+                )}
               </div>
             </motion.div>
           )}
@@ -303,22 +323,25 @@ export default function ShopGrid() {
           {isMaterialOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-2">
               <div className="space-y-2">
-                {["Cotton", "Silk", "Denim", "Lace", "Viscose"].map((mat) => (
-                  <label key={mat} className="flex items-center space-x-3 cursor-pointer group">
-                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${activeMaterial === mat ? 'bg-zinc-900 border-zinc-900' : 'border-zinc-300 group-hover:border-zinc-500'}`}>
-                      {activeMaterial === mat && <FiCheck size={10} className="text-white" />}
+                {materials.map((mat) => (
+                  <label key={mat.id} className="flex items-center space-x-3 cursor-pointer group">
+                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${activeMaterial === mat.id ? 'bg-zinc-900 border-zinc-900' : 'border-zinc-300 group-hover:border-zinc-500'}`}>
+                      {activeMaterial === mat.id && <FiCheck size={10} className="text-white" />}
                     </div>
-                    <input 
-                      type="checkbox" 
-                      className="hidden" 
-                      checked={activeMaterial === mat}
-                      onChange={() => setActiveMaterial(activeMaterial === mat ? null : mat)} 
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      checked={activeMaterial === mat.id}
+                      onChange={() => setActiveMaterial(activeMaterial === mat.id ? null : mat.id)}
                     />
-                    <span className={`text-sm font-sans ${activeMaterial === mat ? "text-zinc-900 font-medium" : "text-zinc-600 group-hover:text-zinc-900"}`}>
-                      {mat}
+                    <span className={`text-sm font-sans ${activeMaterial === mat.id ? "text-zinc-900 font-medium" : "text-zinc-600 group-hover:text-zinc-900"}`}>
+                      {mat.name}
                     </span>
                   </label>
                 ))}
+                {materials.length === 0 && (
+                  <p className="text-[11px] text-zinc-400 font-sans">No materials</p>
+                )}
               </div>
             </motion.div>
           )}
@@ -330,7 +353,7 @@ export default function ShopGrid() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 w-full">
-      
+
       {/* MOBILE FILTER OVERLAY */}
       <AnimatePresence>
         {isMobileFilterOpen && (
@@ -371,10 +394,10 @@ export default function ShopGrid() {
       <div className="lg:col-span-3 flex flex-col gap-6 w-full">
         {/* Toolbar */}
         <div className="flex justify-between items-center py-4 border-b border-zinc-100 relative z-30 mb-2 gap-2">
-          
+
           <div className="flex items-center gap-4">
             {/* Mobile Filter Button */}
-            <button 
+            <button
               onClick={() => setIsMobileFilterOpen(true)}
               className="lg:hidden flex items-center gap-2 px-3 py-2 border border-zinc-200 rounded-lg text-xs font-bold tracking-widest font-sans uppercase text-zinc-900 bg-white hover:bg-zinc-50"
             >
@@ -412,10 +435,10 @@ export default function ShopGrid() {
                     >
                       {(
                         [
+                          { value: "new-arrivals", label: "New Arrivals" },
                           { value: "low-to-high", label: "Price: Low to High" },
                           { value: "high-to-low", label: "Price: High to Low" },
                           { value: "bestseller", label: "Bestseller" },
-                          { value: "new-arrivals", label: "New Arrivals" },
                         ] as const
                       ).map((opt) => (
                         <button
@@ -441,7 +464,7 @@ export default function ShopGrid() {
             </div>
           </div>
         </div>
-        
+
         {/* Mobile results count */}
         <div className="text-sm font-sans text-zinc-500 sm:hidden">
           Showing <span className="font-semibold text-zinc-900">{filteredVariants.length}</span> results

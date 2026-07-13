@@ -2,23 +2,20 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { mockProducts } from "@/lib/mockProducts";
+import { useGetProducts } from "@/services/product.service";
 import ProductCard from "@/components/ProductCard";
 
 export default function FeaturedProducts({
   title = "Signature Styles",
   hideViewAll = false,
-  category,
+  subCategoryId,
 }: {
   title?: string;
   hideViewAll?: boolean;
-  category?: string;
+  subCategoryId?: string;
 } = {}) {
-  const filteredProducts = category 
-    ? mockProducts.filter(p => p.mainCategory === category || p.subCategory === category)
-    : mockProducts;
-  const displayProducts = filteredProducts.slice(0, 4);
-  const data = { variants: displayProducts };
+  const { data } = useGetProducts({ limit: 4, subCategoryId });
+  const displayProducts = (data?.variants ?? []).slice(0, 4);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,7 +63,7 @@ export default function FeaturedProducts({
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {(data?.variants ?? []).map((product) => (
+          {displayProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}

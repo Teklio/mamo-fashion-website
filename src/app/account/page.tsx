@@ -101,7 +101,7 @@ export default function AccountDetailsPage() {
               <Input label="Email Address" type="email" defaultValue={email} disabled />
             </div> */}
             <div>
-              <Input label="Phone Number" type="tel" placeholder="+91..." {...profileRegister("phone")} />
+              <Input label="Phone Number" type="tel" inputMode="numeric" placeholder="9876543210" {...profileRegister("phone")} />
               {profileErrors.phone && (
                 <p className="mt-1 text-xs text-red-500">{profileErrors.phone.message}</p>
               )}

@@ -1,9 +1,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// src/services/product.service.ts  — MOCK (no API calls)
+// src/services/product.service.ts  — real API calls to mamo-fashion-server
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useQuery } from "@tanstack/react-query";
-import { mockProductsResponse, mockProductDetailResponse } from "@/lib/mockData";
+import api from "@/lib/axios";
+import { endpoints } from "@/lib/endpoints";
+import type {
+  GetCustomerProductsResponse,
+  GetCustomerProductResponse,
+} from "@/types/product.type";
 
 export interface GetProductsFilters {
   page?: number;
@@ -11,34 +16,51 @@ export interface GetProductsFilters {
   minPrice?: number;
   maxPrice?: number;
   isAscending?: boolean;
-  showOnHomePage?: boolean;
+  search?: string;
+  subCategoryId?: string;
+  materialId?: string;
 }
 
-export const useGetProducts = (_filters: GetProductsFilters = {}) => {
+export const useGetProducts = (filters: GetProductsFilters = {}) => {
   return useQuery({
-    queryKey: ["customer-products", _filters],
+    queryKey: ["customer-products", filters],
     queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 200));
-      return mockProductsResponse;
+      const params: Record<string, string | number> = {};
+      if (filters.page) params.page = filters.page;
+      if (filters.limit) params.limit = filters.limit;
+      if (filters.minPrice !== undefined) params.minPrice = filters.minPrice;
+      if (filters.maxPrice !== undefined) params.maxPrice = filters.maxPrice;
+      if (filters.isAscending !== undefined)
+        params.isAscending = filters.isAscending ? "true" : "false";
+      if (filters.search) params.search = filters.search;
+      if (filters.subCategoryId) params.subCategoryId = filters.subCategoryId;
+      if (filters.materialId) params.materialId = filters.materialId;
+
+      const res = await api.get<GetCustomerProductsResponse>(
+        endpoints.products.list,
+        { params },
+      );
+      return res.data;
     },
-    staleTime: Infinity,
+    staleTime: 60_000,
     refetchOnWindowFocus: false,
   });
 };
 
-export const useGetProduct = (_id: string) => {
+export const useGetProduct = (id: string) => {
   return useQuery({
-    queryKey: ["customer-product", _id],
+    queryKey: ["customer-product", id],
     queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 200));
-      return mockProductDetailResponse;
+      const res = await api.get<GetCustomerProductResponse>(
+        endpoints.products.detail(id),
+      );
+      return res.data;
     },
-    staleTime: Infinity,
+    enabled: !!id,
     refetchOnWindowFocus: false,
-    enabled: !!_id,
   });
 };
 
-export function formatPrice(price: string): string {
+export function formatPrice(price: string | number): string {
   return `₹${Number(price).toFixed(2)}`;
 }
