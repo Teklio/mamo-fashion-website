@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { FiChevronDown, FiCheck, FiChevronRight, FiFilter, FiX } from "react-icons/fi";
+import { FiChevronDown, FiCheck, FiFilter, FiX, FiSearch } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGetProducts } from "@/services/product.service";
 import {
@@ -12,8 +12,14 @@ import {
   useColors,
   useSizes,
 } from "@/services/catalog.service";
-import { firstColorCode } from "@/types/product.type";
+import { getMultiColorBackground } from "@/types/product.type";
 import ProductCard from "@/components/ProductCard";
+
+type SortBy = "newest" | "price_asc" | "price_desc" | "bestseller";
+
+function toggleId(list: string[], id: string): string[] {
+  return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+}
 
 export default function ShopGrid() {
   const searchParams = useSearchParams();
@@ -31,15 +37,19 @@ export default function ShopGrid() {
 
   const [minPriceInput, setMinPriceInput] = useState<number | "">("");
   const [maxPriceInput, setMaxPriceInput] = useState<number | "">("");
-  const [sortBy, setSortBy] = useState<"low-to-high" | "high-to-low" | "bestseller" | "new-arrivals">("new-arrivals");
+  const [sortBy, setSortBy] = useState<SortBy>("newest");
 
-  // Category is a mainCategoryId; subcategory a subCategoryId (server filter).
-  // `undefined` = user hasn't chosen → fall back to the ?category= default.
-  const [mainCategoryChoice, setMainCategoryChoice] = useState<string | null | undefined>(undefined);
-  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
-  const [activeSizes, setActiveSizes] = useState<string[]>([]); // size names, client-side
-  const [activeColor, setActiveColor] = useState<string | null>(null); // color name, client-side
-  const [activeMaterial, setActiveMaterial] = useState<string | null>(null); // materialId, server filter
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // `expandedMainCategoryId` is purely which accordion panel is open — it no
+  // longer implies or resets which subcategories are selected, since
+  // subcategories are now a multi-select filter that can span main categories.
+  const [expandedMainCategoryId, setExpandedMainCategoryId] = useState<string | null | undefined>(undefined);
+  const [activeSubcategoryIds, setActiveSubcategoryIds] = useState<string[]>([]);
+  const [activeSizeIds, setActiveSizeIds] = useState<string[]>([]);
+  const [activeColorIds, setActiveColorIds] = useState<string[]>([]);
+  const [activeMaterialIds, setActiveMaterialIds] = useState<string[]>([]);
 
   const [appliedMin, setAppliedMin] = useState<number | undefined>(undefined);
   const [appliedMax, setAppliedMax] = useState<number | undefined>(undefined);
@@ -56,25 +66,30 @@ export default function ShopGrid() {
     return match?.id ?? null;
   }, [initialCategory, mainCategories]);
 
-  // Effective selected main category: explicit choice wins, else the URL default.
+  // Effective expanded main category: explicit choice wins, else the URL default.
   const activeMainCategory =
-    mainCategoryChoice === undefined ? initialMainCategoryId : mainCategoryChoice;
+    expandedMainCategoryId === undefined ? initialMainCategoryId : expandedMainCategoryId;
 
   const { data: subCategories = [] } = useSubCategories(activeMainCategory ?? undefined);
   const { data: materials = [] } = useMaterials();
   const { data: colors = [] } = useColors();
   const { data: sizes = [] } = useSizes();
 
-  const isAscending =
-    sortBy === "low-to-high" ? true : sortBy === "high-to-low" ? false : undefined;
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput.trim()), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
   const { data, isLoading } = useGetProducts({
     limit: 100,
     minPrice: appliedMin,
     maxPrice: appliedMax,
-    isAscending,
-    subCategoryId: activeSubcategory ?? undefined,
-    materialId: activeMaterial ?? undefined,
+    sortBy,
+    search: debouncedSearch || undefined,
+    subCategoryId: activeSubcategoryIds.length ? activeSubcategoryIds : undefined,
+    materialId: activeMaterialIds.length ? activeMaterialIds : undefined,
+    colorId: activeColorIds.length ? activeColorIds : undefined,
+    sizeId: activeSizeIds.length ? activeSizeIds : undefined,
   });
 
   const variants = data?.variants ?? [];
@@ -101,31 +116,14 @@ export default function ShopGrid() {
     setMaxPriceInput("");
     setAppliedMin(undefined);
     setAppliedMax(undefined);
-    setMainCategoryChoice(null);
-    setActiveSubcategory(null);
-    setActiveSizes([]);
-    setActiveColor(null);
-    setActiveMaterial(null);
+    setExpandedMainCategoryId(null);
+    setActiveSubcategoryIds([]);
+    setActiveSizeIds([]);
+    setActiveColorIds([]);
+    setActiveMaterialIds([]);
+    setSearchInput("");
+    setDebouncedSearch("");
   };
-
-  // Color + size are not server-side product filters, so apply them client-side
-  // to the returned page of variants.
-  const filteredVariants = useMemo(() => {
-    let result = [...variants];
-
-    if (activeColor) {
-      result = result.filter((v) =>
-        v.colorName?.toLowerCase().includes(activeColor.toLowerCase()),
-      );
-    }
-    if (activeSizes.length > 0) {
-      result = result.filter((v) =>
-        v.sizes.some((s) => activeSizes.includes(s.name)),
-      );
-    }
-
-    return result;
-  }, [variants, activeColor, activeSizes]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -163,14 +161,13 @@ export default function ShopGrid() {
               {mainCategories.map((main) => (
                 <div key={main.id} className="space-y-1">
                   <button
-                    onClick={() => {
-                      setMainCategoryChoice(activeMainCategory === main.id ? null : main.id);
-                      setActiveSubcategory(null);
-                    }}
+                    onClick={() =>
+                      setExpandedMainCategoryId(activeMainCategory === main.id ? null : main.id)
+                    }
                     className={`flex items-center justify-between w-full text-sm font-sans py-1.5 transition-colors ${activeMainCategory === main.id ? "font-bold text-zinc-900" : "text-zinc-600 hover:text-zinc-900"}`}
                   >
                     {main.name}
-                    <FiChevronRight size={14} className={`transition-transform ${activeMainCategory === main.id ? "rotate-90" : ""}`} />
+                    <FiChevronDown size={14} className={`transition-transform ${activeMainCategory === main.id ? "rotate-180" : ""}`} />
                   </button>
                   <AnimatePresence>
                     {activeMainCategory === main.id && (
@@ -178,16 +175,23 @@ export default function ShopGrid() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden pl-3 space-y-1"
+                        className="overflow-hidden pl-3 space-y-1.5"
                       >
                         {subCategories.map((sub) => (
-                          <button
-                            key={sub.id}
-                            onClick={() => setActiveSubcategory(activeSubcategory === sub.id ? null : sub.id)}
-                            className={`block w-full text-left text-xs font-sans py-1.5 transition-colors ${activeSubcategory === sub.id ? "font-semibold text-zinc-900" : "text-zinc-500 hover:text-zinc-800"}`}
-                          >
-                            {sub.name}
-                          </button>
+                          <label key={sub.id} className="flex items-center space-x-3 cursor-pointer group py-0.5">
+                            <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors shrink-0 ${activeSubcategoryIds.includes(sub.id) ? 'bg-zinc-900 border-zinc-900' : 'border-zinc-300 group-hover:border-zinc-500'}`}>
+                              {activeSubcategoryIds.includes(sub.id) && <FiCheck size={10} className="text-white" />}
+                            </div>
+                            <input
+                              type="checkbox"
+                              className="hidden"
+                              checked={activeSubcategoryIds.includes(sub.id)}
+                              onChange={() => setActiveSubcategoryIds((prev) => toggleId(prev, sub.id))}
+                            />
+                            <span className={`text-xs font-sans ${activeSubcategoryIds.includes(sub.id) ? "text-zinc-900 font-semibold" : "text-zinc-500 group-hover:text-zinc-800"}`}>
+                              {sub.name}
+                            </span>
+                          </label>
                         ))}
                         {subCategories.length === 0 && (
                           <p className="text-[11px] text-zinc-400 font-sans py-1.5">No subcategories</p>
@@ -217,14 +221,10 @@ export default function ShopGrid() {
                     <input
                       type="checkbox"
                       className="hidden"
-                      checked={activeSizes.includes(size.name)}
-                      onChange={() => {
-                        setActiveSizes((prev) =>
-                          prev.includes(size.name) ? prev.filter((s) => s !== size.name) : [...prev, size.name],
-                        );
-                      }}
+                      checked={activeSizeIds.includes(size.id)}
+                      onChange={() => setActiveSizeIds((prev) => toggleId(prev, size.id))}
                     />
-                    <div className={`min-w-10 h-10 px-2 rounded-sm border flex items-center justify-center transition-all ${activeSizes.includes(size.name) ? 'bg-zinc-900 border-zinc-900 text-white' : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-500'}`}>
+                    <div className={`min-w-10 h-10 px-2 rounded-sm border flex items-center justify-center transition-all ${activeSizeIds.includes(size.id) ? 'bg-zinc-900 border-zinc-900 text-white' : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-500'}`}>
                       <span className="text-xs font-sans font-medium">{size.name}</span>
                     </div>
                   </label>
@@ -285,25 +285,33 @@ export default function ShopGrid() {
           {isColorOpen && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pt-2">
               <div className="flex flex-col gap-3">
-                {colors.map((color) => (
-                  <button
-                    key={color.id}
-                    onClick={() => setActiveColor(activeColor === color.name ? null : color.name)}
-                    className="flex items-center space-x-3 group text-left w-fit"
-                  >
-                    <div
-                      className={`w-6 h-6 rounded-full border transition-all flex items-center justify-center ${activeColor === color.name ? 'border-zinc-900 scale-110' : 'border-zinc-300 group-hover:border-zinc-500'}`}
+                {colors.map((color) => {
+                  const isSelected = activeColorIds.includes(color.id);
+                  return (
+                    <button
+                      key={color.id}
+                      onClick={() => setActiveColorIds((prev) => toggleId(prev, color.id))}
+                      className="flex items-center space-x-3 group text-left w-fit"
                     >
+                      {/* Outer ring shows selection; independent of the swatch's own
+                          colors so it always reads clearly. */}
                       <div
-                        className="w-4 h-4 rounded-full shadow-inner"
-                        style={{ backgroundColor: firstColorCode(color.colorCodes) }}
-                      />
-                    </div>
-                    <span className={`text-sm font-sans transition-colors ${activeColor === color.name ? "text-zinc-900 font-bold" : "text-zinc-600 group-hover:text-zinc-900"}`}>
-                      {color.name}
-                    </span>
-                  </button>
-                ))}
+                        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSelected ? 'border-zinc-900' : 'border-transparent group-hover:border-zinc-300'}`}
+                      >
+                        <div
+                          className="w-6 h-6 rounded-full shadow-inner"
+                          style={{
+                            background: getMultiColorBackground(color.colorCodes),
+                            border: isSelected ? "none" : "1px solid #e4e4e7",
+                          }}
+                        />
+                      </div>
+                      <span className={`text-sm font-sans transition-colors ${isSelected ? "text-zinc-900 font-bold" : "text-zinc-600 group-hover:text-zinc-900"}`}>
+                        {color.name}
+                      </span>
+                    </button>
+                  );
+                })}
                 {colors.length === 0 && (
                   <p className="text-[11px] text-zinc-400 font-sans">No colors</p>
                 )}
@@ -325,16 +333,16 @@ export default function ShopGrid() {
               <div className="space-y-2">
                 {materials.map((mat) => (
                   <label key={mat.id} className="flex items-center space-x-3 cursor-pointer group">
-                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${activeMaterial === mat.id ? 'bg-zinc-900 border-zinc-900' : 'border-zinc-300 group-hover:border-zinc-500'}`}>
-                      {activeMaterial === mat.id && <FiCheck size={10} className="text-white" />}
+                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${activeMaterialIds.includes(mat.id) ? 'bg-zinc-900 border-zinc-900' : 'border-zinc-300 group-hover:border-zinc-500'}`}>
+                      {activeMaterialIds.includes(mat.id) && <FiCheck size={10} className="text-white" />}
                     </div>
                     <input
                       type="checkbox"
                       className="hidden"
-                      checked={activeMaterial === mat.id}
-                      onChange={() => setActiveMaterial(activeMaterial === mat.id ? null : mat.id)}
+                      checked={activeMaterialIds.includes(mat.id)}
+                      onChange={() => setActiveMaterialIds((prev) => toggleId(prev, mat.id))}
                     />
-                    <span className={`text-sm font-sans ${activeMaterial === mat.id ? "text-zinc-900 font-medium" : "text-zinc-600 group-hover:text-zinc-900"}`}>
+                    <span className={`text-sm font-sans ${activeMaterialIds.includes(mat.id) ? "text-zinc-900 font-medium" : "text-zinc-600 group-hover:text-zinc-900"}`}>
                       {mat.name}
                     </span>
                   </label>
@@ -392,6 +400,27 @@ export default function ShopGrid() {
 
       {/* RIGHT CONTENT: PRODUCT GRID */}
       <div className="lg:col-span-3 flex flex-col gap-6 w-full">
+        {/* Search */}
+        <div className="relative">
+          <FiSearch size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search products, categories, materials, colors…"
+            className="w-full pl-10 pr-4 py-3 bg-white border border-zinc-200 rounded-lg text-sm font-sans focus:outline-hidden focus:border-zinc-900 shadow-xs"
+          />
+          {searchInput && (
+            <button
+              onClick={() => setSearchInput("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900"
+              aria-label="Clear search"
+            >
+              <FiX size={14} />
+            </button>
+          )}
+        </div>
+
         {/* Toolbar */}
         <div className="flex justify-between items-center py-4 border-b border-zinc-100 relative z-30 mb-2 gap-2">
 
@@ -405,7 +434,7 @@ export default function ShopGrid() {
               Filter
             </button>
             <div className="text-sm font-sans text-zinc-500 hidden sm:block">
-              Showing <span className="font-semibold text-zinc-900">{filteredVariants.length}</span> results
+              Showing <span className="font-semibold text-zinc-900">{variants.length}</span> results
             </div>
           </div>
 
@@ -418,7 +447,7 @@ export default function ShopGrid() {
                 className="flex items-center space-x-1.5 px-3 py-2 sm:px-4 sm:py-2.5 border border-zinc-200 rounded-lg bg-white min-w-32 sm:min-w-48 justify-between text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 transition-all duration-300 shadow-xs"
               >
                 <span className="text-[11px] sm:text-xs">
-                  {sortBy === "low-to-high" ? "Price: Low to High" : sortBy === "high-to-low" ? "Price: High to Low" : sortBy === "bestseller" ? "Bestseller" : "New Arrivals"}
+                  {sortBy === "price_asc" ? "Price: Low to High" : sortBy === "price_desc" ? "Price: High to Low" : sortBy === "bestseller" ? "Bestseller" : "New Arrivals"}
                 </span>
                 <FiChevronDown size={12} className={`sm:size-3.5 transition-transform duration-300 ${isSortOpen ? "rotate-180" : ""}`} />
               </button>
@@ -435,9 +464,9 @@ export default function ShopGrid() {
                     >
                       {(
                         [
-                          { value: "new-arrivals", label: "New Arrivals" },
-                          { value: "low-to-high", label: "Price: Low to High" },
-                          { value: "high-to-low", label: "Price: High to Low" },
+                          { value: "newest", label: "New Arrivals" },
+                          { value: "price_asc", label: "Price: Low to High" },
+                          { value: "price_desc", label: "Price: High to Low" },
                           { value: "bestseller", label: "Bestseller" },
                         ] as const
                       ).map((opt) => (
@@ -467,7 +496,7 @@ export default function ShopGrid() {
 
         {/* Mobile results count */}
         <div className="text-sm font-sans text-zinc-500 sm:hidden">
-          Showing <span className="font-semibold text-zinc-900">{filteredVariants.length}</span> results
+          Showing <span className="font-semibold text-zinc-900">{variants.length}</span> results
         </div>
 
         {/* Loading skeletons */}
@@ -486,7 +515,7 @@ export default function ShopGrid() {
               </div>
             ))}
           </div>
-        ) : filteredVariants.length === 0 ? (
+        ) : variants.length === 0 ? (
           <div className="py-24 text-center border border-dashed border-zinc-200 rounded-2xl bg-zinc-50/50 flex flex-col items-center justify-center">
             <h3 className="font-serif text-xl text-zinc-900 mb-2">No styles found</h3>
             <p className="text-xs md:text-sm text-zinc-500 mb-6 font-sans">
@@ -505,9 +534,9 @@ export default function ShopGrid() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            key={`${sortBy}-${filteredVariants.length}`}
+            key={`${sortBy}-${variants.length}`}
           >
-            {filteredVariants.map((product) => (
+            {variants.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}

@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { useGetCart, useUpdateCartItem, useRemoveCartItem } from "@/services/cart.service";
 import type { RootState } from "@/store";
 import type { CartItem } from "@/types/cart.type";
-import { firstColorCode } from "@/types/product.type";
+import { getMultiColorBackground } from "@/types/product.type";
 
 export default function CartPage() {
   const cartCount = useSelector((s: RootState) => s.auth.cartCount);
@@ -69,7 +69,7 @@ export default function CartPage() {
               {cartItems.map((item: CartItem) => {
                 const imageUrl = item.primaryImageUrl ?? "";
                 const colorName = item.color?.name ?? "";
-                const colorCode = firstColorCode(item.color?.colorCodes);
+                const colorBackground = getMultiColorBackground(item.color?.colorCodes);
                 const sizeName = item.size?.name ?? "";
                 const productId = item.product?.id ?? "";
                 const title = item.product?.name ?? "";
@@ -101,7 +101,7 @@ export default function CartPage() {
                         <div className="flex items-center gap-2 mb-1.5">
                           <div
                             className="w-2.5 h-2.5 rounded-full border border-zinc-200"
-                            style={{ backgroundColor: colorCode }}
+                            style={{ background: colorBackground }}
                           />
                           <p className="text-[10px] text-zinc-400 font-sans tracking-wider uppercase">
                             {colorName}

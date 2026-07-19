@@ -1,28 +1,26 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
-import { FiCheck, FiLoader, FiLock, FiTag, FiX } from "react-icons/fi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FiCheck, FiLoader, FiLock } from "react-icons/fi";
 import type { AxiosError } from "axios";
 
 import Input from "@/components/Input";
-import PhoneInput from "@/components/shared/PhoneInput";
-import { SearchableDropdown } from "@/components/shared/SearchableDropdown";
 import { useGetCart } from "@/services/cart.service";
-import { useGetCustomerAddresses } from "@/services/address.service";
-import { useGetCities, useGetCountrycodes } from "@/services/settings.service";
 import {
-  useApplyCoupon,
-  useBuyNow,
-  useCheckoutAuth,
-  useCreateOrder,
-} from "@/services/checkout.service";
+  useGetCustomerAddresses,
+  useAddCustomerAddress,
+  type CustomerAddress,
+} from "@/services/address.service";
+import { useLogin } from "@/services/auth.service";
+import { useCreateOrder } from "@/services/checkout.service";
+import { loadRazorpayScript, type RazorpaySuccessResponse } from "@/lib/razorpay";
 import {
   checkoutAuthSchema,
   inlineAddressSchema,
@@ -31,8 +29,6 @@ import {
 } from "@/zodschemas/checkout.schema";
 import type { RootState } from "@/store";
 import type { CartItem } from "@/types/cart.type";
-import type { ApplyCouponResponse, InlineAddress } from "@/types/checkout.type";
-import type { CustomerAddress } from "@/services/address.service";
 
 const Spinner = () => (
   <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -41,6 +37,7 @@ const Spinner = () => (
 const fmt = (v: string | number) => `INR ${Number(v).toFixed(2)}`;
 
 export default function CheckoutClient() {
+  const router = useRouter();
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   const authEmail = useSelector((s: RootState) => s.auth.email);
   const searchParams = useSearchParams();
@@ -56,11 +53,9 @@ export default function CheckoutClient() {
 
   const { data: cartData, isLoading: cartLoading } = useGetCart();
   const { data: addrData } = useGetCustomerAddresses();
-  const { mutate: checkoutAuth, isPending: isAuthing } = useCheckoutAuth();
-  const { mutate: applyCouponMutation, isPending: isApplyingCoupon } =
-    useApplyCoupon();
-  const { mutate: createOrder, isPending: isCreatingOrder } = useCreateOrder();
-  const { mutate: buyNow, isPending: isBuyingNow } = useBuyNow();
+  const { mutate: login, isPending: isAuthing } = useLogin();
+  const { mutateAsync: addAddress } = useAddCustomerAddress();
+  const { mutateAsync: createOrder, isPending: isCreatingOrder } = useCreateOrder();
 
   const cartItems = cartData?.items ?? [];
   const savedAddresses = addrData?.addresses ?? [];
@@ -78,61 +73,21 @@ export default function CheckoutClient() {
   const [addressMode, setAddressMode] = useState<"saved" | "new">("saved");
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [addrPhone, setAddrPhone] = useState("");
-  const [countrySearch, setCountrySearch] = useState("");
 
   const addrForm = useForm<InlineAddressFormType>({
     resolver: zodResolver(inlineAddressSchema),
-    defaultValues: { name: "", line1: "", city: "", countryCode: "" },
+    defaultValues: { name: "", line1: "", city: "", district: "", pinCode: "", landMark: "" },
   });
-  const watchedCountry = useWatch({ control: addrForm.control, name: "countryCode" });
-  const watchedCity = useWatch({ control: addrForm.control, name: "city" });
 
   // ── Billing address ─────────────────────────────────────────────────────────
   const [billingMode, setBillingMode] = useState<"same" | "saved" | "new">("same");
   const [selectedBillingAddressId, setSelectedBillingAddressId] = useState<string | null>(null);
   const [billingAddrPhone, setBillingAddrPhone] = useState("");
-  const [billingCountrySearch, setBillingCountrySearch] = useState("");
 
   const billingAddrForm = useForm<InlineAddressFormType>({
     resolver: zodResolver(inlineAddressSchema),
-    defaultValues: { name: "", line1: "", city: "", countryCode: "" },
+    defaultValues: { name: "", line1: "", city: "", district: "", pinCode: "", landMark: "" },
   });
-  const watchedBillingCountry = useWatch({ control: billingAddrForm.control, name: "countryCode" });
-  const watchedBillingCity = useWatch({ control: billingAddrForm.control, name: "city" });
-
-  // ── Data hooks ───────────────────────────────────────────────────────────────
-  const { data: countryCodes, isLoading: loadingCountries } = useGetCountrycodes(countrySearch);
-  const { data: citiesData, isLoading: loadingCities } = useGetCities(watchedCountry ?? "");
-
-  const { data: billingCountryCodes, isLoading: loadingBillingCountries } =
-    useGetCountrycodes(billingCountrySearch);
-  const { data: billingCitiesData, isLoading: loadingBillingCities } =
-    useGetCities(watchedBillingCountry ?? "");
-
-  const countryOpts = useMemo(
-    () =>
-      (countryCodes?.countrycodes ?? []).map((c) => ({
-        value: c.countrycode,
-        label: `${c.countrycode} - ${c.name}`,
-      })),
-    [countryCodes],
-  );
-  const cityOpts = useMemo(
-    () => (citiesData ?? []).map((c) => ({ value: c.cityName, label: c.cityName })),
-    [citiesData],
-  );
-  const billingCountryOpts = useMemo(
-    () =>
-      (billingCountryCodes?.countrycodes ?? []).map((c) => ({
-        value: c.countrycode,
-        label: `${c.countrycode} - ${c.name}`,
-      })),
-    [billingCountryCodes],
-  );
-  const billingCityOpts = useMemo(
-    () => (billingCitiesData ?? []).map((c) => ({ value: c.cityName, label: c.cityName })),
-    [billingCitiesData],
-  );
 
   useEffect(() => {
     if (defaultAddress && !selectedAddressId) {
@@ -141,24 +96,15 @@ export default function CheckoutClient() {
     }
   }, [defaultAddress, selectedAddressId]);
 
-  // ── Coupon ───────────────────────────────────────────────────────────────────
-  const [couponInput, setCouponInput] = useState("");
-  const [couponResult, setCouponResult] = useState<ApplyCouponResponse | null>(null);
-  const [couponError, setCouponError] = useState("");
-
-  const rawSubtotal = isBuyNow
+  const subtotal = isBuyNow
     ? buyNowPrice * buyNowQty
     : cartItems.reduce((sum: number, item: CartItem) => {
         return sum + Number(item.price) * item.quantity;
       }, 0);
 
-  const subtotal = couponResult ? Number(couponResult.subTotal) : rawSubtotal;
-  const discount = couponResult ? Number(couponResult.discount) : 0;
-  const total = couponResult ? Number(couponResult.total) : rawSubtotal;
-
   // ── Handlers ─────────────────────────────────────────────────────────────────
   const handleAuth = authForm.handleSubmit((data) => {
-    checkoutAuth(data, {
+    login(data, {
       onError: (err) => {
         const ae = err as AxiosError<{ message: string }>;
         authForm.setError("password", {
@@ -168,66 +114,45 @@ export default function CheckoutClient() {
     });
   });
 
-  const handleApplyCoupon = () => {
-    setCouponError("");
-    if (!couponInput.trim()) return;
-    applyCouponMutation(
-      isBuyNow
-        ? { couponCode: couponInput.trim(), mode: "buynow", productVariantSizeId: buyNowPvs, quantity: buyNowQty }
-        : { couponCode: couponInput.trim(), mode: "cart" },
-      {
-        onSuccess: (data) => {
-          setCouponResult(data);
-          toast.success(`Coupon "${data.couponCode}" applied!`);
-        },
-        onError: (err) => {
-          const ae = err as AxiosError<{ message: string }>;
-          setCouponError(ae.response?.data?.message || "Invalid coupon");
-          setCouponResult(null);
-        },
-      },
-    );
-  };
-
-  const resolveShipping = async (): Promise<string | InlineAddress | null> => {
-    if (addressMode === "saved" && selectedAddressId) return selectedAddressId;
-    const valid = await addrForm.trigger();
-    if (!valid || !addrPhone.trim()) {
-      if (!addrPhone.trim()) toast.error("Phone number is required");
+  // Real createOrder only accepts saved address ids — a "new" inline address
+  // must be persisted first via the real address API, then its id used.
+  const persistInlineAddress = async (
+    form: ReturnType<typeof useForm<InlineAddressFormType>>,
+    phone: string,
+  ): Promise<string | null> => {
+    const valid = await form.trigger();
+    if (!valid || !phone.trim()) {
+      if (!phone.trim()) toast.error("Phone number is required");
       return null;
     }
-    const v = addrForm.getValues();
-    return {
-      name: v.name,
-      phone: addrPhone.trim(),
-      line1: v.line1,
-      city: v.city,
-      countryCode: v.countryCode || "",
-      district: v.district || undefined,
-      postalCode: v.postalCode || undefined,
-      landMark: v.landMark || undefined,
-    };
+    const v = form.getValues();
+    try {
+      const res = await addAddress({
+        name: v.name,
+        phone: phone.trim(),
+        line1: v.line1?.trim() || undefined,
+        city: v.city,
+        district: v.district.trim(),
+        pinCode: v.pinCode.trim(),
+        landMark: v.landMark?.trim() || undefined,
+      });
+      return res.address.id;
+    } catch (err) {
+      const ae = err as AxiosError<{ message: string }>;
+      toast.error(ae.response?.data?.message || "Failed to save address");
+      return null;
+    }
   };
 
-  const resolveBilling = async (): Promise<string | InlineAddress | null | undefined> => {
+  const resolveShipping = async (): Promise<string | null> => {
+    if (addressMode === "saved" && selectedAddressId) return selectedAddressId;
+    return persistInlineAddress(addrForm, addrPhone);
+  };
+
+  const resolveBilling = async (): Promise<string | null | undefined> => {
     if (billingMode === "same") return undefined;
     if (billingMode === "saved" && selectedBillingAddressId) return selectedBillingAddressId;
-    const valid = await billingAddrForm.trigger();
-    if (!valid || !billingAddrPhone.trim()) {
-      if (!billingAddrPhone.trim()) toast.error("Billing phone number is required");
-      return null;
-    }
-    const v = billingAddrForm.getValues();
-    return {
-      name: v.name,
-      phone: billingAddrPhone.trim(),
-      line1: v.line1,
-      city: v.city,
-      countryCode: v.countryCode || "",
-      district: v.district || undefined,
-      postalCode: v.postalCode || undefined,
-      landMark: v.landMark || undefined,
-    };
+    return persistInlineAddress(billingAddrForm, billingAddrPhone);
   };
 
   const handlePayNow = async () => {
@@ -235,53 +160,56 @@ export default function CheckoutClient() {
       toast.error("Your cart is empty");
       return;
     }
-    const shipping = await resolveShipping();
-    if (!shipping) return;
+    const shippingAddressId = await resolveShipping();
+    if (!shippingAddressId) return;
 
-    const billing = await resolveBilling();
-    if (billing === null) return;
+    const billingAddressId = await resolveBilling();
+    if (billingAddressId === null) return;
 
-    if (isBuyNow) {
-      buyNow(
-        {
-          productVariantSizeId: buyNowPvs,
-          quantity: buyNowQty,
-          shippingAddress: shipping,
-          ...(billing !== undefined && { billingAddress: billing }),
-          couponCode: couponResult?.couponCode,
+    try {
+      const order = await createOrder({
+        mode: isBuyNow ? "buyNow" : "cart",
+        ...(isBuyNow && { productVariantSizeId: buyNowPvs, quantity: buyNowQty }),
+        shippingAddressId,
+        ...(billingAddressId !== undefined && { billingAddressId }),
+      });
+
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        toast.error("Could not load the payment gateway. Please try again.");
+        return;
+      }
+
+      sessionStorage.setItem("checkoutMode", isBuyNow ? "buynow" : "cart");
+
+      const rzp = new window.Razorpay({
+        key: order.keyId,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.razorpayOrderId,
+        name: "MAMO FASHION",
+        prefill: { email: authEmail ?? undefined },
+        theme: { color: "#18181b" },
+        handler: (resp: RazorpaySuccessResponse) => {
+          const qs = new URLSearchParams({
+            orderId: order.orderId,
+            razorpay_order_id: resp.razorpay_order_id,
+            razorpay_payment_id: resp.razorpay_payment_id,
+            razorpay_signature: resp.razorpay_signature,
+          });
+          router.push(`/checkout/verifying?${qs.toString()}`);
         },
-        {
-          onSuccess: (data) => {
-            sessionStorage.setItem("checkoutMode", "buynow");
-            window.location.href = data.paymentUrl;
-          },
-          onError: (err) => {
-            const ae = err as AxiosError<{ message: string }>;
-            toast.error(ae.response?.data?.message || "Failed to create order");
+        modal: {
+          ondismiss: () => {
+            router.push(`/checkout/failure?orderId=${order.orderId}&reason=cancelled`);
           },
         },
-      );
-      return;
+      });
+      rzp.open();
+    } catch (err) {
+      const ae = err as AxiosError<{ message: string }>;
+      toast.error(ae.response?.data?.message || "Failed to create order");
     }
-
-    createOrder(
-      {
-        mode: "cart",
-        shippingAddress: shipping,
-        ...(billing !== undefined && { billingAddress: billing }),
-        couponCode: couponResult?.couponCode,
-      },
-      {
-        onSuccess: (data) => {
-          sessionStorage.setItem("checkoutMode", "cart");
-          window.location.href = data.paymentUrl;
-        },
-        onError: (err) => {
-          const ae = err as AxiosError<{ message: string }>;
-          toast.error(ae.response?.data?.message || "Failed to create order");
-        },
-      },
-    );
   };
 
   if (!isBuyNow && !cartLoading && cartItems.length === 0) {
@@ -306,7 +234,11 @@ export default function CheckoutClient() {
             <section className="rounded-2xl border border-zinc-200 p-6 md:p-8">
               <h2 className="mb-1 font-serif text-xl text-zinc-900">Sign In to Checkout</h2>
               <p className="mb-6 font-sans text-xs text-zinc-500">
-                New to MAMO FASHION? We&apos;ll create your account automatically.
+                New to MAMO FASHION?{" "}
+                <Link href="/register" className="underline underline-offset-4 hover:text-zinc-900">
+                  Create an account
+                </Link>{" "}
+                first.
               </p>
               <form onSubmit={handleAuth} className="flex flex-col gap-4">
                 <div>
@@ -327,7 +259,7 @@ export default function CheckoutClient() {
                   className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-3.5 font-sans text-xs font-semibold tracking-[0.2em] text-white transition-colors hover:bg-black disabled:opacity-70"
                 >
                   {isAuthing ? <Spinner /> : null}
-                  {isAuthing ? "CONTINUING..." : "CONTINUE"}
+                  {isAuthing ? "SIGNING IN..." : "SIGN IN"}
                 </button>
               </form>
             </section>
@@ -379,13 +311,6 @@ export default function CheckoutClient() {
                   form={addrForm}
                   phone={addrPhone}
                   onPhoneChange={setAddrPhone}
-                  onCountrySearchChange={setCountrySearch}
-                  countryOpts={countryOpts}
-                  loadingCountries={loadingCountries}
-                  cityOpts={cityOpts}
-                  loadingCities={loadingCities}
-                  watchedCountry={watchedCountry}
-                  watchedCity={watchedCity}
                 />
               )}
             </section>
@@ -459,13 +384,6 @@ export default function CheckoutClient() {
                       form={billingAddrForm}
                       phone={billingAddrPhone}
                       onPhoneChange={setBillingAddrPhone}
-                      onCountrySearchChange={setBillingCountrySearch}
-                      countryOpts={billingCountryOpts}
-                      loadingCountries={loadingBillingCountries}
-                      cityOpts={billingCityOpts}
-                      loadingCities={loadingBillingCities}
-                      watchedCountry={watchedBillingCountry}
-                      watchedCity={watchedBillingCity}
                     />
                   )}
                 </>
@@ -477,11 +395,11 @@ export default function CheckoutClient() {
               <h2 className="mb-4 font-serif text-xl text-zinc-900">Payment</h2>
               <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-4">
                 <p className="font-sans text-sm text-zinc-700">
-                  After you click <span className="font-semibold">Pay Now</span>, you&apos;ll be
-                  redirected to Checkout.com&apos;s hosted payment page.
+                  After you click <span className="font-semibold">Pay Now</span>, a secure
+                  Razorpay payment window will open.
                 </p>
                 <p className="mt-2 font-sans text-xs text-zinc-500">
-                  Checkout.com will securely handle Card, Apple Pay, Google Pay, and Tamara.
+                  Razorpay securely handles Cards, UPI, Netbanking, and Wallets.
                 </p>
               </div>
             </section>
@@ -558,34 +476,25 @@ export default function CheckoutClient() {
                   })}
             </div>
 
-
-
             {/* Pricing rows */}
             <div className="space-y-2.5 border-t border-zinc-100 pt-4">
               <Row label="Subtotal" value={fmt(subtotal)} />
-              {discount > 0 && (
-                <Row
-                  label={`Discount (${Number(couponResult?.discountPercentage ?? 0).toFixed(0)}%)`}
-                  value={`-${fmt(discount)}`}
-                  valueClass="text-green-600"
-                />
-              )}
               <Row label="Shipping" value="Free" />
               <div className="flex items-baseline justify-between border-t border-zinc-100 pt-3">
                 <span className="font-sans text-sm font-semibold text-zinc-900">Total</span>
-                <span className="font-serif text-xl text-zinc-900">{fmt(total)}</span>
+                <span className="font-serif text-xl text-zinc-900">{fmt(subtotal)}</span>
               </div>
             </div>
 
             <button
               onClick={handlePayNow}
-              disabled={!isAuthenticated || isCreatingOrder || isBuyingNow || (!isBuyNow && cartLoading)}
+              disabled={!isAuthenticated || isCreatingOrder || (!isBuyNow && cartLoading)}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-4 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {(isCreatingOrder || isBuyingNow) ? (
+              {isCreatingOrder ? (
                 <><Spinner />CREATING ORDER...</>
               ) : (
-                <><FiLock size={12} />PAY NOW · {fmt(total)}</>
+                <><FiLock size={12} />PAY NOW · {fmt(subtotal)}</>
               )}
             </button>
           </div>
@@ -601,27 +510,9 @@ interface InlineAddressFormProps {
   form: ReturnType<typeof useForm<InlineAddressFormType>>;
   phone: string;
   onPhoneChange: (v: string) => void;
-  onCountrySearchChange: (v: string) => void;
-  countryOpts: { value: string; label: string }[];
-  loadingCountries: boolean;
-  cityOpts: { value: string; label: string }[];
-  loadingCities: boolean;
-  watchedCountry: string | undefined;
-  watchedCity: string | undefined;
 }
 
-function InlineAddressForm({
-  form,
-  phone,
-  onPhoneChange,
-  onCountrySearchChange,
-  countryOpts,
-  loadingCountries,
-  cityOpts,
-  loadingCities,
-  watchedCountry,
-  watchedCity,
-}: InlineAddressFormProps) {
+function InlineAddressForm({ form, phone, onPhoneChange }: InlineAddressFormProps) {
   return (
     <div className="flex flex-col gap-4">
 
@@ -634,14 +525,15 @@ function InlineAddressForm({
         </div>
         <div>
           <Input
-            label="Phone Number"
-            type="tel"
-            placeholder="+91..."
+            label="Phone *"
             value={phone}
             onChange={(e) => {
-              onPhoneChange(e.target.value);
-              form.setValue("phone", e.target.value, { shouldValidate: true });
+              const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+              onPhoneChange(digits);
+              form.setValue("phone", digits, { shouldValidate: true });
             }}
+            placeholder="9876543210"
+            inputMode="numeric"
           />
           {form.formState.errors.phone && (
             <p className="mt-1 text-xs text-red-500">{form.formState.errors.phone.message}</p>
@@ -650,7 +542,7 @@ function InlineAddressForm({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Input label="Address Line 1" placeholder="e.g. 123 Sheikh Zayed Rd" {...form.register("line1")} />
+          <Input label="Address Line 1" placeholder="e.g. XYZ Road, Southampton Street" {...form.register("line1")} />
           {form.formState.errors.line1 && (
             <p className="mt-1 text-xs text-red-500">{form.formState.errors.line1.message}</p>
           )}
@@ -662,9 +554,20 @@ function InlineAddressForm({
           )}
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <Input label="District" placeholder="e.g. Downtown" {...form.register("district")} />
-        <Input label="Postal Code" placeholder="e.g. 00000" {...form.register("postalCode")} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <Input label="District *" placeholder="e.g. Greater London" {...form.register("district")} />
+          {form.formState.errors.district && (
+            <p className="mt-1 text-xs text-red-500">{form.formState.errors.district.message}</p>
+          )}
+        </div>
+        <div>
+          <Input label="Pin Code *" placeholder="e.g. 12345" {...form.register("pinCode")} />
+          {form.formState.errors.pinCode && (
+            <p className="mt-1 text-xs text-red-500">{form.formState.errors.pinCode.message}</p>
+          )}
+        </div>
+        <Input label="Landmark (optional)" placeholder="e.g. Near Central Station" {...form.register("landMark")} />
       </div>
     </div>
   );

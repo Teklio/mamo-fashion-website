@@ -42,4 +42,11 @@ export const endpoints = {
     base: "/customer/address",
     item: (id: string) => `/customer/address/${id}`,
   },
+  orders: {
+    list: "/orders",
+    detail: (id: string) => `/orders/${id}`,
+  },
+  payments: {
+    verify: "/payments/verify",
+  },
 } as const;

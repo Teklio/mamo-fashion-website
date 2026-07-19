@@ -14,7 +14,10 @@ export default function FeaturedProducts({
   hideViewAll?: boolean;
   subCategoryId?: string;
 } = {}) {
-  const { data } = useGetProducts({ limit: 4, subCategoryId });
+  const { data } = useGetProducts({
+    limit: 4,
+    subCategoryId: subCategoryId ? [subCategoryId] : undefined,
+  });
   const displayProducts = (data?.variants ?? []).slice(0, 4);
 
   const containerVariants = {

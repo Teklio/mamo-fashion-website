@@ -63,8 +63,29 @@ export interface GetCustomerProductResponse {
   product: CustomerProductDetail;
 }
 
-/** Helper: server sends colorCodes as a comma-separated string; take the first. */
-export function firstColorCode(colorCodes: string | null | undefined): string {
-  if (!colorCodes) return "#000000";
-  return colorCodes.split(",")[0]?.trim() || "#000000";
+// Parse a comma-separated hex string (e.g. "#000000,#FFFFFF") into an array,
+// dropping anything that isn't a valid hex code.
+export function parseColorCodes(colorCodes: string | null | undefined): string[] {
+  return (colorCodes ?? "")
+    .split(",")
+    .map((c) => c.trim())
+    .filter((c) => /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/.test(c));
+}
+
+// A color can carry up to several hex codes (e.g. "green/yellow/rosegold" ->
+// 3 codes) — render every one of them as equal-width stripes rather than
+// only ever showing the first, so multi-tone colors preview correctly.
+// Mirrors mamo-fashion-admin's getMultiColorBackground for the same effect.
+export function getMultiColorBackground(colorCodes: string | null | undefined): string {
+  const codes = parseColorCodes(colorCodes);
+
+  if (codes.length === 0) return "#e5e5e5";
+  if (codes.length === 1) return codes[0];
+
+  const stops = codes.map((code, i) => {
+    const from = (i / codes.length) * 100;
+    const to = ((i + 1) / codes.length) * 100;
+    return `${code} ${from}%, ${code} ${to}%`;
+  });
+  return `linear-gradient(to right, ${stops.join(", ")})`;
 }

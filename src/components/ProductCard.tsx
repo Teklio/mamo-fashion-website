@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { formatPrice } from "@/services/product.service";
 import { useAddToCart } from "@/services/cart.service";
 import { useWishlistedIds, useAddToWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
-import type { CustomerProduct } from "@/types/product.type";
+import { getMultiColorBackground, type CustomerProduct } from "@/types/product.type";
 import type { RootState } from "@/store";
 import type { AxiosError } from "axios";
 
@@ -32,7 +32,7 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
   const mainImage = product.primaryImageUrl ?? "";
   const availableSizes = product.sizes.filter((s) => s.stock > 0);
   const isWishlisted = wishlistedIds.has(product.productId);
-  const totalStock = availableSizes.reduce((acc, curr) => acc + curr.stock, 0);
+  const hasDiscount = Number(product.actualPrice) > Number(product.commonPrice);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -155,11 +155,24 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
             <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">
               {product.name ?? ""}
             </span>
-            <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide mb-0.5">
-              {formatPrice(product.commonPrice)}
-            </span>
-            <span className={`text-[10px] font-sans ${totalStock > 0 ? "text-emerald-600" : "text-red-500"}`}>
-              {totalStock > 0 ? `${totalStock} in stock` : "Out of stock"}
+            {product.colorName && (
+              <span className="flex items-center gap-1.5 mb-1">
+                <span
+                  className="w-2.5 h-2.5 rounded-full border border-zinc-200 shrink-0"
+                  style={{ background: getMultiColorBackground(product.colorCodes) }}
+                />
+                <span className="text-[10px] text-zinc-400 font-sans">{product.colorName}</span>
+              </span>
+            )}
+            <span className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide">
+                {formatPrice(product.commonPrice)}
+              </span>
+              {hasDiscount && (
+                <span className="text-[11px] text-zinc-400 font-sans line-through">
+                  {formatPrice(product.actualPrice)}
+                </span>
+              )}
             </span>
           </div>
 

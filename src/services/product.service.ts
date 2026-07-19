@@ -15,10 +15,12 @@ export interface GetProductsFilters {
   limit?: number;
   minPrice?: number;
   maxPrice?: number;
-  isAscending?: boolean;
+  sortBy?: "newest" | "price_asc" | "price_desc" | "bestseller";
   search?: string;
-  subCategoryId?: string;
-  materialId?: string;
+  subCategoryId?: string[];
+  materialId?: string[];
+  colorId?: string[];
+  sizeId?: string[];
 }
 
 export const useGetProducts = (filters: GetProductsFilters = {}) => {
@@ -30,11 +32,14 @@ export const useGetProducts = (filters: GetProductsFilters = {}) => {
       if (filters.limit) params.limit = filters.limit;
       if (filters.minPrice !== undefined) params.minPrice = filters.minPrice;
       if (filters.maxPrice !== undefined) params.maxPrice = filters.maxPrice;
-      if (filters.isAscending !== undefined)
-        params.isAscending = filters.isAscending ? "true" : "false";
+      if (filters.sortBy) params.sortBy = filters.sortBy;
       if (filters.search) params.search = filters.search;
-      if (filters.subCategoryId) params.subCategoryId = filters.subCategoryId;
-      if (filters.materialId) params.materialId = filters.materialId;
+      if (filters.subCategoryId?.length)
+        params.subCategoryId = filters.subCategoryId.join(",");
+      if (filters.materialId?.length)
+        params.materialId = filters.materialId.join(",");
+      if (filters.colorId?.length) params.colorId = filters.colorId.join(",");
+      if (filters.sizeId?.length) params.sizeId = filters.sizeId.join(",");
 
       const res = await api.get<GetCustomerProductsResponse>(
         endpoints.products.list,
