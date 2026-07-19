@@ -5,42 +5,19 @@ import Image from "next/image";
 import { FiX, FiShoppingCart } from "react-icons/fi";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useGetWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
-import { useAddToCart } from "@/services/cart.service";
 import { formatPrice } from "@/services/product.service";
 import type { WishlistItem } from "@/types/wishlist.type";
 
 export default function WishlistClient() {
-  const router = useRouter();
   const { data, isLoading } = useGetWishlist();
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
-  const { mutate: addToCart } = useAddToCart();
 
   const wishlist = data?.wishlist ?? [];
   const subtotal = wishlist.reduce(
-    (acc: number, w: WishlistItem) => acc + Number(w.variant?.product?.price ?? 0),
+    (acc: number, w: WishlistItem) => acc + Number(w.commonPrice ?? 0),
     0,
   );
-
-  const handleMoveToCart = () => {
-    let added = 0;
-    wishlist.forEach((w) => {
-      const availableSize = w.variant?.sizes?.find(s => s.stock > 0);
-      if (availableSize) {
-        addToCart({ productVariantSizeId: availableSize.id, quantity: 1 });
-        added++;
-        // Optionally remove from wishlist here if desired, but we'll leave it for now
-      }
-    });
-    
-    if (added > 0) {
-      toast.success(`${added} items moved to cart!`);
-      router.push("/cart");
-    } else {
-      toast.error("No items have available sizes in stock.");
-    }
-  };
 
   if (isLoading) {
     return (
@@ -85,13 +62,11 @@ export default function WishlistClient() {
           <div className="flex-1 flex flex-col gap-6">
             <AnimatePresence>
               {wishlist.map((w: WishlistItem) => {
-                const variant = w.variant;
-                const product = variant?.product;
-                const imageUrl = variant?.primaryImage?.publicUrl ?? "";
+                const imageUrl = w.primaryImageUrl ?? "";
 
                 return (
                   <motion.div
-                    key={w.variantId}
+                    key={w.productId}
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -100,14 +75,14 @@ export default function WishlistClient() {
                   >
                     {/* Image */}
                     <Link
-                      href={`/shop/${variant?.productId}`}
+                      href={`/shop/${w.productId}`}
                       className="w-full md:w-48 bg-white shrink-0 flex items-center justify-center p-4 md:p-6 border-b md:border-b-0 md:border-r border-[#ebebeb] hover:bg-zinc-50 transition-colors"
                     >
                       <div className="relative w-full aspect-video md:aspect-square">
                         {imageUrl && (
                           <Image
                             src={imageUrl}
-                            alt={product?.title ?? ""}
+                            alt={w.name ?? ""}
                             fill
                             className="object-contain"
                           />
@@ -119,9 +94,9 @@ export default function WishlistClient() {
                     <div className="flex-1 p-4 md:p-5 flex flex-col relative">
                       <button
                         onClick={() => {
-                          removeFromWishlist(w.variantId, {
+                          removeFromWishlist(w.productId, {
                             onSuccess: () =>
-                              toast.info(`${product?.title} removed from wishlist`),
+                              toast.info(`${w.name} removed from wishlist`),
                           });
                         }}
                         className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 transition-colors"
@@ -130,42 +105,34 @@ export default function WishlistClient() {
                         <FiX size={18} />
                       </button>
 
-                      <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase font-sans mb-1.5">
-                        FOOTWEAR
-                      </span>
-
                       <h3 className="text-xl md:text-2xl font-serif text-zinc-900 mb-2.5 pr-8 hover:text-zinc-600 transition-colors">
-                        <Link href={`/shop/${variant?.productId}`}>{product?.title}</Link>
+                        <Link href={`/shop/${w.productId}`}>{w.name}</Link>
                       </h3>
 
-                      <div className="flex items-center space-x-2 mb-3 border-b border-[#ebebeb] pb-3">
-                        <div
-                          className="w-3 h-3 rounded-full border border-zinc-200"
-                          style={{ backgroundColor: variant?.colorCode ?? "#31639d" }}
-                        />
-                        <span className="text-xs text-zinc-600 font-sans ml-2">
-                          {variant?.colorName ?? ""}
+                      {!w.isActive && (
+                        <span className="text-[10px] font-bold tracking-widest text-red-500 uppercase font-sans mb-2">
+                          Currently unavailable
                         </span>
-                      </div>
+                      )}
 
-                      <div className="flex items-center gap-2 mb-4">
+                      <div className="flex items-center gap-2 mb-4 border-t border-[#ebebeb] pt-3">
                         <span className="text-sm font-semibold text-zinc-900 font-sans">
-                          {formatPrice(product?.price ?? "0")}
+                          {formatPrice(w.commonPrice ?? "0")}
                         </span>
                       </div>
 
                       <div className="flex items-center gap-4 mt-auto">
                         <Link
-                          href={`/shop/${variant?.productId}`}
+                          href={`/shop/${w.productId}`}
                           className="px-6 py-3 bg-[#141414] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans"
                         >
                           VIEW PRODUCT
                         </Link>
                         <button
                           onClick={() => {
-                            removeFromWishlist(w.variantId, {
+                            removeFromWishlist(w.productId, {
                               onSuccess: () =>
-                                toast.info(`${product?.title} removed from wishlist`),
+                                toast.info(`${w.name} removed from wishlist`),
                             });
                           }}
                           className="px-4 py-3 text-[10px] md:text-xs font-bold tracking-widest text-zinc-400 hover:text-zinc-900 uppercase transition-colors font-sans"
@@ -204,12 +171,12 @@ export default function WishlistClient() {
               </div>
 
               <div className="flex flex-col gap-3 mt-8 md:mt-10">
-                <button
-                  onClick={handleMoveToCart}
+                <Link
+                  href="/cart"
                   className="w-full py-3.5 md:py-4 bg-[#111] border border-[#111] text-white text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-black transition-colors font-sans text-center block"
                 >
-                  PROCEED TO CART
-                </button>
+                  GO TO CART
+                </Link>
                 <Link
                   href="/shop"
                   className="w-full py-3.5 md:py-4 bg-white border border-[#ebebeb] text-zinc-800 text-[10px] md:text-xs font-bold tracking-widest uppercase rounded-md hover:bg-zinc-50 hover:border-zinc-200 transition-colors font-sans text-center block"

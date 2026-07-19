@@ -10,11 +10,11 @@ export const passwordSchema = z
   .regex(/\d/, "Must include a number")
   .regex(/[^A-Za-z0-9]/, "Must include a special character");
 
-//phone schema — accepts combined code+number string, e.g. "+966501234567"
+//phone schema — server stores a bare 10-digit national number
 export const phoneSchema = z
   .string()
-  .min(1, "Phone number is required")
-  .regex(/^\+\d{6,19}$/, "Invalid phone number");
+  .trim()
+  .regex(/^\d{10}$/, "Enter a valid 10-digit phone number");
 
 export type PhoneForm = z.infer<typeof phoneSchema>;
 

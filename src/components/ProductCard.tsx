@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { formatPrice } from "@/services/product.service";
 import { useAddToCart } from "@/services/cart.service";
 import { useWishlistedIds, useAddToWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
-import type { CustomerProduct } from "@/types/product.type";
+import { getMultiColorBackground, type CustomerProduct } from "@/types/product.type";
 import type { RootState } from "@/store";
 import type { AxiosError } from "axios";
 
@@ -30,21 +30,20 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
   const [showSizes, setShowSizes] = useState(false);
 
   const mainImage = product.primaryImageUrl ?? "";
-  const hoverImage = product.secondaryImageUrl ?? undefined;
   const availableSizes = product.sizes.filter((s) => s.stock > 0);
-  const isWishlisted = wishlistedIds.has(product.id);
-  const totalStock = availableSizes.reduce((acc, curr) => acc + curr.stock, 0);
+  const isWishlisted = wishlistedIds.has(product.productId);
+  const hasDiscount = Number(product.actualPrice) > Number(product.commonPrice);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!isAuthenticated) { router.push("/login"); return; }
     if (isWishlisted) {
-      removeFromWishlist(product.id, {
+      removeFromWishlist(product.productId, {
         onSuccess: () => toast.success("Removed from wishlist"),
         onError: () => toast.error("Failed to remove from wishlist"),
       });
     } else {
-      addToWishlist({ variantId: product.id }, {
+      addToWishlist({ productId: product.productId }, {
         onSuccess: () => toast.success("Added to wishlist"),
         onError: () => toast.error("Failed to add to wishlist"),
       });
@@ -87,29 +86,16 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
           {mainImage ? (
             <Image
               src={mainImage}
-              alt={product.title}
+              alt={product.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority
-              className={`object-cover transition-all duration-700 ease-in-out ${
-                hoverImage
-                  ? "group-hover:opacity-0 group-hover:scale-95"
-                  : "group-hover:scale-105"
-              }`}
+              className="object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
             />
           ) : (
             <span className="text-zinc-300 text-xs font-sans tracking-widest uppercase select-none">
               MAMO FASHION
             </span>
-          )}
-          {hoverImage && (
-            <Image
-              src={hoverImage}
-              alt={`${product.title} Styled`}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="absolute inset-0 object-cover opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out group-hover:scale-105"
-            />
           )}
 
           {/* Wishlist Button */}
@@ -155,7 +141,7 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
                     disabled={isAddingToCart}
                     className="px-3 py-1.5 border border-zinc-200 rounded-sm text-xs font-sans text-zinc-800 hover:bg-zinc-900 hover:text-white hover:border-zinc-900 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {s.size}
+                    {s.name}
                   </button>
                 ))}
               </div>
@@ -167,13 +153,26 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
         <div className="flex items-end justify-between px-1 mt-auto">
           <div className="flex flex-col">
             <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">
-              {product.title ?? ""}
+              {product.name ?? ""}
             </span>
-            <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide mb-0.5">
-              {formatPrice(product.price)}
-            </span>
-            <span className={`text-[10px] font-sans ${totalStock > 0 ? "text-emerald-600" : "text-red-500"}`}>
-              {totalStock > 0 ? `${totalStock} in stock` : "Out of stock"}
+            {product.colorName && (
+              <span className="flex items-center gap-1.5 mb-1">
+                <span
+                  className="w-2.5 h-2.5 rounded-full border border-zinc-200 shrink-0"
+                  style={{ background: getMultiColorBackground(product.colorCodes) }}
+                />
+                <span className="text-[10px] text-zinc-400 font-sans">{product.colorName}</span>
+              </span>
+            )}
+            <span className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-sm font-semibold text-zinc-900 font-sans tracking-wide">
+                {formatPrice(product.commonPrice)}
+              </span>
+              {hasDiscount && (
+                <span className="text-[11px] text-zinc-400 font-sans line-through">
+                  {formatPrice(product.actualPrice)}
+                </span>
+              )}
             </span>
           </div>
 

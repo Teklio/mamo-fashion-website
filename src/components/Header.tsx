@@ -31,13 +31,10 @@ export default function Header({ theme = "dark" }: { theme?: "dark" | "light" })
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync mock API data with Redux store (fixes dev server reload persisting Redux but clearing mock data)
+  // Keep the badge in sync with the server's authoritative counts.
   useEffect(() => {
-    if (cartData?.cart?.items) {
-      const itemsCount = cartData.cart.items.reduce((sum, item) => sum + item.quantity, 0);
-      if (itemsCount !== cartCount) {
-        dispatch(setCartCount(itemsCount));
-      }
+    if (cartData && cartData.itemCount !== cartCount) {
+      dispatch(setCartCount(cartData.itemCount));
     }
   }, [cartData, cartCount, dispatch]);
 

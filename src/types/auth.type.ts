@@ -20,7 +20,6 @@ export interface CustomerLoginResponse {
 export interface ValidateResetTokenResponse {
   message: string;
   email: string;
-  token: string;
 }
 
 export interface MessageResponse {

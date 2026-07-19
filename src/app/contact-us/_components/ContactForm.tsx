@@ -59,7 +59,7 @@ export default function ContactForm() {
             Send a Message
           </h2>
           <p className="text-zinc-500 font-sans tracking-wide mb-12 max-w-lg leading-relaxed">
-            Whether you have a question about our collections, need styling advice, or just want to say hello, we'd love to hear from you.
+            Whether you have a question about our collections, need styling advice, or just want to say hello, we&apos;d love to hear from you.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-8 w-full">
