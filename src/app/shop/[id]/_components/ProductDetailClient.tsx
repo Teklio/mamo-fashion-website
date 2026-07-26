@@ -211,7 +211,7 @@ export default function ProductDetailClient({
                 <button
                   key={`${selectedColor}-thumb-${idx}`}
                   onClick={() => setActiveImage(idx)}
-                  className={`relative w-full aspect-[3/4] bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all duration-200 ${
+                  className={`relative w-full aspect-3/4 bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all duration-200 ${
                     activeImage === idx
                       ? "border-zinc-900 scale-[1.03] shadow-md"
                       : "border-transparent hover:border-zinc-300 hover:scale-[1.02]"
@@ -230,7 +230,7 @@ export default function ProductDetailClient({
               Array.from({ length: 6 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="w-full aspect-[3/4] bg-[#f3f3f3] rounded-sm flex items-center justify-center"
+                  className="w-full aspect-3/4 bg-[#f3f3f3] rounded-sm flex items-center justify-center"
                 >
                   <span className="text-zinc-300 text-[8px] font-sans tracking-widest text-center px-1">
                     MAMO

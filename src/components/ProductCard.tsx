@@ -29,21 +29,27 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
   const [showSizes, setShowSizes] = useState(false);
 
-  const mainImage = product.primaryImageUrl ?? "";
-  const availableSizes = product.sizes.filter((s) => s.stock > 0);
-  const isWishlisted = wishlistedIds.has(product.productId);
+  // Card shows one representative variant (the first active one returned by
+  // the API); the full color/size selector lives on the product detail page.
+  const defaultVariant = product.variants[0] as
+    | (typeof product.variants)[number]
+    | undefined;
+
+  const mainImage = defaultVariant?.primaryImageUrl ?? "";
+  const availableSizes = (defaultVariant?.sizes ?? []).filter((s) => s.stock > 0);
+  const isWishlisted = wishlistedIds.has(product.id);
   const hasDiscount = Number(product.actualPrice) > Number(product.commonPrice);
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!isAuthenticated) { router.push("/login"); return; }
     if (isWishlisted) {
-      removeFromWishlist(product.productId, {
+      removeFromWishlist(product.id, {
         onSuccess: () => toast.success("Removed from wishlist"),
         onError: () => toast.error("Failed to remove from wishlist"),
       });
     } else {
-      addToWishlist({ productId: product.productId }, {
+      addToWishlist({ productId: product.id }, {
         onSuccess: () => toast.success("Added to wishlist"),
         onError: () => toast.error("Failed to add to wishlist"),
       });
@@ -78,7 +84,11 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
   return (
     <motion.div variants={cardVariants}>
       <Link
-        href={`/shop/${product.productId}?variant=${product.id}`}
+        href={
+          defaultVariant
+            ? `/shop/${product.id}?variant=${defaultVariant.id}`
+            : `/shop/${product.id}`
+        }
         className="group flex flex-col justify-between h-full"
       >
         {/* Image Container */}
@@ -155,13 +165,13 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
             <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">
               {product.name ?? ""}
             </span>
-            {product.colorName && (
+            {defaultVariant?.colorName && (
               <span className="flex items-center gap-1.5 mb-1">
                 <span
                   className="w-2.5 h-2.5 rounded-full border border-zinc-200 shrink-0"
-                  style={{ background: getMultiColorBackground(product.colorCodes) }}
+                  style={{ background: getMultiColorBackground(defaultVariant.colorCodes) }}
                 />
-                <span className="text-[10px] text-zinc-400 font-sans">{product.colorName}</span>
+                <span className="text-[10px] text-zinc-400 font-sans">{defaultVariant.colorName}</span>
               </span>
             )}
             <span className="flex items-center gap-1.5 mb-0.5">

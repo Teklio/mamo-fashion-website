@@ -92,7 +92,7 @@ export default function ShopGrid() {
     sizeId: activeSizeIds.length ? activeSizeIds : undefined,
   });
 
-  const variants = data?.variants ?? [];
+  const products = data?.products ?? [];
 
   // Lock body scroll when mobile filter is open
   useEffect(() => {
@@ -434,7 +434,7 @@ export default function ShopGrid() {
               Filter
             </button>
             <div className="text-sm font-sans text-zinc-500 hidden sm:block">
-              Showing <span className="font-semibold text-zinc-900">{variants.length}</span> results
+              Showing <span className="font-semibold text-zinc-900">{products.length}</span> results
             </div>
           </div>
 
@@ -496,7 +496,7 @@ export default function ShopGrid() {
 
         {/* Mobile results count */}
         <div className="text-sm font-sans text-zinc-500 sm:hidden">
-          Showing <span className="font-semibold text-zinc-900">{variants.length}</span> results
+          Showing <span className="font-semibold text-zinc-900">{products.length}</span> results
         </div>
 
         {/* Loading skeletons */}
@@ -515,7 +515,7 @@ export default function ShopGrid() {
               </div>
             ))}
           </div>
-        ) : variants.length === 0 ? (
+        ) : products.length === 0 ? (
           <div className="py-24 text-center border border-dashed border-zinc-200 rounded-2xl bg-zinc-50/50 flex flex-col items-center justify-center">
             <h3 className="font-serif text-xl text-zinc-900 mb-2">No styles found</h3>
             <p className="text-xs md:text-sm text-zinc-500 mb-6 font-sans">
@@ -534,9 +534,9 @@ export default function ShopGrid() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            key={`${sortBy}-${variants.length}`}
+            key={`${sortBy}-${products.length}`}
           >
-            {variants.map((product) => (
+            {products.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}

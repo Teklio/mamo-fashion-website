@@ -18,7 +18,7 @@ export default function FeaturedProducts({
     limit: 4,
     subCategoryId: subCategoryId ? [subCategoryId] : undefined,
   });
-  const displayProducts = (data?.variants ?? []).slice(0, 4);
+  const displayProducts = (data?.products ?? []).slice(0, 4);
 
   const containerVariants = {
     hidden: { opacity: 0 },
