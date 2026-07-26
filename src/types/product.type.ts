@@ -1,4 +1,4 @@
-// ─── List item (one row per active variant from GET /products/customer) ───────
+// ─── List item (one row per product from GET /products/customer) ──────────
 
 export interface CustomerProductSize {
   id: string;
@@ -6,13 +6,8 @@ export interface CustomerProductSize {
   stock: number;
 }
 
-export interface CustomerProduct {
-  id: string; // variant id
-  productId: string; // product id (used for navigation and wishlist)
-  name: string;
-  /** Prisma Decimal serialised as string, e.g. "289.00" */
-  commonPrice: string;
-  actualPrice: string;
+export interface CustomerProductListVariant {
+  id: string;
   primaryImageUrl: string | null;
   colorName: string | null;
   /** Comma-separated hex list, e.g. "#ffffff,#000000" */
@@ -20,8 +15,18 @@ export interface CustomerProduct {
   sizes: CustomerProductSize[];
 }
 
+export interface CustomerProduct {
+  id: string; // product id
+  name: string;
+  /** Prisma Decimal serialised as string, e.g. "289.00" */
+  commonPrice: string;
+  actualPrice: string;
+  /** Active variants for this product, nested (e.g. one per color). */
+  variants: CustomerProductListVariant[];
+}
+
 export interface GetCustomerProductsResponse {
-  variants: CustomerProduct[];
+  products: CustomerProduct[];
   meta: { page: number; limit: number; total: number; totalPages: number };
 }
 
