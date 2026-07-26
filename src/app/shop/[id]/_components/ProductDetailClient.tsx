@@ -199,30 +199,42 @@ export default function ProductDetailClient({
             </button>
           </div>
 
-          {/* Thumbnails (Max 3) */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Thumbnails — all images (primary + up to 5 gallery) */}
+          <div
+            className="grid gap-3"
+            style={{
+              gridTemplateColumns: `repeat(${Math.min(Math.max(variantImages.length, 3), 6)}, minmax(0, 1fr))`,
+            }}
+          >
             {variantImages.length > 0 ? (
-              variantImages.slice(0, 3).map((img, idx) => (
+              variantImages.map((img, idx) => (
                 <button
-                  key={idx}
+                  key={`${selectedColor}-thumb-${idx}`}
                   onClick={() => setActiveImage(idx)}
-                  className={`relative w-full aspect-4/5 bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all ${
-                    activeImage === idx ? "border-zinc-900" : "border-transparent"
+                  className={`relative w-full aspect-[3/4] bg-[#f3f3f3] rounded-sm overflow-hidden border-2 transition-all duration-200 ${
+                    activeImage === idx
+                      ? "border-zinc-900 scale-[1.03] shadow-md"
+                      : "border-transparent hover:border-zinc-300 hover:scale-[1.02]"
                   }`}
                 >
                   <Image
                     src={img}
-                    alt={`Thumbnail ${idx}`}
+                    alt={`${product.name} view ${idx + 1}`}
                     fill
-                    sizes="(max-width: 1024px) 33vw, 16vw"
+                    sizes="(max-width: 640px) 16vw, (max-width: 1024px) 14vw, 10vw"
                     className="object-cover"
                   />
                 </button>
               ))
             ) : (
-              [1, 2, 3].map((_, idx) => (
-                <div key={idx} className="w-full aspect-4/5 bg-[#f3f3f3] rounded-sm flex items-center justify-center">
-                  <span className="text-zinc-300 text-[9px] font-sans tracking-widest text-center px-2">MAMO FASHION</span>
+              Array.from({ length: 6 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="w-full aspect-[3/4] bg-[#f3f3f3] rounded-sm flex items-center justify-center"
+                >
+                  <span className="text-zinc-300 text-[8px] font-sans tracking-widest text-center px-1">
+                    MAMO
+                  </span>
                 </div>
               ))
             )}

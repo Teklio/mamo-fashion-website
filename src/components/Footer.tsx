@@ -22,7 +22,7 @@ export default function Footer() {
                 className="object-contain h-10 md:h-16 w-auto brightness-0 invert"
               />
             </Link>
-            <div className="relative w-full h-48 md:h-64 rounded-2xl overflow-hidden shadow-lg group">
+            <div className="relative w-full h-38 rounded-2xl overflow-hidden shadow-lg group">
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
               <Image
                 src="/images/hero_banner.png"
