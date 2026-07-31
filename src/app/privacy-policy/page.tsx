@@ -109,7 +109,6 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="list-disc pl-6 space-y-2 mb-4">
                 <li>Payment providers</li>
-                <li>Shipping partners</li>
                 <li>Technology service providers</li>
               </ul>
               <p>
