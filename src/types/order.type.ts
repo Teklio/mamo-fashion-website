@@ -4,9 +4,15 @@ export type OrderStatus =
   | "ORDER_SHIPPED"
   | "OUT_FOR_DELIVERY"
   | "ORDER_DELIVERED"
-  | "ORDER_FAILED";
+  | "ORDER_FAILED"
+  | "ORDER_RETURNED";
 
-export type PaymentStatus = "PAYMENT_PENDING" | "PAYMENT_SUCCESS" | "PAYMENT_FAILED";
+export type PaymentStatus =
+  | "PAYMENT_PENDING"
+  | "PAYMENT_SUCCESS"
+  | "PAYMENT_FAILED"
+  | "PAYMENT_REFUNDED"
+  | "REFUND_FAILED";
 
 export interface OrderItem {
   id: string;
