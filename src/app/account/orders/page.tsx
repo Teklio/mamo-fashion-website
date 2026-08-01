@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
-import { FiChevronRight, FiClock, FiX, FiShoppingBag, FiExternalLink } from "react-icons/fi";
+import { FiChevronRight, FiClock, FiX, FiShoppingBag, FiExternalLink, FiAlertCircle } from "react-icons/fi";
 import { useGetCustomerOrders, useGetCustomerOrder } from "@/services/order.service";
 import { getMultiColorBackground } from "@/types/product.type";
 import type { CustomerOrder, OrderItem, OrderStatus, OrderAddress } from "@/types/order.type";
@@ -16,6 +16,7 @@ const STATUS_STYLES: Record<OrderStatus, { label: string; color: string; dot: st
   OUT_FOR_DELIVERY:  { label: "Out for Delivery", color: "text-purple-600", dot: "bg-purple-400" },
   ORDER_DELIVERED:   { label: "Delivered",        color: "text-green-600",  dot: "bg-green-400" },
   ORDER_FAILED:      { label: "Failed",           color: "text-red-600",    dot: "bg-red-400" },
+  ORDER_RETURNED:    { label: "Returned",         color: "text-slate-600",  dot: "bg-slate-400" },
 };
 
 const fmt = (v: string | number) => `₹${Number(v).toFixed(2)}`;
@@ -211,6 +212,24 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                 </div>
               </div>
 
+              {/* Return / support notice */}
+              {order.status === "ORDER_DELIVERED" && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+                  <FiAlertCircle className="text-amber-500 shrink-0 mt-0.5" size={16} />
+                  <p className="text-xs font-sans text-amber-800 leading-relaxed">
+                    Received a damaged item or need to return this order?{" "}
+                    <Link
+                      href="/contact-us"
+                      onClick={onClose}
+                      className="underline font-semibold hover:text-amber-900"
+                    >
+                      Contact our support team
+                    </Link>{" "}
+                    and we&apos;ll help you out.
+                  </p>
+                </div>
+              )}
+
               {/* Items */}
               <div className="space-y-3 pt-6 border-t border-black/10">
                 <h3 className="font-serif text-base text-black mb-3">Items</h3>
@@ -351,7 +370,11 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                         ? "Paid"
                         : order.payment.status === "PAYMENT_FAILED"
                           ? "Failed"
-                          : "Pending"}
+                          : order.payment.status === "PAYMENT_REFUNDED"
+                            ? "Refunded"
+                            : order.payment.status === "REFUND_FAILED"
+                              ? "Refund Pending"
+                              : "Pending"}
                     </span>
                   </div>
                   {order.payment.paymentMode && (
