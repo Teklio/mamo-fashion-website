@@ -49,4 +49,7 @@ export const endpoints = {
   payments: {
     verify: "/payments/verify",
   },
+  contact: {
+    send: "/settings/contact",
+  },
 } as const;

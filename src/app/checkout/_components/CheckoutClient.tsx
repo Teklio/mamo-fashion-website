@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FiCheck, FiLoader, FiLock } from "react-icons/fi";
+import { FiCheck,FiLock } from "react-icons/fi";
 import type { AxiosError } from "axios";
 
 import Input from "@/components/Input";
