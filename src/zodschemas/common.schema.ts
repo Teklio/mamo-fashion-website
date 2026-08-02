@@ -33,9 +33,9 @@ export const dateSchema = z.coerce.date().optional();
 // Contact form
 export const contactFormSchema = z.object({
   fullName: z.string().trim().min(2, "Full name must be at least 2 characters").max(100),
-  phone: z.string().trim().min(5, "Phone is required").max(20),
-  email: z.string().trim().optional(),
-  subject: z.string().trim().optional(),
-  message: z.string().trim().optional(),
+  phone: z.string().trim().optional(),
+  email: z.string().trim().email("Invalid email address"),
+  subject: z.string().trim().min(2, "Subject is required").max(150),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000),
 });
 export type ContactFormType = z.infer<typeof contactFormSchema>;

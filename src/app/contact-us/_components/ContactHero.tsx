@@ -12,8 +12,8 @@ export default function ContactHero() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
         {/* Email Card */}
-        <a href="mailto:support@sorin.com" className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden block text-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <a href="mailto:support@sorin.com" className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden text-center">
+          <div className="absolute inset-0 bg-linear-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="w-14 h-14 bg-zinc-800 rounded-full text-white flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500">
             <FiMail size={22} />
           </div>
@@ -27,8 +27,8 @@ export default function ContactHero() {
         </a>
 
         {/* Call Card */}
-        <a href="tel:+919876543210" className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden block text-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <a href="tel:+919876543210" className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden text-center">
+          <div className="absolute inset-0 bg-linear-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="w-14 h-14 bg-zinc-800 rounded-full text-white flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500">
             <FiPhone size={22} />
           </div>
@@ -42,8 +42,8 @@ export default function ContactHero() {
         </a>
 
         {/* WhatsApp Card */}
-        <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden block text-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden text-center">
+          <div className="absolute inset-0 bg-linear-to-br from-green-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center text-white mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500 shadow-md shadow-green-500/20">
             <FiMessageCircle size={22} />
           </div>
@@ -57,8 +57,8 @@ export default function ContactHero() {
         </a>
 
         <div className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden lg:col-span-2">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div className="w-14 h-14 bg-zinc-800 rounded-full text-white flex items-center justify-center text-white mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500">
+          <div className="absolute inset-0 bg-linear-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="w-14 h-14 bg-zinc-800 rounded-full text-white flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform duration-500">
             <FiMapPin size={22} />
           </div>
           <h3 className="font-serif text-xl text-white mb-3 relative z-10">Our Studio</h3>
@@ -73,7 +73,7 @@ export default function ContactHero() {
 
         {/* Social Card */}
         <div className="group flex flex-col items-center justify-center p-10 bg-black backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)] transition-all duration-500 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-zinc-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <h3 className="font-serif text-xl text-white mb-8 relative z-10">Follow Us</h3>
           
           <div className="flex items-center gap-6 relative z-10">
