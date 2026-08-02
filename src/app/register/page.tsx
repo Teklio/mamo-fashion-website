@@ -121,7 +121,7 @@ export default function RegisterPage() {
               label="PHONE (OPTIONAL)"
               value={phone}
               onChange={setPhone}
-              placeholder="50 123 4567"
+              placeholder=""
             />
 
             {/* Password */}
