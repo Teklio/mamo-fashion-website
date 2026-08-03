@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FiInstagram, FiFacebook, FiTwitter } from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -122,7 +123,7 @@ export default function Footer() {
               <ul className="flex flex-col space-y-5 items-start">
                 <li>
                   <a
-                    href="https://www.instagram.com/"
+                    href="https://www.instagram.com/mamo_fashion._/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
@@ -132,15 +133,22 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="https://www.tiktok.com/"
+                    href="https://twitter.com/mamo_fashion"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
                   >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-1.11 4.38-2.82 5.62-1.72 1.25-4 1.68-6.02 1.15-2.02-.53-3.76-2-4.66-3.88-.9-1.89-.96-4.14-.15-6.09.81-1.95 2.53-3.45 4.54-4.04 2.01-.59 4.23-.39 6.07.61v4.06c-1.1-.4-2.33-.4-3.41-.05-1.08.35-2.01 1.2-2.39 2.25-.38 1.05-.22 2.28.42 3.19.64.91 1.76 1.44 2.87 1.44 1.11 0 2.2-.42 2.94-1.24.74-.82 1.15-1.93 1.15-3.05V.02z" />
-                    </svg>
-                    TikTok
+                    <FiTwitter size={16} /> Twitter
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://wa.me/919567530926"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-zinc-400 hover:text-white text-[13px] md:text-sm font-serif transition-colors"
+                  >
+                    <FaWhatsapp size={16} /> WhatsApp
                   </a>
                 </li>
                 <li>

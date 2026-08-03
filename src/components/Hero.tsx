@@ -12,7 +12,7 @@ const slides = [
     tag: "Premium Ethnic",
     title: "Wear Your\nStory",
     subtitle: "From festive churidars to casual kurtis — style that speaks",
-    cta: "VIEW LOOKBOOK",
+    cta: "VIEW SHOP",
     href: "/shop",
     overlay: "from-black/65 via-black/25 to-black/65",
     accent: "bg-purple-400",

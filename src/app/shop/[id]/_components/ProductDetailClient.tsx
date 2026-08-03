@@ -428,7 +428,7 @@ export default function ProductDetailClient({
                 {activeTab === "SHIPPING & RETURNS" && (
                   <p>
                     Free standard shipping on all orders. Returns are accepted
-                    within 14 days of delivery. Items must be unworn and in
+                    within 7 days of delivery. Items must be unworn and in
                     original packaging.
                   </p>
                 )}
