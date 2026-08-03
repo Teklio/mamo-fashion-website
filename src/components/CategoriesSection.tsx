@@ -9,12 +9,12 @@ export default function CategoriesSection() {
     {
       title: "Women's Collection",
       category: "Women",
-      image: "/images/womens_coord_set_1783762105299.png",
+      image: "/images/womenscat.png",
     },
     {
       title: "Kids' Collection",
       category: "Kids",
-      image: "/images/kids_daily_wear_1783762129724.png",
+      image: "/images/kidscat.png",
     }
   ];
 

@@ -33,7 +33,7 @@ export default function ShippingPolicyPage() {
                 Shipping Partner
               </h3>
               <p>
-                Mamo.ae uses SMSA Express and other approved logistics partners for domestic and international deliveries.
+                mamofashion.com uses approved logistics partners for domestic deliveries.
               </p>
             </section>
 
@@ -46,9 +46,7 @@ export default function ShippingPolicyPage() {
               </p>
               <ul className="list-disc pl-6 space-y-2 mb-4">
                 <li>India</li>
-                <li>Kingdom of Saudi Arabia (KSA)</li>
-                <li>Gulf Cooperation Council (GCC) countries</li>
-                <li>Selected international destinations</li>
+                <li>Kerala</li>
               </ul>
               <p>
                 Delivery availability may vary by location.
@@ -70,13 +68,11 @@ export default function ShippingPolicyPage() {
                 Estimated Delivery Times
               </h3>
               <ul className="list-disc pl-6 space-y-2 mb-4">
-                <li>India: 3-5 business days</li>
-                <li>KSA: 3-7 business days</li>
-                <li>GCC Countries: 5-10 business days</li>
-                <li>International: 7-15 business days</li>
+                <li>Kerala: 2-3 business days</li>
+                <li>Rest of India: 3-5 business days</li>
               </ul>
               <p>
-                Actual delivery times may vary depending on customs clearance and local courier services.
+                Actual delivery times may vary depending on local courier services.
               </p>
             </section>
 
@@ -86,17 +82,7 @@ export default function ShippingPolicyPage() {
               </h3>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Once your order is dispatched, tracking details will be sent via email or SMS.</li>
-                <li>Customers can track shipments using the tracking tools provided by SMSA Express.</li>
-              </ul>
-            </section>
-
-            <section>
-              <h3 className="font-serif text-xl text-black mb-4 tracking-wide border-b border-zinc-100 pb-2">
-                Customs Duties and Taxes
-              </h3>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>International orders may be subject to customs duties, taxes, and import charges imposed by the destination country.</li>
-                <li>These charges are the responsibility of the customer.</li>
+                <li>Customers can track shipments using the tracking tools provided by our logistics partners.</li>
               </ul>
             </section>
 
@@ -105,10 +91,9 @@ export default function ShippingPolicyPage() {
                 Delivery Delays
               </h3>
               <p className="mb-4">
-                Mamo.ae shall not be responsible for delays caused by:
+                mamofashion.com shall not be responsible for delays caused by:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Customs inspections</li>
                 <li>Weather conditions</li>
                 <li>Public holidays</li>
                 <li>Transportation disruptions</li>

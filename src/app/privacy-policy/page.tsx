@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
                 Last Updated: 06-06-2026
               </p>
               <p className="mb-4">
-                At Mamo.ae, we are committed to protecting your privacy.
+                At mamofashion.com, we are committed to protecting your privacy.
               </p>
             </section>
 
@@ -124,8 +124,8 @@ export default function PrivacyPolicyPage() {
                 For privacy-related inquiries, please contact:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Email: <a href="mailto:support@sorin.ae" className="text-black underline font-medium">support@sorin.ae</a></li>
-                <li>Phone: <span className="text-black font-medium">+971-553594850</span></li>
+                <li>Email: <a href="mailto:mamofashion144@gmail.com" className="text-black underline font-medium">mamofashion144@gmail.com</a></li>
+                <li>Phone: <span className="text-black font-medium">+91 9567530926</span></li>
               </ul>
             </section>
 
