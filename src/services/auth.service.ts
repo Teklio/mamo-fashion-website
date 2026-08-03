@@ -2,7 +2,7 @@
 // src/services/auth.service.ts  — real API calls to mamo-fashion-server
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import api from "@/lib/axios";
 import { endpoints } from "@/lib/endpoints";
@@ -91,17 +91,23 @@ export const useVerifyEmail = (token: string | null) => {
 
 export const useLogout = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const qc = useQueryClient();
+  const clearSession = () => {
+    dispatch(logoutSuccess());
+    qc.removeQueries({ queryKey: ["cart"] });
+    qc.removeQueries({ queryKey: ["wishlist"] });
+  };
   return useMutation({
     mutationFn: async () => {
       const res = await api.post<MessageResponse>(endpoints.auth.logout);
       return res.data;
     },
     onSuccess: () => {
-      dispatch(logoutSuccess());
+      clearSession();
     },
     onError: () => {
       // Even if the network call fails, clear local session.
-      dispatch(logoutSuccess());
+      clearSession();
     },
   });
 };
