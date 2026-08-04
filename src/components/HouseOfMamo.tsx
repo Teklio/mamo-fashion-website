@@ -18,7 +18,7 @@ export default function HouseOfMamo() {
         >
           <Image
             src="/images/grid-2.jpg"
-            alt="The House of MAMO FASHION Beach Sandals"
+            alt="Handcrafted ethnic wear by Mamo Fashion, inspired by the sun-kissed shores of Kerala"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             priority

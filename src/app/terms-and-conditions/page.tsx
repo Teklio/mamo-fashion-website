@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "MAMO FASHION | Terms & Conditions",
-  description: "Read the Terms & Conditions governing the use of the HOUSE OF MAMO FASHION platform and purchases.",
+  title: "Terms & Conditions | Mamo Fashion",
+  description: "Read the Terms & Conditions governing the use of the Mamo Fashion platform and purchases.",
 };
 
 export default function TermsAndConditionsPage() {

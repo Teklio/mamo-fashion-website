@@ -20,7 +20,7 @@ export default function BlueLadyBanner() {
       >
         <Image
           src="/images/banner-foot.jpg"
-          alt="MAMO FASHION Editorial Fashion"
+          alt="Mamo Fashion premium ethnic wear editorial - Enter the Endless Escape collection"
           fill
           sizes="100vw"
           className="object-cover object-center"

@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import WishlistClient from "./_components/WishlistClient";
 
 export const metadata: Metadata = {
-  title: "Wishlist | MAMO FASHION",
-  description: "View your saved styles and favorites at MAMO FASHION.",
+  title: "My Wishlist | Mamo Fashion",
+  description: "View your saved styles and favorite ethnic wear items at Mamo Fashion. Keep track of the premium dresses and churidars you love.",
 };
 
 export default function WishlistPage() {
