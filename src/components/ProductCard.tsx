@@ -162,7 +162,7 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
         {/* Product Info */}
         <div className="flex items-end justify-between px-1 mt-auto">
           <div className="flex flex-col">
-            <span className="text-[11px] text-zinc-400 font-sans tracking-wide font-medium mb-1">
+            <span className="text-[11px] text-black font-sans tracking-wide font-medium mb-1">
               {product.name ?? ""}
             </span>
             {defaultVariant?.colorName && (
@@ -171,7 +171,7 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
                   className="w-2.5 h-2.5 rounded-full border border-zinc-200 shrink-0"
                   style={{ background: getMultiColorBackground(defaultVariant.colorCodes) }}
                 />
-                <span className="text-[10px] text-zinc-400 font-sans">{defaultVariant.colorName}</span>
+                <span className="text-[10px] text-zinc-600 font-sans">{defaultVariant.colorName}</span>
               </span>
             )}
             <span className="flex items-center gap-1.5 mb-0.5">
