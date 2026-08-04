@@ -1,13 +1,15 @@
 import z from "zod";
 
 export const addressSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  line1: z.string().min(1, "Address line is required"),
-  countryCode: z.string().optional(),
-  city: z.string().min(1, "City is required"),
-  district: z.string().optional(),
-  postalCode: z.string().min(1, "Postal code is required"),
-  landMark: z.string().optional(),
+  name: z.string().min(2, "Name must be at least 2 characters").max(50),
+  line1: z.string().max(255).optional(),
+  city: z.string().min(1, "City is required").max(50),
+  district: z.string().min(1, "District is required").max(50),
+  pinCode: z
+    .string()
+    .min(3, "Postal code must be at least 3 characters")
+    .max(12, "Postal code must not exceed 12 characters"),
+  landMark: z.string().max(255).optional(),
   isDefault: z.boolean().optional(),
 });
 

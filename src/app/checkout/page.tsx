@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import CheckoutClient from "./_components/CheckoutClient";
 
 export const metadata: Metadata = {
-  title: "Checkout – EVORIA FASHION",
-  description: "Complete your purchase at EVORIA FASHION",
+  title: "Checkout – MAMO FASHION",
+  description: "Complete your purchase at MAMO FASHION",
 };
 
 export default function CheckoutPage() {

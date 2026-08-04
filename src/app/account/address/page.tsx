@@ -1,15 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiLoader, FiAlertTriangle } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import Input from "@/components/Input";
-import PhoneInput from "@/components/shared/PhoneInput";
-import { SearchableDropdown } from "@/components/shared/SearchableDropdown";
-import { useGetCities } from "@/services/settings.service";
 import {
   useGetCustomerAddresses,
   useAddCustomerAddress,
@@ -30,7 +27,6 @@ export default function AddressPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingAddr, setDeletingAddr] = useState<CustomerAddress | null>(null);
   const [phone, setPhone] = useState("");
-  const [countrySearch, setCountrySearch] = useState("");
 
   const {
     register,
@@ -44,25 +40,15 @@ export default function AddressPage() {
     defaultValues: {
       name: "",
       line1: "",
-      countryCode: "IN",
       city: "",
       district: "",
-      postalCode: "",
+      pinCode: "",
       landMark: "",
       isDefault: false,
     },
   });
 
-  const watchedCity = useWatch({ control, name: "city" });
   const watchedIsDefault = useWatch({ control, name: "isDefault" });
-
-  const { data: citiesData, isLoading: isCitiesLoading } = useGetCities("IN");
-
-
-  const cityOptions = useMemo(
-    () => (citiesData ?? []).map((c) => ({ value: c.cityName, label: c.cityName })),
-    [citiesData],
-  );
 
   const addresses = data?.addresses ?? [];
   const isSaving = isAdding || isUpdating;
@@ -74,14 +60,12 @@ export default function AddressPage() {
     reset({
       name: "",
       line1: "",
-      countryCode: "IN",
       city: "",
       district: "",
-      postalCode: "",
+      pinCode: "",
       landMark: "",
       isDefault: false,
     });
-    setCountrySearch("");
   };
 
   const openEdit = (addr: CustomerAddress) => {
@@ -89,39 +73,35 @@ export default function AddressPage() {
     setPhone(addr.phone);
     reset({
       name: addr.name,
-      line1: addr.line1,
-      countryCode: addr.countryCode,
+      line1: addr.line1 ?? "",
       city: addr.city,
       district: addr.district ?? "",
-      postalCode: addr.postalCode ?? "",
+      pinCode: addr.pinCode ?? "",
       landMark: addr.landMark ?? "",
       isDefault: addr.isDefault,
     });
-    setCountrySearch("");
   };
 
   const closeForm = () => {
     setEditingId(null);
     setPhone("");
     reset();
-    setCountrySearch("");
   };
 
   const onSubmit = (data: AddressFormType) => {
-    if (!phone.trim()) {
-      toast.error("Phone number is required.");
+    if (!/^\d{10}$/.test(phone.trim())) {
+      toast.error("Enter a valid 10-digit phone number.");
       return;
     }
 
     const payload: AddressPayload = {
       name: data.name,
       phone: phone.trim(),
-      line1: data.line1,
       city: data.city,
-      countryCode: "IN",
-      district: data.district?.trim() || null,
-      postalCode: data.postalCode?.trim() || null,
-      landMark: data.landMark?.trim() || null,
+      district: data.district.trim(),
+      pinCode: data.pinCode.trim(),
+      ...(data.line1?.trim() ? { line1: data.line1.trim() } : {}),
+      ...(data.landMark?.trim() ? { landMark: data.landMark.trim() } : {}),
       isDefault: data.isDefault,
     };
 
@@ -176,26 +156,7 @@ export default function AddressPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="border border-black/20 rounded-xl p-6 bg-zinc-50 flex flex-col gap-4"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        {/* City — controlled via setValue */}
-        {/* <div className="flex flex-col">
-          <label className="text-[10px] tracking-[0.2em] text-zinc-600 font-sans font-semibold uppercase mb-2">
-            City *
-          </label>
-          <SearchableDropdown
-            value={watchedCity ?? ""}
-            onChange={(v) => setValue("city", v, { shouldValidate: true, shouldDirty: true })}
-            options={cityOptions}
-            placeholder="Select city"
-            searchPlaceholder="Search city…"
-            loading={isCitiesLoading}
-          />
-          {errors.city && (
-            <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>
-          )}
-        </div> */}
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -209,37 +170,62 @@ export default function AddressPage() {
           )}
         </div>
 
-        {/* Phone — outside RHF; combined code + number */}
-        <PhoneInput
-          label="PHONE *"
-          value={phone}
-          onChange={setPhone}
-          placeholder="50 123 4567"
-        />
+        {/* Phone */}
+        <div>
+          <Input
+            label="PHONE *"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+            placeholder="9876543210"
+            inputMode="numeric"
+          />
+        </div>
       </div>
 
-      <div>
-        <Input
-          label="Address Line 1 *"
-          placeholder="e.g. XYZ Road, Southampton Street"
-          {...register("line1")}
-        />
-        {errors.line1 && (
-          <p className="mt-1 text-xs text-red-500">{errors.line1.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Input
+            label="Address Line 1"
+            placeholder="e.g. XYZ Road, Southampton Street"
+            {...register("line1")}
+          />
+          {errors.line1 && (
+            <p className="mt-1 text-xs text-red-500">{errors.line1.message}</p>
+          )}
+        </div>
+        <div>
+          <Input
+            label="City *"
+            placeholder="e.g. London"
+            {...register("city")}
+          />
+          {errors.city && (
+            <p className="mt-1 text-xs text-red-500">{errors.city.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Input
-          label="District (optional)"
-          placeholder="e.g. Greater London"
-          {...register("district")}
-        />
-        <Input
-          label="Postal Code *"
-          placeholder="e.g. 12345"
-          {...register("postalCode")}
-        />
+        <div>
+          <Input
+            label="District *"
+            placeholder="e.g. Greater London"
+            {...register("district")}
+          />
+          {errors.district && (
+            <p className="mt-1 text-xs text-red-500">{errors.district.message}</p>
+          )}
+        </div>
+        <div>
+          <Input
+            label="Pin Code *"
+            placeholder="e.g. 12345"
+            {...register("pinCode")}
+          />
+          {errors.pinCode && (
+            <p className="mt-1 text-xs text-red-500">{errors.pinCode.message}</p>
+          )}
+        </div>
         <Input
           label="Landmark (optional)"
           placeholder="e.g. Near Central Station"
@@ -342,12 +328,13 @@ export default function AddressPage() {
                   <div className="pr-16 mb-6">
                     <p className="font-semibold text-black font-sans text-sm mb-1">{addr.name}</p>
                     <p className="text-xs text-zinc-500 font-sans mb-3">{addr.phone}</p>
-                    <p className="text-sm font-sans text-black leading-relaxed">{addr.line1}</p>
+                    {addr.line1 && (
+                      <p className="text-sm font-sans text-black leading-relaxed">{addr.line1}</p>
+                    )}
                     <p className="text-sm font-sans text-black leading-relaxed">
                       {addr.city}
                       {addr.district ? `, ${addr.district}` : ""}
-                      {`, ${addr.countryCode}`}
-                      {addr.postalCode ? ` ${addr.postalCode}` : ""}
+                      {addr.pinCode ? ` ${addr.pinCode}` : ""}
                     </p>
                     {addr.landMark && (
                       <p className="text-xs text-zinc-500 font-sans mt-2">
@@ -411,7 +398,8 @@ export default function AddressPage() {
                 Are you sure you want to delete this address?
               </p>
               <p className="text-zinc-800 font-sans text-xs text-center font-medium mb-7">
-                {deletingAddr.line1}, {deletingAddr.city}, {deletingAddr.countryCode}
+                {deletingAddr.line1 ? `${deletingAddr.line1}, ` : ""}
+                {deletingAddr.city}, {deletingAddr.pinCode}
               </p>
 
               <div className="flex gap-3 w-full">

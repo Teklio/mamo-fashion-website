@@ -4,7 +4,7 @@ import ProtectedRoute from "@/components/middleware/ProtectedRoute";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "EVORIA FASHION | Your Account",
+  title: "MAMO FASHION | Your Account",
   description: "Manage your personal information, orders and account settings.",
 };
 

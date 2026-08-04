@@ -4,19 +4,25 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
-import { FiChevronRight, FiClock, FiX, FiShoppingBag, FiExternalLink } from "react-icons/fi";
+import { FiChevronRight, FiClock, FiX, FiShoppingBag, FiExternalLink, FiAlertCircle } from "react-icons/fi";
 import { useGetCustomerOrders, useGetCustomerOrder } from "@/services/order.service";
-import type { CustomerOrder, OrderItem, OrderStatus } from "@/types/order.type";
+import { getMultiColorBackground } from "@/types/product.type";
+import type { CustomerOrder, OrderItem, OrderStatus, OrderAddress } from "@/types/order.type";
 
 const STATUS_STYLES: Record<OrderStatus, { label: string; color: string; dot: string }> = {
-  PENDING:    { label: "Pending",    color: "text-amber-600",  dot: "bg-amber-400" },
-  CONFIRMED:  { label: "Confirmed",  color: "text-blue-600",   dot: "bg-blue-400" },
-  PROCESSING: { label: "Processing", color: "text-purple-600", dot: "bg-purple-400" },
-  SHIPPED:    { label: "Shipped",    color: "text-cyan-600",   dot: "bg-cyan-400" },
-  DELIVERED:  { label: "Delivered",  color: "text-green-600",  dot: "bg-green-400" },
-  FAILED:     { label: "Failed",     color: "text-red-600",    dot: "bg-red-400" },
-  CANCELLED:  { label: "Cancelled",  color: "text-zinc-500",   dot: "bg-zinc-300" },
+  ORDER_PENDING:     { label: "Pending",          color: "text-amber-600",  dot: "bg-amber-400" },
+  ORDER_PLACED:      { label: "Placed",           color: "text-blue-600",   dot: "bg-blue-400" },
+  ORDER_SHIPPED:     { label: "Shipped",          color: "text-cyan-600",   dot: "bg-cyan-400" },
+  OUT_FOR_DELIVERY:  { label: "Out for Delivery", color: "text-purple-600", dot: "bg-purple-400" },
+  ORDER_DELIVERED:   { label: "Delivered",        color: "text-green-600",  dot: "bg-green-400" },
+  ORDER_FAILED:      { label: "Failed",           color: "text-red-600",    dot: "bg-red-400" },
+  ORDER_RETURNED:    { label: "Returned",         color: "text-slate-600",  dot: "bg-slate-400" },
 };
+
+const fmt = (v: string | number) => `₹${Number(v).toFixed(2)}`;
+
+const formatAddress = (addr: OrderAddress) =>
+  [addr.line1, addr.city, addr.district].filter(Boolean).join(", ") + ` ${addr.pinCode}`;
 
 export default function OrdersPage() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -97,7 +103,7 @@ export default function OrdersPage() {
                     <div className="text-left sm:text-right">
                       <p className="text-[10px] font-sans font-semibold tracking-widest uppercase text-zinc-400">Total</p>
                       <p className="text-sm font-sans text-black font-medium mt-0.5">
-                        {order.currencyCode} {Number(order.total).toFixed(2)}
+                        {fmt(order.total)}
                       </p>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -113,14 +119,14 @@ export default function OrdersPage() {
                 {/* Product thumbnails */}
                 <div className="flex gap-2 pl-12 flex-wrap">
                   {order.items.slice(0, 4).map((item: OrderItem, idx: number) => {
-                    const imgUrl = item.productVariant?.primaryImage?.imageUrl;
+                    const imgUrl = item.primaryImageUrl;
                     return (
                       <div
                         key={item.id}
                         className="relative w-14 h-14 rounded-lg overflow-hidden bg-zinc-100 shrink-0 border border-zinc-100"
                       >
                         {imgUrl ? (
-                          <Image src={imgUrl} alt={item.product?.title ?? ""} fill sizes="56px" className="object-cover" />
+                          <Image src={imgUrl} alt={item.product?.name ?? ""} fill sizes="56px" className="object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <FiShoppingBag size={16} className="text-zinc-300" />
@@ -206,11 +212,29 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                 </div>
               </div>
 
+              {/* Return / support notice */}
+              {order.status === "ORDER_DELIVERED" && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+                  <FiAlertCircle className="text-amber-500 shrink-0 mt-0.5" size={16} />
+                  <p className="text-xs font-sans text-amber-800 leading-relaxed">
+                    Received a damaged item or need to return this order?{" "}
+                    <Link
+                      href="/contact-us"
+                      onClick={onClose}
+                      className="underline font-semibold hover:text-amber-900"
+                    >
+                      Contact our support team
+                    </Link>{" "}
+                    and we&apos;ll help you out.
+                  </p>
+                </div>
+              )}
+
               {/* Items */}
               <div className="space-y-3 pt-6 border-t border-black/10">
                 <h3 className="font-serif text-base text-black mb-3">Items</h3>
                 {order.items.map((item) => {
-                  const imgUrl = item.productVariant?.primaryImage?.imageUrl;
+                  const imgUrl = item.primaryImageUrl;
                   return (
                     <div
                       key={item.id}
@@ -219,7 +243,7 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                       {/* Image */}
                       <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-zinc-100 shrink-0 border border-zinc-100">
                         {imgUrl ? (
-                          <Image src={imgUrl} alt={item.product?.title ?? ""} fill sizes="64px" className="object-cover" />
+                          <Image src={imgUrl} alt={item.product?.name ?? ""} fill sizes="64px" className="object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <FiShoppingBag size={18} className="text-zinc-300" />
@@ -235,21 +259,25 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                             onClick={onClose}
                             className="group/link inline-flex items-center gap-1 font-sans font-semibold text-black text-sm hover:underline underline-offset-2 truncate max-w-full"
                           >
-                            <span className="truncate">{item.product.title}</span>
+                            <span className="truncate">{item.product.name}</span>
                             <FiExternalLink size={11} className="shrink-0 opacity-0 group-hover/link:opacity-60 transition-opacity" />
                           </Link>
                         ) : (
                           <p className="font-sans font-semibold text-black text-sm">—</p>
                         )}
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          {item.productVariant && (
-                            <span className="text-[10px] text-zinc-500 font-sans">
-                              {item.productVariant.colorName}
+                          {item.color && (
+                            <span className="flex items-center gap-1 text-[10px] text-zinc-500 font-sans">
+                              <span
+                                className="w-2.5 h-2.5 rounded-full border border-zinc-200 shrink-0"
+                                style={{ background: getMultiColorBackground(item.color.colorCodes) }}
+                              />
+                              {item.color.name}
                             </span>
                           )}
                           {item.size && (
                             <span className="text-[10px] font-mono bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-600">
-                              {item.size.size}
+                              {item.size.name}
                             </span>
                           )}
                           <span className="text-[10px] text-zinc-400 font-sans">×{item.quantity}</span>
@@ -257,7 +285,7 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                       </div>
 
                       <p className="font-sans font-semibold text-black text-sm whitespace-nowrap shrink-0">
-                        {order.currencyCode} {(Number(item.unitPrice) * item.quantity).toFixed(2)}
+                        {fmt(item.lineTotal)}
                       </p>
                     </div>
                   );
@@ -270,24 +298,24 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                   <>
                     <div className="flex justify-between text-xs font-sans text-zinc-500">
                       <span>Subtotal</span>
-                      <span>{order.currencyCode} {Number(order.subTotal).toFixed(2)}</span>
+                      <span>{fmt(order.subTotal)}</span>
                     </div>
                     <div className="flex justify-between text-xs font-sans text-green-600">
                       <span>Discount</span>
-                      <span>− {order.currencyCode} {Number(order.discount).toFixed(2)}</span>
+                      <span>− {fmt(order.discount)}</span>
                     </div>
                   </>
                 )}
                 <div className="flex justify-between text-sm font-sans font-semibold text-black pt-1">
                   <span>Total</span>
-                  <span>{order.currencyCode} {Number(order.total).toFixed(2)}</span>
+                  <span>{fmt(order.total)}</span>
                 </div>
               </div>
 
               {/* Shipping address */}
               {order.shippingAddress && (
                 <div className="pt-6 border-t border-black/10 space-y-3">
-                  <h3 className="font-serif text-base text-black">Delivery Details</h3>
+                  <h3 className="font-serif text-base text-black">Shipping Address</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm font-sans">
                     <div>
                       <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Name</span>
@@ -297,22 +325,10 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                       <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Phone</span>
                       <span className="text-black font-medium">{order.shippingAddress.phone}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Country</span>
-                      <span className="text-black font-medium">{order.shippingAddress.countryCode}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">City</span>
-                      <span className="text-black font-medium">{order.shippingAddress.city}</span>
-                    </div>
                   </div>
                   <div className="text-sm font-sans">
                     <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Address</span>
-                    <span className="text-black">
-                      {order.shippingAddress.line1}
-                      {order.shippingAddress.district ? `, ${order.shippingAddress.district}` : ""}
-                      {order.shippingAddress.postalCode ? ` ${order.shippingAddress.postalCode}` : ""}
-                    </span>
+                    <span className="text-black">{formatAddress(order.shippingAddress)}</span>
                   </div>
                   {order.shippingAddress.landMark && (
                     <p className="text-xs text-zinc-500 font-sans">
@@ -323,13 +339,50 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
                 </div>
               )}
 
+              {/* Billing address (only shown when different from shipping) */}
+              {order.billingAddress && (
+                <div className="pt-6 border-t border-black/10 space-y-3">
+                  <h3 className="font-serif text-base text-black">Billing Address</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm font-sans">
+                    <div>
+                      <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Name</span>
+                      <span className="text-black font-medium">{order.billingAddress.name}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Phone</span>
+                      <span className="text-black font-medium">{order.billingAddress.phone}</span>
+                    </div>
+                  </div>
+                  <div className="text-sm font-sans">
+                    <span className="text-[10px] tracking-wider text-zinc-400 uppercase block mb-0.5">Address</span>
+                    <span className="text-black">{formatAddress(order.billingAddress)}</span>
+                  </div>
+                </div>
+              )}
+
               {/* Payment */}
               {order.payment && (
-                <div className="pt-4 border-t border-black/10">
+                <div className="pt-4 border-t border-black/10 space-y-2">
                   <div className="flex items-center justify-between text-sm font-sans">
-                    <span className="text-zinc-500">Payment</span>
-                    <span className="font-medium text-black">{order.payment.paymentType ?? "Card"}</span>
+                    <span className="text-zinc-500">Payment Status</span>
+                    <span className="font-medium text-black">
+                      {order.payment.status === "PAYMENT_SUCCESS"
+                        ? "Paid"
+                        : order.payment.status === "PAYMENT_FAILED"
+                          ? "Failed"
+                          : order.payment.status === "PAYMENT_REFUNDED"
+                            ? "Refunded"
+                            : order.payment.status === "REFUND_FAILED"
+                              ? "Refund Pending"
+                              : "Pending"}
+                    </span>
                   </div>
+                  {order.payment.paymentMode && (
+                    <div className="flex items-center justify-between text-sm font-sans">
+                      <span className="text-zinc-500">Payment Method</span>
+                      <span className="font-medium text-black">{order.payment.paymentMode}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </>

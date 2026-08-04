@@ -5,8 +5,8 @@ import ShopGrid from "./_components/ShopGrid";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Shop | EVORIA FASHION",
-  description: "Explore the Signature Styles collection at EVORIA FASHION.",
+  title: "Shop | MAMO FASHION",
+  description: "Explore the Signature Styles collection at MAMO FASHION.",
 };
 
 export default function ShopPage() {

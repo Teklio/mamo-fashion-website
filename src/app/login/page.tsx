@@ -35,7 +35,15 @@ function LoginContent() {
       },
       onError: (err) => {
         const axiosErr = err as AxiosError<{ message: string }>;
-        toast.error(axiosErr.response?.data?.message || "Login failed");
+        const message = axiosErr.response?.data?.message;
+        if (
+          axiosErr.response?.status === 403 &&
+          message === "Please verify your email before logging in"
+        ) {
+          router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
+          return;
+        }
+        toast.error(message || "Login failed");
       },
     });
   };

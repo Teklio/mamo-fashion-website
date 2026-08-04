@@ -1,55 +1,49 @@
 export type OrderStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "PROCESSING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "FAILED"
-  | "CANCELLED";
+  | "ORDER_PENDING"
+  | "ORDER_PLACED"
+  | "ORDER_SHIPPED"
+  | "OUT_FOR_DELIVERY"
+  | "ORDER_DELIVERED"
+  | "ORDER_FAILED"
+  | "ORDER_RETURNED";
 
-export type PaymentStatus = "PENDING" | "SUCCESS" | "FAILED" | "CANCELED";
-
-export interface OrderItemProduct {
-  id: string;
-  title: string;
-}
-
-export interface OrderItemVariant {
-  id: string;
-  colorName: string;
-  colorCode: string;
-  primaryImage: { imageUrl: string } | null;
-}
-
-export interface OrderItemSize {
-  size: string;
-  sku: string;
-}
+export type PaymentStatus =
+  | "PAYMENT_PENDING"
+  | "PAYMENT_SUCCESS"
+  | "PAYMENT_FAILED"
+  | "PAYMENT_REFUNDED"
+  | "REFUND_FAILED";
 
 export interface OrderItem {
   id: string;
+  productVariantSizeId: string | null;
   quantity: number;
   unitPrice: string;
-  product: OrderItemProduct | null;
-  productVariant: OrderItemVariant | null;
-  size: OrderItemSize | null;
+  lineTotal: string;
+  product: { id: string; name: string } | null;
+  color: { id: string; name: string; colorCodes: string | null } | null;
+  size: { id: string; name: string } | null;
+  primaryImageUrl: string | null;
+}
+
+export interface OrderAddress {
+  id: string;
+  name: string;
+  phone: string;
+  line1: string | null;
+  city: string;
+  district: string;
+  pinCode: string;
+  landMark: string | null;
+  isDefault: boolean;
 }
 
 export interface OrderPayment {
   status: PaymentStatus;
   amount: string;
-  paymentType: string | null;
-}
-
-export interface OrderShippingAddress {
-  name: string;
-  phone: string;
-  line1: string;
-  city: string;
-  district: string | null;
-  countryCode: string;
-  postalCode: string | null;
-  landMark: string | null;
+  paymentMode: string | null;
+  /** Only present on the detail endpoint (GET /orders/:id), not the list. */
+  updatedAt?: string;
 }
 
 export interface CustomerOrder {
@@ -58,14 +52,15 @@ export interface CustomerOrder {
   subTotal: string;
   discount: string;
   total: string;
-  currencyCode: string;
   createdAt: string;
+  updatedAt: string;
   items: OrderItem[];
   payment: OrderPayment | null;
 }
 
 export interface CustomerOrderDetail extends CustomerOrder {
-  shippingAddress: OrderShippingAddress | null;
+  shippingAddress: OrderAddress | null;
+  billingAddress: OrderAddress | null;
 }
 
 export interface GetCustomerOrdersResponse {

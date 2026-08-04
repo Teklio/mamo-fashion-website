@@ -37,14 +37,14 @@ export default function ContactForm() {
 
   return (
     <section className="py-24 px-6 max-w-6xl mx-auto mb-20">
-      <div className="flex flex-col lg:flex-row gap-16 items-center bg-white rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] border border-zinc-100 p-8 md:p-12">
+      <div className="flex flex-col lg:flex-row gap-16 items-center bg-white rounded-4xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] border border-zinc-100 p-8 md:p-12">
 
         {/* Left Side: Image */}
-        <div className="w-full lg:w-5/12 relative h-96 md:h-[600px] rounded-3xl overflow-hidden shadow-2xl group">
+        <div className="w-full lg:w-5/12 relative h-96 md:h-150 rounded-3xl overflow-hidden shadow-2xl group">
           <div className="absolute inset-0 bg-zinc-900/10 z-10 group-hover:bg-transparent transition-colors duration-700"></div>
           <Image
             src="/images/churidar.jpg"
-            alt="EVORIA FASHION Contact"
+            alt="MAMO FASHION Contact"
             fill
             className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
           />
@@ -59,16 +59,16 @@ export default function ContactForm() {
             Send a Message
           </h2>
           <p className="text-zinc-500 font-sans tracking-wide mb-12 max-w-lg leading-relaxed">
-            Whether you have a question about our collections, need styling advice, or just want to say hello, we'd love to hear from you.
+            Whether you have a question about our collections, need styling advice, or just want to say hello, we&apos;d love to hear from you.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-8 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="flex flex-col relative">
-                <input 
-                  type="text" 
-                  placeholder="Your Name" 
-                  {...register("fullName")} 
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  {...register("fullName")}
                   className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
                 />
                 <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
@@ -78,10 +78,10 @@ export default function ContactForm() {
               </div>
 
               <div className="flex flex-col relative">
-                <input 
-                  type="email" 
-                  placeholder="Email Address" 
-                  {...register("email")} 
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  {...register("email")}
                   className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
                 />
                 <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
@@ -92,10 +92,10 @@ export default function ContactForm() {
             </div>
 
             <div className="flex flex-col relative">
-              <input 
-                type="text" 
-                placeholder="Subject" 
-                {...register("subject")} 
+              <input
+                type="text"
+                placeholder="Subject"
+                {...register("subject")}
                 className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 peer"
               />
               <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
@@ -108,7 +108,7 @@ export default function ContactForm() {
               <textarea
                 placeholder="Your message..."
                 {...register("message")}
-                className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 min-h-[120px] resize-y peer"
+                className="w-full bg-transparent border-b border-zinc-200 focus:border-zinc-900 focus:outline-none py-3 text-sm transition-colors text-zinc-900 placeholder:text-zinc-400 min-h-30 resize-y peer"
               />
               <span className="absolute bottom-0 left-0 w-0 h-px bg-zinc-900 transition-all duration-300 peer-focus:w-full"></span>
               {errors.message && (

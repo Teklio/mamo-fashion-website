@@ -10,11 +10,11 @@ export const passwordSchema = z
   .regex(/\d/, "Must include a number")
   .regex(/[^A-Za-z0-9]/, "Must include a special character");
 
-//phone schema — accepts combined code+number string, e.g. "+966501234567"
+//phone schema — server stores a bare 10-digit national number
 export const phoneSchema = z
   .string()
-  .min(1, "Phone number is required")
-  .regex(/^\+\d{6,19}$/, "Invalid phone number");
+  .trim()
+  .regex(/^\d{10}$/, "Enter a valid 10-digit phone number");
 
 export type PhoneForm = z.infer<typeof phoneSchema>;
 
@@ -33,8 +33,9 @@ export const dateSchema = z.coerce.date().optional();
 // Contact form
 export const contactFormSchema = z.object({
   fullName: z.string().trim().min(2, "Full name must be at least 2 characters").max(100),
+  phone: z.string().trim().optional(),
   email: z.string().trim().email("Invalid email address"),
-  subject: z.string().trim().min(3, "Subject is required").max(200),
-  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000),
+  subject: z.string().trim().min(2, "Subject is required").max(150),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000),
 });
 export type ContactFormType = z.infer<typeof contactFormSchema>;

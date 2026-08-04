@@ -1,52 +1,22 @@
-export interface CartVariantImage {
-  id: string;
-  imageKey: string;
-  publicUrl: string;
-}
-
-export interface CartVariant {
-  id: string;
-  productId: string;
-  colorName: string;
-  colorCode: string;
-  variantCode: string;
-  primaryPhotoId: string | null;
-  secondaryPhotoId: string | null;
-  isDeleted: boolean;
-  product: {
-    id: string;
-    title: string;
-    price: string;
-  };
-  primaryImage: CartVariantImage | null;
-}
-
-export interface CartItemSize {
-  id: string;
-  variantId: string;
-  size: string;
-  stock: number;
-  sku: string;
-  variant: CartVariant | null;
-}
+// Flat cart shape from GET /v1/customer/cart/ (see cart.controller.ts mapCartItem)
 
 export interface CartItem {
   id: string;
-  cartId: string;
-  productVariantSizeId: string | null;
-  productId: string | null;
+  productVariantSizeId: string;
   quantity: number;
   /** Prisma Decimal serialised as string, e.g. "289.00" */
   price: string;
-  createdAt: string;
-  updatedAt: string;
-  size: CartItemSize | null;
+  /** price × quantity, Prisma Decimal serialised as string */
+  lineTotal: string;
+  stock: number;
+  product: { id: string; name: string };
+  color: { id: string; name: string; colorCodes: string };
+  size: { id: string; name: string };
+  primaryImageUrl: string | null;
 }
 
 export interface CartApiResponse {
-  cart: {
-    id: string;
-    customerId: string;
-    items: CartItem[];
-  };
+  items: CartItem[];
+  subtotal: number;
+  itemCount: number;
 }

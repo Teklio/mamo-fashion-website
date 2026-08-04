@@ -1,12 +1,18 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// src/services/auth.service.ts  — MOCK (no API calls)
+// src/services/auth.service.ts  — real API calls to mamo-fashion-server
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
+import api from "@/lib/axios";
+import { endpoints } from "@/lib/endpoints";
 import type { AppDispatch } from "@/store";
 import { loginSuccess, logoutSuccess, updateProfile } from "@/store/slices/authSlice";
-import { mockLoginResponse, mockMessageResponse } from "@/lib/mockData";
+import type {
+  CustomerLoginResponse,
+  MessageResponse,
+  ValidateResetTokenResponse,
+} from "@/types/auth.type";
 import type {
   LoginFormType,
   RegisterFormType,
@@ -20,9 +26,13 @@ import type {
 export const useLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: async (_data: LoginFormType) => {
-      await new Promise((r) => setTimeout(r, 500)); // simulate network delay
-      return mockLoginResponse;
+    mutationFn: async (data: LoginFormType) => {
+      const res = await api.post<CustomerLoginResponse>(endpoints.auth.login, {
+        email: data.email,
+        password: data.password,
+        rememberMe: data.rememberMe ?? false,
+      });
+      return res.data;
     },
     onSuccess: (data) => {
       dispatch(loginSuccess(data));
@@ -31,13 +41,49 @@ export const useLogin = () => {
 };
 
 // ─── Register ─────────────────────────────────────────────────────────────────
+// Server is verify-first: no tokens are issued until the email is verified.
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: async (_data: RegisterFormType) => {
-      await new Promise((r) => setTimeout(r, 500));
-      return { message: "Registration successful! You can now log in." };
+    mutationFn: async (data: RegisterFormType) => {
+      const res = await api.post<MessageResponse>(endpoints.auth.register, {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        ...(data.phone ? { phone: data.phone } : {}),
+      });
+      return res.data;
     },
+  });
+};
+
+// ─── Resend verification ────────────────────────────────────────────────────────
+
+export const useResendVerification = () => {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const res = await api.post<MessageResponse>(
+        endpoints.auth.resendVerification,
+        { email },
+      );
+      return res.data;
+    },
+  });
+};
+
+// ─── Verify email ───────────────────────────────────────────────────────────────
+
+export const useVerifyEmail = (token: string | null) => {
+  return useQuery({
+    queryKey: ["verify-email", token],
+    queryFn: async () => {
+      const res = await api.get<MessageResponse>(endpoints.auth.verifyEmail, {
+        params: { token },
+      });
+      return res.data;
+    },
+    enabled: !!token,
+    retry: false,
   });
 };
 
@@ -45,13 +91,23 @@ export const useRegister = () => {
 
 export const useLogout = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const qc = useQueryClient();
+  const clearSession = () => {
+    dispatch(logoutSuccess());
+    qc.removeQueries({ queryKey: ["cart"] });
+    qc.removeQueries({ queryKey: ["wishlist"] });
+  };
   return useMutation({
     mutationFn: async () => {
-      await new Promise((r) => setTimeout(r, 200));
-      return mockMessageResponse;
+      const res = await api.post<MessageResponse>(endpoints.auth.logout);
+      return res.data;
     },
     onSuccess: () => {
-      dispatch(logoutSuccess());
+      clearSession();
+    },
+    onError: () => {
+      // Even if the network call fails, clear local session.
+      clearSession();
     },
   });
 };
@@ -61,12 +117,23 @@ export const useLogout = () => {
 export const useUpdateProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   return useMutation({
-    mutationFn: async (_data: UpdateProfileFormType) => {
-      await new Promise((r) => setTimeout(r, 400));
-      return mockMessageResponse;
+    mutationFn: async (data: UpdateProfileFormType) => {
+      const res = await api.patch<{
+        message: string;
+        user: { id: string; name: string | null; email: string | null; phone: string | null };
+      }>(endpoints.auth.updateProfile, {
+        ...(data.name !== undefined ? { name: data.name } : {}),
+        ...(data.phone !== undefined ? { phone: data.phone } : {}),
+      });
+      return res.data;
     },
-    onSuccess: (_data, variables) => {
-      dispatch(updateProfile({ name: variables.name, phone: variables.phone }));
+    onSuccess: (data) => {
+      dispatch(
+        updateProfile({
+          name: data.user.name ?? "",
+          phone: data.user.phone ?? "",
+        }),
+      );
     },
   });
 };
@@ -75,9 +142,12 @@ export const useUpdateProfile = () => {
 
 export const useUpdatePassword = () => {
   return useMutation({
-    mutationFn: async (_data: UpdatePasswordFormType) => {
-      await new Promise((r) => setTimeout(r, 400));
-      return mockMessageResponse;
+    mutationFn: async (data: UpdatePasswordFormType) => {
+      const res = await api.patch<MessageResponse>(endpoints.auth.changePassword, {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+      return res.data;
     },
   });
 };
@@ -86,9 +156,11 @@ export const useUpdatePassword = () => {
 
 export const useForgotPassword = () => {
   return useMutation({
-    mutationFn: async (_data: ForgotPasswordFormType) => {
-      await new Promise((r) => setTimeout(r, 400));
-      return { message: "Password reset link sent to your email." };
+    mutationFn: async (data: ForgotPasswordFormType) => {
+      const res = await api.post<MessageResponse>(endpoints.auth.forgotPassword, {
+        email: data.email,
+      });
+      return res.data;
     },
   });
 };
@@ -99,8 +171,11 @@ export const useValidateResetToken = (token: string | null) => {
   return useQuery({
     queryKey: ["validate-reset-token", token],
     queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 300));
-      return { valid: true };
+      const res = await api.get<ValidateResetTokenResponse>(
+        endpoints.auth.validateResetToken,
+        { params: { token } },
+      );
+      return res.data;
     },
     enabled: !!token,
     retry: false,
@@ -111,9 +186,12 @@ export const useValidateResetToken = (token: string | null) => {
 
 export const useResetPassword = () => {
   return useMutation({
-    mutationFn: async (_data: { token: string; newPassword: string }) => {
-      await new Promise((r) => setTimeout(r, 400));
-      return { message: "Password reset successfully. You can now log in." };
+    mutationFn: async (data: { token: string; newPassword: string }) => {
+      const res = await api.post<MessageResponse>(endpoints.auth.resetPassword, {
+        token: data.token,
+        newPassword: data.newPassword,
+      });
+      return res.data;
     },
   });
 };

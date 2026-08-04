@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "EVORIA FASHION | Privacy Policy",
-  description: "Understand how HOUSE OF EVORIA FASHION collects, uses, and safeguards your personal data.",
+  title: "MAMO FASHION | Privacy Policy",
+  description: "Understand how HOUSE OF MAMO FASHION collects, uses, and safeguards your personal data.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
                 Last Updated: 06-06-2026
               </p>
               <p className="mb-4">
-                At Evoria.ae, we are committed to protecting your privacy.
+                At mamofashion.com, we are committed to protecting your privacy.
               </p>
             </section>
 
@@ -109,7 +109,6 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="list-disc pl-6 space-y-2 mb-4">
                 <li>Payment providers</li>
-                <li>Shipping partners</li>
                 <li>Technology service providers</li>
               </ul>
               <p>
@@ -125,8 +124,8 @@ export default function PrivacyPolicyPage() {
                 For privacy-related inquiries, please contact:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Email: <a href="mailto:support@sorin.ae" className="text-black underline font-medium">support@sorin.ae</a></li>
-                <li>Phone: <span className="text-black font-medium">+971-553594850</span></li>
+                <li>Email: <a href="mailto:mamofashion144@gmail.com" className="text-black underline font-medium">mamofashion144@gmail.com</a></li>
+                <li>Phone: <span className="text-black font-medium">+91 9567530926</span></li>
               </ul>
             </section>
 

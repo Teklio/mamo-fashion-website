@@ -52,8 +52,11 @@ export default function RegisterPage() {
         phone: phone.trim() || undefined,
       },
       {
-        onSuccess: () => {
-          toast.success("Account created! Please log in.");
+        onSuccess: (res) => {
+          toast.success(
+            res?.message ||
+              "Account created! Check your email to verify your account before logging in.",
+          );
           router.push("/login");
         },
         onError: (err) => {
@@ -118,7 +121,7 @@ export default function RegisterPage() {
               label="PHONE (OPTIONAL)"
               value={phone}
               onChange={setPhone}
-              placeholder="50 123 4567"
+              placeholder=""
             />
 
             {/* Password */}

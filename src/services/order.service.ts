@@ -1,26 +1,43 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// src/services/order.service.ts  — MOCK (no API calls)
+// src/services/order.service.ts  — real API calls to mamo-fashion-server
+// GET /orders (list) and GET /orders/:id (detail), both authenticateCustomer.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
+import api from "@/lib/axios";
+import { endpoints } from "@/lib/endpoints";
 import type { RootState } from "@/store";
 import type {
   GetCustomerOrdersResponse,
   GetCustomerOrderResponse,
+  OrderStatus,
 } from "@/types/order.type";
-import { mockOrdersResponse } from "@/lib/mockData";
 
-export const useGetCustomerOrders = () => {
+export interface GetCustomerOrdersFilters {
+  page?: number;
+  limit?: number;
+  status?: OrderStatus;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export const useGetCustomerOrders = (filters: GetCustomerOrdersFilters = {}) => {
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   return useQuery({
-    queryKey: ["customer-orders"],
+    queryKey: ["customer-orders", filters],
     queryFn: async (): Promise<GetCustomerOrdersResponse> => {
-      await new Promise((r) => setTimeout(r, 200));
-      return mockOrdersResponse;
+      const params: Record<string, string | number> = {};
+      if (filters.page) params.page = filters.page;
+      if (filters.limit) params.limit = filters.limit;
+      if (filters.status) params.status = filters.status;
+      if (filters.dateFrom) params.dateFrom = filters.dateFrom;
+      if (filters.dateTo) params.dateTo = filters.dateTo;
+
+      const res = await api.get<GetCustomerOrdersResponse>(endpoints.orders.list, { params });
+      return res.data;
     },
     enabled: isAuthenticated,
-    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };
@@ -30,24 +47,10 @@ export const useGetCustomerOrder = (id: string | null) => {
   return useQuery({
     queryKey: ["customer-order", id],
     queryFn: async (): Promise<GetCustomerOrderResponse> => {
-      await new Promise((r) => setTimeout(r, 200));
-      return {
-        order: {
-          id: id ?? "order-mock-1",
-          status: "CONFIRMED",
-          subTotal: "95.00",
-          discount: "0.00",
-          total: "95.00",
-          currencyCode: "INR",
-          createdAt: new Date().toISOString(),
-          items: [],
-          payment: { status: "SUCCESS", amount: "95.00", paymentType: "UPI" },
-          shippingAddress: null,
-        },
-      };
+      const res = await api.get<GetCustomerOrderResponse>(endpoints.orders.detail(id!));
+      return res.data;
     },
     enabled: isAuthenticated && !!id,
-    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 };
