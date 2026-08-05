@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "MAMO FASHION | Privacy Policy",
-  description: "Understand how HOUSE OF MAMO FASHION collects, uses, and safeguards your personal data.",
+  title: "Privacy Policy | Mamo Fashion",
+  description: "Understand how Mamo Fashion collects, uses, and safeguards your personal data. We value your privacy and security.",
 };
 
 export default function PrivacyPolicyPage() {

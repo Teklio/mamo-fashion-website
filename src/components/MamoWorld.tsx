@@ -33,7 +33,7 @@ export default function MamoWorld() {
             
             <Image
                 src="/images/naseeb-3.jpg"
-                alt="Mamo Lifestyle"
+                alt="Mamo Fashion lifestyle editorial – women in premium ethnic wear"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-103"
@@ -56,7 +56,7 @@ export default function MamoWorld() {
             >
               <Image
                 src="/images/banner-dress.jpg"
-                alt="MAMO FASHION Footwear Detail"
+                alt="Mamo Fashion dress collection – premium ethnic dresses for women"
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-103"
@@ -75,7 +75,7 @@ export default function MamoWorld() {
               >
                 <Image
                   src="/images/naseeb-1.jpg"
-                  alt="MAMO FASHION Beach Lifestyle"
+                  alt="Mamo Fashion model in ethnic wear – Kerala inspired fashion"
                   fill
                   sizes="(max-width: 1024px) 50vw, 30vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-103"
@@ -92,7 +92,7 @@ export default function MamoWorld() {
               >
                 <Image
                   src="/images/nasseb-2.jpg"
-                  alt="MAMO FASHION Fashion Green Coordinates"
+                  alt="Mamo Fashion women's ethnic coordinates – traditional Indian wear"
                   fill
                   sizes="(max-width: 1024px) 50vw, 30vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-103"

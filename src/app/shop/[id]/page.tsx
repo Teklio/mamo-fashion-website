@@ -4,8 +4,8 @@ import Header from "@/components/Header";
 import FeaturedProducts from "@/components/FeaturedProducts";
 
 export const metadata: Metadata = {
-  title: "Product Detail | MAMO FASHION",
-  description: "View product details.",
+  title: "Premium Ethnic Wear Product | Mamo Fashion",
+  description: "Discover the details of this premium ethnic wear product. Shop exclusive churidars, dresses, and kurtis at Mamo Fashion.",
 };
 
 export default async function ProductDetailPage({

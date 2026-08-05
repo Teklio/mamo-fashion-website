@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import CheckoutClient from "./_components/CheckoutClient";
 
 export const metadata: Metadata = {
-  title: "Checkout – MAMO FASHION",
-  description: "Complete your purchase at MAMO FASHION",
+  title: "Secure Checkout | Mamo Fashion",
+  description: "Complete your purchase securely at Mamo Fashion. Fast, reliable checkout for your favorite premium ethnic wear.",
 };
 
 export default function CheckoutPage() {

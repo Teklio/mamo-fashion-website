@@ -6,8 +6,8 @@ import AboutCTA from "@/app/about/_components/AboutCTA";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "The House of MAMO FASHION | Our Story",
-  description: "Discover the story and craftsmanship behind HOUSE OF MAMO FASHION.",
+  title: "Our Story | The House of Mamo Fashion",
+  description: "Discover the inspiring story, craftsmanship, and legacy behind The House of Mamo Fashion. Explore our journey in creating premium ethnic wear for women.",
 };
 
 export default function AboutPage() {

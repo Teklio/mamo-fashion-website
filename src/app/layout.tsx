@@ -15,11 +15,29 @@ const globalFontSerif = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   icons: {
     icon: "/fevicon.png",
   },
-  title: "Mamo Fashion | Girls & Women's Ethnic Wear",
-  description: "Discover the premium collection of churidars, ethnic dresses and more at Mamo Fashion.",
+  title: {
+    template: "%s | Mamo Fashion",
+    default: "Mamo Fashion | Premium Women's Ethnic Wear & Dresses",
+  },
+  description: "Discover the premium collection of churidars, ethnic dresses, kurtis and more at Mamo Fashion. Experience quality, style, and tradition crafted for the modern woman.",
+  keywords: ["ethnic wear", "women's clothing", "churidars", "kurtis", "Mamo Fashion", "dresses", "traditional clothing"],
+  openGraph: {
+    title: "Mamo Fashion | Premium Women's Ethnic Wear",
+    description: "Discover the premium collection of churidars, ethnic dresses, kurtis and more at Mamo Fashion.",
+    url: "/",
+    siteName: "Mamo Fashion",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mamo Fashion | Premium Women's Ethnic Wear",
+    description: "Discover the premium collection of churidars, ethnic dresses, kurtis and more at Mamo Fashion.",
+  },
 };
 
 import StoreProvider from "@/store/provider";

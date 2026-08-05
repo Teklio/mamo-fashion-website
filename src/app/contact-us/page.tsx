@@ -6,8 +6,8 @@ import Faq from "@/app/contact-us/_components/Faq";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "MAMO FASHION | Contact Us",
-  description: "Get in touch with HOUSE OF MAMO FASHION customer care.",
+  title: "Contact Us | Mamo Fashion Customer Care",
+  description: "Get in touch with Mamo Fashion for inquiries, support, and feedback. We are here to help you with your premium ethnic wear shopping experience.",
 };
 
 export default function ContactPage() {

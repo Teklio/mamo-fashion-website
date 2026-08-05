@@ -5,8 +5,8 @@ import ShopGrid from "./_components/ShopGrid";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Shop | MAMO FASHION",
-  description: "Explore the Signature Styles collection at MAMO FASHION.",
+  title: "Shop Premium Ethnic Wear | Mamo Fashion",
+  description: "Explore the latest collection of signature churidars, kurtis, and ethnic dresses at Mamo Fashion. Shop online for the finest women's traditional wear.",
 };
 
 export default function ShopPage() {
