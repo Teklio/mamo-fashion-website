@@ -10,11 +10,13 @@ export default function CategoriesSection() {
       title: "Women's Collection",
       category: "Women",
       image: "/images/womenscat.png",
+      alt: "Explore Women's Ethnic Wear Collection at Mamo Fashion",
     },
     {
       title: "Kids' Collection",
       category: "Kids",
       image: "/images/kidscat.png",
+      alt: "Explore Kids' Ethnic Wear Collection at Mamo Fashion",
     }
   ];
 
@@ -48,7 +50,7 @@ export default function CategoriesSection() {
               >
                 <Image
                   src={cat.image}
-                  alt={cat.title}
+                  alt={cat.alt || cat.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover object-top transition-transform duration-700 group-hover:scale-105"

@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "MAMO FASHION | Refund & Return Policy",
-  description: "Read the refund and return policies of HOUSE OF MAMO FASHION.",
+  title: "Refund & Return Policy | Mamo Fashion",
+  description: "Read the refund and return policies of Mamo Fashion. We ensure a smooth process for returns and exchanges on your premium ethnic wear.",
 };
 
 export default function RefundPolicyPage() {

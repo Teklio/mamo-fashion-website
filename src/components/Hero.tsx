@@ -16,6 +16,7 @@ const slides = [
     href: "/shop",
     overlay: "from-black/65 via-black/25 to-black/65",
     accent: "bg-purple-400",
+    alt: "Premium ethnic wear collection from Mamo Fashion",
   },
   {
     id: 2,
@@ -27,6 +28,7 @@ const slides = [
     href: "/shop",
     overlay: "from-black/70 via-black/30 to-black/60",
     accent: "bg-gray-300",
+    alt: "Model wearing Mamo Fashion exclusive new arrival ethnic wear",
   },
   {
     id: 3,
@@ -38,6 +40,7 @@ const slides = [
     href: "/shop",
     overlay: "from-black/60 via-black/20 to-black/70",
     accent: "bg-amber-400",
+    alt: "Woman shopping for handcrafted Indian dresses at Mamo Fashion",
   }
 ];
 
@@ -114,7 +117,7 @@ export default function Hero() {
           {/* Background Image */}
           <Image
             src={slide.image}
-            alt={slide.title}
+            alt={slide.alt || slide.title.replace(/\n/g, ' ')}
             fill
             className="object-cover"
             priority

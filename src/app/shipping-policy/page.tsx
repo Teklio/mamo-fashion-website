@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "MAMO FASHION | Shipping Policy",
-  description: "Read the Shipping Policy governing deliveries, processing times, and logistics for HOUSE OF MAMO FASHION.",
+  title: "Shipping Policy | Mamo Fashion",
+  description: "Read the Shipping Policy governing deliveries, processing times, and logistics for Mamo Fashion. Fast and reliable shipping for your orders.",
 };
 
 export default function ShippingPolicyPage() {
