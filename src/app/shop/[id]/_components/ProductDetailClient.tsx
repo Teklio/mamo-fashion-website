@@ -261,13 +261,13 @@ export default function ProductDetailClient({
           </p>
 
           {/* Color & Quantity */}
-          <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 gap-8 md:gap-4 w-full">
+          <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 gap-8 md:gap-6 w-full">
             {/* Color */}
-            <div>
+            <div className="flex-1">
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">
                 Color
               </span>
-              <div className="flex items-center space-x-3 mb-3">
+              <div className="flex flex-wrap items-center gap-3 mb-3">
                 {activeVariants.map((variant) => (
                   <button
                     key={variant.id}
@@ -298,7 +298,7 @@ export default function ProductDetailClient({
             </div>
 
             {/* Quantity */}
-            <div>
+            <div className="shrink-0">
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase md:text-right">
                 Quantity
               </span>
