@@ -267,7 +267,7 @@ export default function ProductDetailClient({
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">
                 Color
               </span>
-              <div className="flex items-center gap-3 mb-3 overflow-x-auto scroll-smooth pb-1">
+              <div className="flex items-center gap-3 mb-3 overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
                 {activeVariants.map((variant) => (
                   <button
                     key={variant.id}
@@ -331,7 +331,7 @@ export default function ProductDetailClient({
             </div>
 
             {availableSizes.length > 0 ? (
-              <div className="w-full overflow-x-auto scroll-smooth pb-1">
+              <div className="w-full overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
                 <div
                   className="inline-grid border border-zinc-200 rounded-sm overflow-hidden"
                   style={{
