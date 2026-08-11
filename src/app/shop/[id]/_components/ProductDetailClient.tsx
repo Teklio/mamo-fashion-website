@@ -261,13 +261,13 @@ export default function ProductDetailClient({
           </p>
 
           {/* Color & Quantity */}
-          <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 gap-8 md:gap-4 w-full">
+          <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 gap-8 md:gap-6 w-full">
             {/* Color */}
-            <div>
+            <div className="flex-1 min-w-0">
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">
                 Color
               </span>
-              <div className="flex items-center space-x-3 mb-3">
+              <div className="flex items-center gap-3 mb-3 overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
                 {activeVariants.map((variant) => (
                   <button
                     key={variant.id}
@@ -298,7 +298,7 @@ export default function ProductDetailClient({
             </div>
 
             {/* Quantity */}
-            <div>
+            <div className="shrink-0">
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase md:text-right">
                 Quantity
               </span>
@@ -331,25 +331,27 @@ export default function ProductDetailClient({
             </div>
 
             {availableSizes.length > 0 ? (
-              <div
-                className="inline-grid border border-zinc-200 rounded-sm overflow-hidden"
-                style={{
-                  gridTemplateColumns: `repeat(${availableSizes.length}, minmax(60px, 1fr))`,
-                }}
-              >
-                {availableSizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`py-3 px-5 text-xs font-sans border-r border-zinc-200 last:border-r-0 transition-colors ${
-                      selectedSize === size
-                        ? "bg-zinc-900 text-white"
-                        : "bg-white text-zinc-700 hover:bg-zinc-50"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+              <div className="w-full overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
+                <div
+                  className="inline-grid border border-zinc-200 rounded-sm overflow-hidden"
+                  style={{
+                    gridTemplateColumns: `repeat(${availableSizes.length}, minmax(60px, 1fr))`,
+                  }}
+                >
+                  {availableSizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`py-3 px-5 text-xs font-sans border-r border-zinc-200 last:border-r-0 transition-colors shrink-0 ${
+                        selectedSize === size
+                          ? "bg-zinc-900 text-white"
+                          : "bg-white text-zinc-700 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : (
               <p className="text-sm text-zinc-400 font-sans">
