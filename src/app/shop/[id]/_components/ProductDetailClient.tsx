@@ -188,13 +188,13 @@ export default function ProductDetailClient({
   };
 
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col gap-12 md:gap-24">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-24">
         {/* Left: Images */}
         <div className="flex flex-col col-span-3 gap-4">
           {/* Main Image */}
           <div className="relative w-full bg-[#f3f3f3] rounded-sm overflow-hidden min-h-100 lg:min-h-150">
-            <div className="absolute inset-0 flex items-center justify-center p-8">
+            <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
               {variantImages[activeImage] ? (
                 <Image
                   key={`${selectedColor}-${activeImage}`}
@@ -307,41 +307,79 @@ export default function ProductDetailClient({
             Inclusive of duties. Complimentary shipping.
           </p>
 
-          {/* Color & Quantity */}
-          <div className="flex flex-row items-start justify-between mb-10 gap-4 md:gap-6 w-full">
-            {/* Color */}
+          {/* Color */}
+          <div className="mb-10 w-full">
+            <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">
+              Color
+            </span>
+            <div className="flex items-center gap-3 mb-3 overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
+              {activeVariants.map((variant) => (
+                <button
+                  key={variant.id}
+                  onClick={() => handleColorChange(variant.colorName)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                    selectedColor === variant.colorName
+                      ? "border-[1.5px] border-zinc-900"
+                      : "border border-transparent hover:border-zinc-300"
+                  }`}
+                  title={variant.colorName}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full"
+                    style={{
+                      background: getMultiColorBackground(variant.colorCodes),
+                      border:
+                        selectedColor === variant.colorName
+                          ? "none"
+                          : "1px solid #e4e4e7",
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+            <span className="text-sm text-zinc-500 font-sans">
+              {selectedColor}
+            </span>
+          </div>
+
+          {/* Size & Quantity */}
+          <div className="flex flex-row items-end justify-between mb-10 gap-4 md:gap-6 w-full">
+            {/* Size */}
             <div className="flex-1 min-w-0">
-              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">
-                Color
-              </span>
-              <div className="flex items-center gap-3 mb-3 overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
-                {activeVariants.map((variant) => (
-                  <button
-                    key={variant.id}
-                    onClick={() => handleColorChange(variant.colorName)}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                      selectedColor === variant.colorName
-                        ? "border-[1.5px] border-zinc-900"
-                        : "border border-transparent hover:border-zinc-300"
-                    }`}
-                    title={variant.colorName}
-                  >
-                    <div
-                      className="w-8 h-8 rounded-full"
-                      style={{
-                        background: getMultiColorBackground(variant.colorCodes),
-                        border:
-                          selectedColor === variant.colorName
-                            ? "none"
-                            : "1px solid #e4e4e7",
-                      }}
-                    />
-                  </button>
-                ))}
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans">
+                  SIZE
+                </span>
               </div>
-              <span className="text-sm text-zinc-500 font-sans">
-                {selectedColor}
-              </span>
+
+              {availableSizes.length > 0 ? (
+                <div className="w-full overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
+                  <div
+                    className="inline-grid border border-zinc-200 rounded-sm overflow-hidden"
+                    style={{
+                      gridTemplateColumns: `repeat(${availableSizes.length}, minmax(60px, 1fr))`,
+                    }}
+                  >
+                    {availableSizes.map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`py-3 px-5 text-xs font-sans border-r border-zinc-200 last:border-r-0 transition-colors shrink-0 ${
+                          selectedSize === size
+                            ? "bg-zinc-900 text-white"
+                            : "bg-white text-zinc-700 hover:bg-zinc-50"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-zinc-400 font-sans">
+                  No sizes available for this color.
+                </p>
+              )}
             </div>
 
             {/* Quantity */}
@@ -367,44 +405,6 @@ export default function ProductDetailClient({
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Size */}
-          <div className="mb-10">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans">
-                SIZE
-              </span>
-            </div>
-
-            {availableSizes.length > 0 ? (
-              <div className="w-full overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
-                <div
-                  className="inline-grid border border-zinc-200 rounded-sm overflow-hidden"
-                  style={{
-                    gridTemplateColumns: `repeat(${availableSizes.length}, minmax(60px, 1fr))`,
-                  }}
-                >
-                  {availableSizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`py-3 px-5 text-xs font-sans border-r border-zinc-200 last:border-r-0 transition-colors shrink-0 ${
-                        selectedSize === size
-                          ? "bg-zinc-900 text-white"
-                          : "bg-white text-zinc-700 hover:bg-zinc-50"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p className="text-sm text-zinc-400 font-sans">
-                No sizes available for this color.
-              </p>
-            )}
           </div>
 
           {/* Action Buttons */}
