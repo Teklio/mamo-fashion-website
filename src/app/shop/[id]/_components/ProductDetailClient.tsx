@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { FiHeart } from "react-icons/fi";
+import { FiHeart, FiShare2, FiCopy, FiCheck } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -43,6 +43,7 @@ export default function ProductDetailClient({
   const [sizeSyncedVariantId, setSizeSyncedVariantId] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<string>("DESCRIPTION");
+  const [isCopied, setIsCopied] = useState(false);
 
   const selectedColor = selectedColorOverride ?? defaultVariant?.colorName ?? "";
 
@@ -141,6 +142,34 @@ export default function ProductDetailClient({
       img: selectedVariant?.primaryImageUrl ?? "",
     });
     router.push(`/checkout?${params}`);
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.name,
+          text: `Check out ${product.name} on Mamo Fashion`,
+          url: url,
+        });
+      } catch (err) {
+        console.error("Error sharing", err);
+      }
+    } else {
+      handleCopyLink();
+    }
+  };
+
+  const handleCopyLink = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      setIsCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setIsCopied(false), 2000);
+    }).catch(() => {
+      toast.error("Failed to copy link");
+    });
   };
 
   const handleWishlistToggle = () => {
@@ -243,9 +272,27 @@ export default function ProductDetailClient({
 
         {/* Right: Details */}
         <div className="flex flex-col pt-4 col-span-2 lg:pt-12">
-          <h1 className="text-3xl md:text-4xl font-serif text-zinc-900 mb-2">
-            {product.name}
-          </h1>
+          <div className="flex justify-between items-start gap-4 mb-2">
+            <h1 className="text-3xl md:text-4xl font-serif text-zinc-900">
+              {product.name}
+            </h1>
+            <div className="flex items-center gap-4 mt-2 shrink-0">
+              <button
+                onClick={handleShare}
+                className="text-zinc-400 hover:text-black transition-colors"
+                title="Share"
+              >
+                <FiShare2 size={20} />
+              </button>
+              <button
+                onClick={handleCopyLink}
+                className="text-zinc-400 hover:text-black transition-colors"
+                title="Copy Link"
+              >
+                {isCopied ? <FiCheck size={20} className="text-green-600" /> : <FiCopy size={20} />}
+              </button>
+            </div>
+          </div>
           <div className="flex items-baseline gap-3 mb-1">
             <p className="text-xl font-semibold text-zinc-900">
               {formatPrice(displayPrice)}
@@ -261,7 +308,7 @@ export default function ProductDetailClient({
           </p>
 
           {/* Color & Quantity */}
-          <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 gap-8 md:gap-6 w-full">
+          <div className="flex flex-row items-start justify-between mb-10 gap-4 md:gap-6 w-full">
             {/* Color */}
             <div className="flex-1 min-w-0">
               <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase">
@@ -299,10 +346,10 @@ export default function ProductDetailClient({
 
             {/* Quantity */}
             <div className="shrink-0">
-              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase md:text-right">
+              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase text-right">
                 Quantity
               </span>
-              <div className="flex items-center border border-zinc-200 rounded-sm w-fit md:ml-auto">
+              <div className="flex items-center border border-zinc-200 rounded-sm w-fit ml-auto">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="px-4 py-3 text-zinc-500 hover:text-black transition-colors"
