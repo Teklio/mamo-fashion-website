@@ -64,6 +64,11 @@ export default function ProductDetailClient({
   const handleColorChange = (colorName: string) => {
     setSelectedColorOverride(colorName);
     setActiveImage(0);
+
+    const matchingVariant = activeVariants.find((v) => v.colorName === colorName);
+    if (matchingVariant) {
+      router.replace(`?variant=${matchingVariant.id}`, { scroll: false });
+    }
   };
 
   // Default to the first in-stock size whenever the selected variant changes

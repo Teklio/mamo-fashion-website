@@ -81,7 +81,7 @@ export default function CartPage() {
                   >
                     {/* Left: Image + Info */}
                     <Link
-                      href={`/shop/${productId}`}
+                      href={`/shop/${productId}?variant=${item.variantId}`}
                       className="flex items-center gap-4 sm:gap-6 mb-4 sm:mb-0 group cursor-pointer"
                     >
                       <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-[#f5f5f5] rounded-xl overflow-hidden shrink-0">
