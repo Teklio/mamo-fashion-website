@@ -9,6 +9,7 @@ export interface CartItem {
   /** price × quantity, Prisma Decimal serialised as string */
   lineTotal: string;
   stock: number;
+  variantId: string;
   product: { id: string; name: string };
   color: { id: string; name: string; colorCodes: string };
   size: { id: string; name: string };
