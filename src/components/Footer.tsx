@@ -7,7 +7,7 @@ import { FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-zinc-950 text-white pt-16 md:pt-24 pb-8 px-8 md:px-16 border-t border-zinc-900">
+    <footer className="w-full bg-zinc-950 text-white pt-16 md:pt-24 pb-8 px-4 md:px-16 border-t border-zinc-900">
       <div className="max-w-6xl mx-auto">
         {/* Top Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start w-full gap-12 md:gap-16 mb-16 md:mb-24">

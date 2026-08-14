@@ -35,7 +35,7 @@ export default function FeaturedProducts({
   };
 
   return (
-    <section className="w-full py-16 md:py-24 px-8 md:px-16 bg-white text-zinc-950">
+    <section className="w-full py-16 md:py-24 px-4 md:px-16 bg-white text-zinc-950">
       <div className="max-w-400 mx-auto">
         {/* Section Header */}
         <motion.div
