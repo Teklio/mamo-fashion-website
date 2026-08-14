@@ -68,7 +68,7 @@ export default function AboutHero() {
       </div>
 
       {/* Craftsmanship Section */}
-      <div className="max-w-6xl mx-auto py-24 md:py-32 px-8 md:px-16 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      <div className="max-w-6xl mx-auto py-24 md:py-32 px-4 md:px-16 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
         {/* Craftsmanship Text */}
         <motion.div
           className="flex flex-col justify-center order-2 lg:order-1"
