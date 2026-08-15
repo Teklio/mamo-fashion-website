@@ -8,6 +8,7 @@ import { endpoints } from "@/lib/endpoints";
 import type {
   GetCustomerProductsResponse,
   GetCustomerProductResponse,
+  GetCustomerProductVariantResponse,
 } from "@/types/product.type";
 
 export interface GetProductsFilters {
@@ -79,16 +80,37 @@ export const useGetProductsInfinite = (
   });
 };
 
-export const useGetProduct = (id: string) => {
+export const useGetProduct = (id: string, variantId?: string) => {
   return useQuery({
-    queryKey: ["customer-product", id],
+    queryKey: ["customer-product", id, variantId],
     queryFn: async () => {
       const res = await api.get<GetCustomerProductResponse>(
         endpoints.products.detail(id),
+        { params: variantId ? { variantId } : undefined },
       );
       return res.data;
     },
     enabled: !!id,
+    refetchOnWindowFocus: false,
+  });
+};
+
+// Fetches one variant's full detail (images + sizes) on demand — used when
+// the user clicks a color swatch that wasn't already loaded by useGetProduct.
+export const useGetProductVariant = (
+  productId: string,
+  variantId: string | undefined,
+) => {
+  return useQuery({
+    queryKey: ["customer-product-variant", productId, variantId],
+    queryFn: async () => {
+      const res = await api.get<GetCustomerProductVariantResponse>(
+        endpoints.products.variant(productId, variantId!),
+      );
+      return res.data;
+    },
+    enabled: !!productId && !!variantId,
+    staleTime: 5 * 60_000,
     refetchOnWindowFocus: false,
   });
 };

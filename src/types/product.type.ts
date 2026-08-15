@@ -21,8 +21,8 @@ export interface CustomerProduct {
   /** Prisma Decimal serialised as string, e.g. "289.00" */
   commonPrice: string;
   actualPrice: string;
-  /** Active variants for this product, nested (e.g. one per color). */
-  variants: CustomerProductListVariant[];
+  /** One representative variant — the only one the shop grid card renders. */
+  variant: CustomerProductListVariant | null;
 }
 
 export interface GetCustomerProductsResponse {
@@ -52,6 +52,14 @@ export interface CustomerProductVariant {
   sizes: CustomerProductVariantSize[];
 }
 
+/** Just enough to render a color swatch — the rest of that variant's detail
+ * (images, sizes) is fetched on demand only if the user clicks it. */
+export interface CustomerProductColorSummary {
+  id: string;
+  colorName: string;
+  colorCodes: string | null;
+}
+
 export interface CustomerProductDetail {
   id: string;
   name: string;
@@ -61,11 +69,18 @@ export interface CustomerProductDetail {
   actualPrice: string;
   subCategory: { id: string; name: string } | null;
   material: { id: string; name: string } | null;
-  variants: CustomerProductVariant[];
+  /** Lightweight list of every color, for the swatch strip. */
+  colors: CustomerProductColorSummary[];
+  /** The one fully-loaded variant (requested color, or the default). */
+  variant: CustomerProductVariant | null;
 }
 
 export interface GetCustomerProductResponse {
   product: CustomerProductDetail;
+}
+
+export interface GetCustomerProductVariantResponse {
+  variant: CustomerProductVariant;
 }
 
 // Parse a comma-separated hex string (e.g. "#000000,#FFFFFF") into an array,
