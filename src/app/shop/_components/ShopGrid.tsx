@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { FiChevronDown, FiCheck, FiFilter, FiX, FiSearch } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGetProducts } from "@/services/product.service";
+import { useGetProductsInfinite } from "@/services/product.service";
 import {
   useMainCategories,
   useSubCategories,
@@ -12,6 +12,7 @@ import {
   useColors,
   useSizes,
 } from "@/services/catalog.service";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { getMultiColorBackground } from "@/types/product.type";
 import ProductCard from "@/components/ProductCard";
 
@@ -80,8 +81,13 @@ export default function ShopGrid() {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  const { data, isLoading } = useGetProducts({
-    limit: 100,
+  // 20 products per page on large screens (matches the `lg` sidebar/grid
+  // breakpoint below), 10 per page on mobile.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const limit = isDesktop ? 20 : 10;
+
+  const productFilters = {
+    limit,
     minPrice: appliedMin,
     maxPrice: appliedMax,
     sortBy,
@@ -90,9 +96,58 @@ export default function ShopGrid() {
     materialId: activeMaterialIds.length ? activeMaterialIds : undefined,
     colorId: activeColorIds.length ? activeColorIds : undefined,
     sizeId: activeSizeIds.length ? activeSizeIds : undefined,
-  });
+  };
 
-  const products = data?.products ?? [];
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetProductsInfinite(productFilters);
+
+  const products = useMemo(
+    () => data?.pages.flatMap((p) => p.products) ?? [],
+    [data],
+  );
+  const total = data?.pages[0]?.meta.total ?? 0;
+
+  // Remount/re-animate the grid only when the active filters change, not on
+  // every appended infinite-scroll page (products.length changes every page).
+  const filtersSignature = useMemo(
+    () => JSON.stringify(productFilters),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      limit,
+      appliedMin,
+      appliedMax,
+      sortBy,
+      debouncedSearch,
+      activeSubcategoryIds,
+      activeSizeIds,
+      activeColorIds,
+      activeMaterialIds,
+    ],
+  );
+
+  // Infinite scroll: observe a sentinel below the grid and load the next
+  // page once it enters the viewport.
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   // Lock body scroll when mobile filter is open
   useEffect(() => {
@@ -434,7 +489,8 @@ export default function ShopGrid() {
               Filter
             </button>
             <div className="text-sm font-sans text-zinc-500 hidden sm:block">
-              Showing <span className="font-semibold text-zinc-900">{products.length}</span> results
+              Showing <span className="font-semibold text-zinc-900">{products.length}</span> of{" "}
+              <span className="font-semibold text-zinc-900">{total}</span> results
             </div>
           </div>
 
@@ -529,21 +585,42 @@ export default function ShopGrid() {
             </button>
           </div>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            key={`${sortBy}-${products.length}`}
-          >
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                cardVariants={cardVariants}
-              />
-            ))}
-          </motion.div>
+          <>
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              key={filtersSignature}
+            >
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  cardVariants={cardVariants}
+                />
+              ))}
+            </motion.div>
+
+            {isFetchingNextPage && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 mt-12">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex flex-col gap-4">
+                    <div className="aspect-square w-full bg-[#f3f3f3] rounded-sm animate-pulse" />
+                    <div className="flex justify-between items-center px-1">
+                      <div className="flex flex-col gap-2">
+                        <div className="h-3 w-24 bg-zinc-100 rounded animate-pulse" />
+                        <div className="h-4 w-16 bg-zinc-200 rounded animate-pulse" />
+                      </div>
+                      <div className="w-9 h-9 rounded-full bg-zinc-100 animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {hasNextPage && <div ref={sentinelRef} className="h-1 w-full" />}
+          </>
         )}
       </div>
     </div>
