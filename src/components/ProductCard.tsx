@@ -29,11 +29,9 @@ export default function ProductCard({ product, cardVariants }: ProductCardProps)
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
   const [showSizes, setShowSizes] = useState(false);
 
-  // Card shows one representative variant (the first active one returned by
-  // the API); the full color/size selector lives on the product detail page.
-  const defaultVariant = product.variants[0] as
-    | (typeof product.variants)[number]
-    | undefined;
+  // Card shows one representative variant (the one the API returns); the
+  // full color/size selector lives on the product detail page.
+  const defaultVariant = product.variant ?? undefined;
 
   const mainImage = defaultVariant?.primaryImageUrl ?? "";
   const availableSizes = (defaultVariant?.sizes ?? []).filter((s) => s.stock > 0);

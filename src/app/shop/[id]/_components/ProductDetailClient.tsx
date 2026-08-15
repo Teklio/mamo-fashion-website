@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { formatPrice, useGetProduct } from "@/services/product.service";
+import { formatPrice, useGetProduct, useGetProductVariant } from "@/services/product.service";
 import { useAddToCart } from "@/services/cart.service";
 import { useWishlistedIds, useAddToWishlist, useRemoveFromWishlist } from "@/services/wishlist.service";
 import type { RootState } from "@/store";
@@ -25,19 +25,28 @@ export default function ProductDetailClient({
 }) {
   const router = useRouter();
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
-  const { data, isLoading, isError } = useGetProduct(productId);
+  // Freeze the URL's variant at mount time. handleColorChange below updates
+  // the URL via router.replace so a refresh/share keeps the picked color,
+  // but that also re-renders the parent server component and would hand us
+  // a new `initialVariantId` prop on every color click — without freezing
+  // it here, useGetProduct's query key would change and refetch the whole
+  // product on every switch, duplicating what useGetProductVariant already
+  // fetches on demand.
+  const [frozenInitialVariantId] = useState(initialVariantId);
+  // The initial fetch already resolves the requested (or default) color
+  // server-side — only that one variant's full images/sizes come down.
+  const { data, isLoading, isError } = useGetProduct(productId, frozenInitialVariantId);
   const { mutate: addToCartApi, isPending: isAdding } = useAddToCart();
   const wishlistedIds = useWishlistedIds();
   const { mutate: addToWishlist } = useAddToWishlist();
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
 
   const product = data?.product;
-  const activeVariants = product?.variants ?? [];
-  const defaultVariant =
-    activeVariants.find((v) => v.id === initialVariantId) ?? activeVariants[0];
+  const colors = product?.colors ?? [];
 
-  // null = no explicit user choice yet → fall back to the default variant's color.
-  const [selectedColorOverride, setSelectedColorOverride] = useState<string | null>(null);
+  // undefined = no explicit user choice yet → use whatever variant the
+  // initial fetch resolved to. Set once the user clicks a color swatch.
+  const [activeVariantId, setActiveVariantId] = useState<string | undefined>(undefined);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [sizeSyncedVariantId, setSizeSyncedVariantId] = useState<string | undefined>(undefined);
@@ -45,11 +54,27 @@ export default function ProductDetailClient({
   const [activeTab, setActiveTab] = useState<string>("DESCRIPTION");
   const [isCopied, setIsCopied] = useState(false);
 
-  const selectedColor = selectedColorOverride ?? defaultVariant?.colorName ?? "";
+  const resolvedVariantId = activeVariantId ?? product?.variant?.id;
+  // Only fetch on demand when the clicked color differs from the one the
+  // initial request already delivered.
+  const isSwitchingColor =
+    !!activeVariantId && activeVariantId !== product?.variant?.id;
+  const { data: variantData, isFetching: isFetchingVariant } = useGetProductVariant(
+    productId,
+    isSwitchingColor ? activeVariantId : undefined,
+  );
 
-  // Derived from selected color
+  // While a newly-clicked color's detail is still loading, keep showing the
+  // previously-loaded variant instead of a blank flash.
   const selectedVariant: CustomerProductVariant | undefined =
-    activeVariants.find((v) => v.colorName === selectedColor) ?? defaultVariant;
+    (isSwitchingColor ? variantData?.variant : undefined) ??
+    product?.variant ??
+    undefined;
+
+  const selectedColor =
+    colors.find((c) => c.id === resolvedVariantId)?.colorName ??
+    selectedVariant?.colorName ??
+    "";
 
   // Build image gallery: primary → gallery images
   const variantImages: string[] = [
@@ -61,14 +86,10 @@ export default function ProductDetailClient({
     .filter((s) => s.stock > 0)
     .map((s) => s.name);
 
-  const handleColorChange = (colorName: string) => {
-    setSelectedColorOverride(colorName);
+  const handleColorChange = (colorId: string) => {
+    setActiveVariantId(colorId);
     setActiveImage(0);
-
-    const matchingVariant = activeVariants.find((v) => v.colorName === colorName);
-    if (matchingVariant) {
-      router.replace(`?variant=${matchingVariant.id}`, { scroll: false });
-    }
+    router.replace(`?variant=${colorId}`, { scroll: false });
   };
 
   // Default to the first in-stock size whenever the selected variant changes
@@ -231,6 +252,12 @@ export default function ProductDetailClient({
                 }`}
               />
             </button>
+
+            {isSwitchingColor && isFetchingVariant && (
+              <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
+                <span className="w-8 h-8 border-2 border-zinc-200 border-t-zinc-600 rounded-full animate-spin" />
+              </div>
+            )}
           </div>
 
           {/* Thumbnails — all images (primary + up to 5 gallery) */}
@@ -318,23 +345,23 @@ export default function ProductDetailClient({
               Color
             </span>
             <div className="flex items-center gap-3 mb-3 overflow-x-auto scroll-smooth pb-1 touch-pan-x overscroll-x-contain">
-              {activeVariants.map((variant) => (
+              {colors.map((color) => (
                 <button
-                  key={variant.id}
-                  onClick={() => handleColorChange(variant.colorName)}
+                  key={color.id}
+                  onClick={() => handleColorChange(color.id)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                    selectedColor === variant.colorName
+                    resolvedVariantId === color.id
                       ? "border-[1.5px] border-zinc-900"
                       : "border border-transparent hover:border-zinc-300"
                   }`}
-                  title={variant.colorName}
+                  title={color.colorName}
                 >
                   <div
                     className="w-8 h-8 rounded-full"
                     style={{
-                      background: getMultiColorBackground(variant.colorCodes),
+                      background: getMultiColorBackground(color.colorCodes),
                       border:
-                        selectedColor === variant.colorName
+                        resolvedVariantId === color.id
                           ? "none"
                           : "1px solid #e4e4e7",
                     }}

@@ -20,6 +20,8 @@ export const endpoints = {
   products: {
     list: "/products/customer",
     detail: (id: string) => `/products/customer/${id}`,
+    variant: (productId: string, variantId: string) =>
+      `/products/customer/${productId}/variants/${variantId}`,
   },
   catalog: {
     mainCategories: "/settings/main-categories",
