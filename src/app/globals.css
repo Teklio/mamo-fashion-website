@@ -108,3 +108,304 @@ body {
 
 
 
+/* ============================================================
+   HOME LOADING SCREEN
+   ============================================================ */
+
+/* ---- Keyframes ---- */
+@keyframes hl-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes hl-scaleReveal {
+  0%   { opacity: 0; transform: scale(0.6) translateY(20px); filter: blur(12px); }
+  60%  { opacity: 1; transform: scale(1.04) translateY(-2px); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+@keyframes hl-brandSlideUp {
+  0%   { opacity: 0; transform: translateY(18px); letter-spacing: 0.5em; }
+  100% { opacity: 1; transform: translateY(0); letter-spacing: 0.22em; }
+}
+
+@keyframes hl-brandSubSlide {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hl-ringRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes hl-ringRotateReverse {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+@keyframes hl-particle {
+  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
+}
+
+@keyframes hl-shimmer {
+  0%   { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+@keyframes hl-progressGlow {
+  0%, 100% { box-shadow: 0 0 6px 3px rgba(212, 175, 55, 0.7); }
+  50%       { box-shadow: 0 0 14px 6px rgba(212, 175, 55, 1); }
+}
+
+@keyframes hl-taglineFade {
+  0%   { opacity: 0; letter-spacing: 0.6em; }
+  100% { opacity: 0.55; letter-spacing: 0.35em; }
+}
+
+@keyframes hl-logoGlow {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(212,175,55,0.3)); }
+  50%       { filter: drop-shadow(0 0 28px rgba(212,175,55,0.7)); }
+}
+
+@keyframes hl-exit {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+
+/* ---- Screen container ---- */
+.home-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #ffffff;
+  animation: hl-fadeIn 0.3s ease forwards;
+}
+
+.home-loading-enter {
+  animation: hl-fadeIn 0.3s ease forwards;
+}
+
+.home-loading-exit {
+  animation: hl-exit 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+/* ---- Background layers ---- */
+.home-loading-bg-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-loading-bg-1 {
+  background: radial-gradient(ellipse 80% 60% at 50% 40%,
+    rgba(212, 175, 55, 0.12) 0%,
+    rgba(212, 175, 55, 0.04) 40%,
+    transparent 70%
+  );
+}
+
+.home-loading-bg-2 {
+  background: radial-gradient(ellipse 50% 80% at 30% 70%,
+    rgba(180, 130, 20, 0.05) 0%,
+    transparent 60%
+  );
+}
+
+/* ---- Floating particles ---- */
+.home-loading-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.home-loading-particle {
+  position: absolute;
+  bottom: -10px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(180, 130, 20, 0.6);
+  animation: hl-particle linear infinite;
+}
+
+/* ---- Center layout ---- */
+.home-loading-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ---- Rings ---- */
+.home-loading-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border-style: solid;
+}
+
+.home-loading-ring-outer {
+  width: 280px;
+  height: 280px;
+  border-width: 1px;
+  border-color: rgba(212, 175, 55, 0.18) rgba(212, 175, 55, 0.05) rgba(212, 175, 55, 0.18) rgba(212, 175, 55, 0.05);
+  animation: hl-ringRotate 6s linear infinite;
+  margin-top: -40px;
+}
+
+.home-loading-ring-mid {
+  width: 230px;
+  height: 230px;
+  border-width: 1px;
+  border-color: rgba(212, 175, 55, 0.1) rgba(212, 175, 55, 0.3) rgba(212, 175, 55, 0.1) rgba(212, 175, 55, 0.3);
+  animation: hl-ringRotateReverse 4s linear infinite;
+  margin-top: -40px;
+}
+
+/* ---- Logo ---- */
+.home-loading-logo-wrap {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 16px;
+  animation: hl-scaleReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.home-loading-logo {
+  object-fit: contain;
+  animation: hl-logoGlow 2.5s ease-in-out 1s infinite;
+}
+
+.home-loading-shimmer {
+  position: absolute;
+  inset: 0;
+  width: 60%;
+  height: 200%;
+  top: -50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  animation: hl-shimmer 2.2s ease-in-out 0.8s infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---- Brand text ---- */
+.home-loading-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.home-loading-brand-text {
+  font-family: var(--font-inter), 'Outfit', sans-serif;
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: #1a1a1a;
+  animation: hl-brandSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  line-height: 1;
+}
+
+.home-loading-brand-sub {
+  font-family: var(--font-inter), 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  color: rgba(160, 115, 10, 0.9);
+  animation: hl-brandSubSlide 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+  margin-top: 2px;
+}
+
+/* ---- Progress bar ---- */
+.home-loading-progress-track {
+  position: relative;
+  width: 260px;
+  height: 1.5px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  margin-top: 28px;
+  overflow: visible;
+}
+
+.home-loading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(180,130,20,0.4) 0%, rgba(180,130,20,1) 100%);
+  border-radius: 999px;
+  transition: width 0.15s ease-out;
+  position: relative;
+}
+
+.home-loading-progress-glow {
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(180, 130, 20);
+  transform: translate(-50%, -50%);
+  animation: hl-progressGlow 1s ease-in-out infinite;
+}
+
+/* ---- Tagline ---- */
+.home-loading-tagline {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: rgba(0, 0, 0, 0.38);
+  margin-top: 20px;
+  text-transform: uppercase;
+  animation: hl-taglineFade 1s ease 1.2s both;
+}
+
+/* ---- Corner decorations ---- */
+.home-loading-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: rgba(180, 130, 20, 0.3);
+  border-style: solid;
+}
+
+.home-loading-corner-tl {
+  top: 24px; left: 24px;
+  border-width: 1px 0 0 1px;
+  animation: hl-fadeIn 0.6s ease 0.3s both;
+}
+.home-loading-corner-tr {
+  top: 24px; right: 24px;
+  border-width: 1px 1px 0 0;
+  animation: hl-fadeIn 0.6s ease 0.4s both;
+}
+.home-loading-corner-bl {
+  bottom: 24px; left: 24px;
+  border-width: 0 0 1px 1px;
+  animation: hl-fadeIn 0.6s ease 0.5s both;
+}
+.home-loading-corner-br {
+  bottom: 24px; right: 24px;
+  border-width: 0 1px 1px 0;
+  animation: hl-fadeIn 0.6s ease 0.6s both;
+}
+
+
