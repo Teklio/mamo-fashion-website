@@ -82,6 +82,8 @@ export default function ProductDetailClient({
     ...(selectedVariant?.imageUrls ?? []),
   ].filter(Boolean) as string[];
 
+  // Only in-stock sizes are selectable — a color with zero total stock across
+  // all its sizes shows a single "0 stock left" message instead of a picker.
   const availableSizes = (selectedVariant?.sizes ?? [])
     .filter((s) => s.stock > 0)
     .map((s) => s.name);
@@ -409,7 +411,7 @@ export default function ProductDetailClient({
                 </div>
               ) : (
                 <p className="text-sm text-zinc-400 font-sans">
-                  No sizes available for this color.
+                  0 stock left
                 </p>
               )}
             </div>
@@ -443,11 +445,13 @@ export default function ProductDetailClient({
           <div className="flex gap-4 mb-12">
             <button
               onClick={handleAddToCart}
-              disabled={isAdding}
+              disabled={isAdding || !selectedSize}
               className={`flex-1 py-4 text-xs font-bold tracking-[0.2em] uppercase rounded-sm border transition-all duration-300 ${
-                isAdding
-                  ? "bg-zinc-900 text-white border-zinc-900"
-                  : "bg-white text-zinc-900 border-zinc-900 hover:bg-zinc-950 hover:text-white"
+                !selectedSize
+                  ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
+                  : isAdding
+                    ? "bg-zinc-900 text-white border-zinc-900"
+                    : "bg-white text-zinc-900 border-zinc-900 hover:bg-zinc-950 hover:text-white"
               }`}
             >
               {isAdding ? "ADDED TO CART" : "ADD TO CART"}
