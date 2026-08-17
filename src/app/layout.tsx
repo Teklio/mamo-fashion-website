@@ -43,6 +43,7 @@ export const metadata: Metadata = {
 import StoreProvider from "@/store/provider";
 import QueryProvider from "@/providers/QueryProvider";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import NavigationLoader from "@/components/NavigationLoader";
 
 export default function RootLayout({
   children,
@@ -57,6 +58,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white">
         <StoreProvider>
           <QueryProvider>
+            {/* Inner-page loader — fires on every navigation except home */}
+            <NavigationLoader />
             {children}
             <Footer />
             <Toaster />
