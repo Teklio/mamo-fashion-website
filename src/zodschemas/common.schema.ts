@@ -3,10 +3,9 @@ import z from "zod";
 // Password validation schema
 export const passwordSchema = z
   .string()
-  .min(8, "Must be at least 8 characters")
-  .max(32, "Must be at most 32 characters")
-  .regex(/[A-Z]/, "Must include an uppercase letter")
-  .regex(/[a-z]/, "Must include a lowercase letter")
+  .min(6, "Must be at least 6 characters")
+  .max(12, "Must be at most 12 characters")
+  .regex(/[A-Za-z]/, "Must include a letter")
   .regex(/\d/, "Must include a number")
   .regex(/[^A-Za-z0-9]/, "Must include a special character");
 
