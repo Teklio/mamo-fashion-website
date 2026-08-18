@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const LOADING_DURATION = 2000;
+const LOADING_DURATION = 2300;
 
 export default function HomeLoadingScreen() {
   const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "done">(
