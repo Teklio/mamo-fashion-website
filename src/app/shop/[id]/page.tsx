@@ -27,7 +27,12 @@ export async function generateMetadata({
     // Product images are now permanent public CDN URLs (not signed/expiring),
     // so it's safe to cache this response for a few minutes per product.
     const res = await fetch(url, { next: { revalidate: 300 } });
-    if (!res.ok) return FALLBACK_METADATA;
+    if (!res.ok) {
+      console.error(
+        `generateMetadata: ${url} responded ${res.status} ${res.statusText}`,
+      );
+      return FALLBACK_METADATA;
+    }
 
     const { product }: GetCustomerProductResponse = await res.json();
     const title = `${product.name} | Mamo Fashion`;
@@ -52,7 +57,8 @@ export async function generateMetadata({
         images: image ? [image] : undefined,
       },
     };
-  } catch {
+  } catch (err) {
+    console.error("generateMetadata: failed to fetch product", err);
     return FALLBACK_METADATA;
   }
 }
