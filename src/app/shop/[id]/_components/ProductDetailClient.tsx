@@ -217,9 +217,9 @@ export default function ProductDetailClient({
 
   return (
     <div className="flex flex-col gap-12 md:gap-24">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-24">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-24">
         {/* Left: Images */}
-        <div className="flex flex-col col-span-3 gap-4">
+        <div className="flex flex-col col-span-1 lg:col-span-3 gap-4 w-full">
           {/* Main Image */}
           <div className="relative w-full bg-[#f3f3f3] rounded-sm overflow-hidden min-h-100 lg:min-h-150">
             <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
@@ -305,7 +305,7 @@ export default function ProductDetailClient({
         </div>
 
         {/* Right: Details */}
-        <div className="flex flex-col pt-4 col-span-2 lg:pt-12">
+        <div className="flex flex-col pt-0 col-span-1 lg:col-span-2 lg:pt-12 w-full">
           <div className="flex justify-between items-start gap-4 mb-2">
             <h1 className="text-3xl md:text-4xl font-serif text-zinc-900">
               {product.name}
@@ -377,9 +377,9 @@ export default function ProductDetailClient({
           </div>
 
           {/* Size & Quantity */}
-          <div className="flex flex-row items-end justify-between mb-10 gap-4 md:gap-6 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-4 sm:gap-6 w-full">
             {/* Size */}
-            <div className="flex-1 min-w-0">
+            <div className="w-full sm:flex-1 sm:min-w-0">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans">
                   SIZE
@@ -417,18 +417,18 @@ export default function ProductDetailClient({
             </div>
 
             {/* Quantity */}
-            <div className="shrink-0">
-              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase text-right">
+            <div className="w-full sm:w-auto sm:shrink-0">
+              <span className="text-xs font-bold tracking-widest text-zinc-900 font-sans mb-4 block uppercase sm:text-right">
                 Quantity
               </span>
-              <div className="flex items-center border border-zinc-200 rounded-sm w-fit ml-auto">
+              <div className="flex items-center border border-zinc-200 rounded-sm w-full sm:w-fit sm:ml-auto">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="px-4 py-3 text-zinc-500 hover:text-black transition-colors"
                 >
                   -
                 </button>
-                <span className="px-4 py-3 text-sm font-sans min-w-12 text-center">
+                <span className="flex-1 py-3 text-sm font-sans text-center">
                   {quantity}
                 </span>
                 <button
